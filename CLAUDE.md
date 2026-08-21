@@ -39,6 +39,13 @@ E2E tests live in `e2e/` (flows + shared utilities).
 ## Code Style (universal)
 
 - No `any` — use `unknown` for truly unknown types; prefer `interface` for object shapes (`strict` is not enabled in tsconfig; ESLint + review enforce this)
+- Never run `git add`/`git commit` on your own initiative — leave reviewing and
+  staging changes to the developer. Only stage/commit when explicitly asked, or
+  when running a skill whose job is specifically to stage, commit, and push
+- Never commit or push directly to `main`. Always work on a feature/chore branch
+  and push that branch; if currently on `main`, create a branch first before
+  making any changes. Opening a PR is always a separate, explicit ask
+- TypeScript strict: no `any` — use `unknown` for truly unknown types; prefer `interface` for object shapes
 - Arrow functions for all React components, never `function` declarations
 - Imports via the `@/` alias, never long relative paths (`../../../`)
 - Keep components under 200 lines — split if larger
@@ -50,7 +57,7 @@ E2E tests live in `e2e/` (flows + shared utilities).
 ## Environment
 
 - `.env` is gitignored; `.env.example` is the committed template. Defaults in `config/env.ts` work without a `.env` file
-- Backend is expected at `http://localhost:3001` (`VITE_API_BASE_URL`); no backend exists yet
+- Backend runs at `http://localhost:3001` (`VITE_API_BASE_URL`) — sibling repo, see its own CLAUDE.md
 
 ## Gotchas
 
