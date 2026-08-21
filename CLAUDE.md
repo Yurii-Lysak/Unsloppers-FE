@@ -38,6 +38,7 @@ E2E tests live in `e2e/` (flows + shared utilities).
 
 ## Code Style (universal)
 
+- No `any` — use `unknown` for truly unknown types; prefer `interface` for object shapes (`strict` is not enabled in tsconfig; ESLint + review enforce this)
 - Never run `git add`/`git commit` on your own initiative — leave reviewing and
   staging changes to the developer. Only stage/commit when explicitly asked, or
   when running a skill whose job is specifically to stage, commit, and push
