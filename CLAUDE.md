@@ -38,7 +38,7 @@ E2E tests live in `e2e/` (flows + shared utilities).
 
 ## Code Style (universal)
 
-- TypeScript strict: no `any` — use `unknown` for truly unknown types; prefer `interface` for object shapes
+- No `any` — use `unknown` for truly unknown types; prefer `interface` for object shapes (`strict` is not enabled in tsconfig; ESLint + review enforce this)
 - Arrow functions for all React components, never `function` declarations
 - Imports via the `@/` alias, never long relative paths (`../../../`)
 - Keep components under 200 lines — split if larger
