@@ -15,7 +15,30 @@
   },
   "sidebar": {
     "home": "Home",
+    "admin": "Admin",
+    "adminRoles": "Roles",
+    "adminRolesHint": "Admin → Roles",
     "openMenu": "Open menu"
+  },
+  "adminRoles": {
+    "title": "Functional roles",
+    "newRole": "New role",
+    "createRole": "Create role",
+    "editRole": "Edit role",
+    "roleName": "Role name",
+    "permissions": "Permissions",
+    "permissionCount": "{{count}} permissions",
+    "edit": "Edit",
+    "save": "Save",
+    "saving": "Saving…",
+    "cancel": "Cancel",
+    "loading": "Loading roles…",
+    "loadFailed": "Could not load functional roles.",
+    "catalogFailed": "Could not load the permission catalog.",
+    "saveFailed": "Could not save the role. Try again.",
+    "validation": {
+      "name": "Enter a role name."
+    }
   },
   "auth": {
     "loadingSession": "Loading your session…",
