@@ -6,18 +6,31 @@ import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom'
 import { AppLayout } from '@/components/AppLayout/AppLayout'
 import { HomePage } from '@/pages/HomePage/HomePage'
 import { ErrorPage } from '@/pages/ErrorPage/ErrorPage'
+import { LoginPage } from '@/pages/LoginPage/LoginPage'
+import { ProtectedRoute } from '@/components/ProtectedRoute/ProtectedRoute'
 
 const router = createBrowserRouter([
-  // Standalone error page (rendered outside the main layout)
   {
-    path: '/app-error',
-    element: <ErrorPage />,
+    path: '/login',
+    element: <LoginPage />,
   },
 
-  // Application routes wrapped in the main layout
+  {
+    path: '/app-error',
+    element: (
+      <ProtectedRoute>
+        <ErrorPage />
+      </ProtectedRoute>
+    ),
+  },
+
   {
     path: '/',
-    element: <AppLayout />,
+    element: (
+      <ProtectedRoute>
+        <AppLayout />
+      </ProtectedRoute>
+    ),
     children: [
       {
         index: true,
@@ -26,7 +39,6 @@ const router = createBrowserRouter([
     ],
   },
 
-  // Catch-all route
   {
     path: '*',
     element: <Navigate to="/" replace />,
