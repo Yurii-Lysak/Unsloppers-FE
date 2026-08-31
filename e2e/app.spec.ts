@@ -1,5 +1,6 @@
-import { test, expect } from '@playwright/test'
 import { setupAuthApi } from './flows/authentication/helpers'
+import { expect, test } from './shared/merged-fixtures'
+import { testIds } from './shared/selectors'
 
 test.describe('App', () => {
   test('should load homepage successfully', async ({ page }) => {
@@ -7,10 +8,10 @@ test.describe('App', () => {
     await page.goto('/')
 
     // App container renders without errors
-    await expect(page.getByTestId('app-container')).toBeVisible()
+    await expect(page.getByTestId(testIds.app.container)).toBeVisible()
 
     // Home page renders inside the main layout
-    await expect(page.getByTestId('home-title')).toBeVisible()
+    await expect(page.getByTestId(testIds.app.homeTitle)).toBeVisible()
   })
 
   test('should redirect unknown routes to home', async ({ page }) => {
@@ -18,6 +19,6 @@ test.describe('App', () => {
     await page.goto('/some-unknown-route')
 
     await expect(page).toHaveURL('/')
-    await expect(page.getByTestId('home-title')).toBeVisible()
+    await expect(page.getByTestId(testIds.app.homeTitle)).toBeVisible()
   })
 })
