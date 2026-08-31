@@ -4,6 +4,7 @@ const BASE_URL = process.env.BASE_URL ?? 'http://127.0.0.1:4200'
 
 export default defineConfig({
   testDir: './e2e',
+  testIgnore: '**/integration/**',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
 

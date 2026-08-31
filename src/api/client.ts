@@ -6,8 +6,11 @@ import axios from 'axios'
 import type { AxiosInstance, AxiosRequestConfig } from 'axios'
 import { env } from '@/config/env'
 
+type UnauthorizedListener = () => void
+
 class ApiClient {
   private client: AxiosInstance
+  private unauthorizedListeners = new Set<UnauthorizedListener>()
 
   constructor() {
     this.client = axios.create({
@@ -16,13 +19,13 @@ class ApiClient {
       headers: {
         'Content-Type': 'application/json',
       },
+      withCredentials: true,
     })
 
     this.setupInterceptors()
   }
 
   private setupInterceptors() {
-    // TODO: attach authentication headers here when the project gets auth
     this.client.interceptors.request.use(
       config => config,
       error => Promise.reject(error)
@@ -30,8 +33,18 @@ class ApiClient {
 
     this.client.interceptors.response.use(
       response => response,
-      error => Promise.reject(error)
+      error => {
+        if (axios.isAxiosError(error) && error.response?.status === 401) {
+          this.unauthorizedListeners.forEach(listener => listener())
+        }
+        return Promise.reject(error)
+      }
     )
+  }
+
+  onUnauthorized(listener: UnauthorizedListener): () => void {
+    this.unauthorizedListeners.add(listener)
+    return () => this.unauthorizedListeners.delete(listener)
   }
 
   /**

@@ -14,6 +14,32 @@
     "notAvailable": "Not available"
   },
   "sidebar": {
-    "home": "Home"
+    "home": "Home",
+    "openMenu": "Open menu"
+  },
+  "auth": {
+    "loadingSession": "Loading your session…",
+    "invalidCredentials": "The email or password is incorrect.",
+    "loginUnavailable": "Sign-in is temporarily unavailable. Check your connection and try again.",
+    "logout": "Sign out",
+    "loggingOut": "Signing out…",
+    "logoutFailed": "Sign-out failed. Try again.",
+    "sessionUnavailable": {
+      "title": "We couldn’t verify your session",
+      "description": "Check your connection and try again. You have not been signed out.",
+      "retry": "Try again"
+    },
+    "login": {
+      "title": "Sign in",
+      "description": "Use your bootcamp account credentials.",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign in",
+      "submitting": "Signing in…"
+    },
+    "validation": {
+      "email": "Enter a valid email address.",
+      "password": "Enter your password."
+    }
   }
 }

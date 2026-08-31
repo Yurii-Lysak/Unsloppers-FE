@@ -1,8 +1,10 @@
+import { setupAuthApi } from './flows/authentication/helpers'
 import { expect, test } from './shared/merged-fixtures'
 import { testIds } from './shared/selectors'
 
 test.describe('App', () => {
   test('should load homepage successfully', async ({ page }) => {
+    await setupAuthApi(page, { authenticated: true })
     await page.goto('/')
 
     // App container renders without errors
@@ -13,6 +15,7 @@ test.describe('App', () => {
   })
 
   test('should redirect unknown routes to home', async ({ page }) => {
+    await setupAuthApi(page, { authenticated: true })
     await page.goto('/some-unknown-route')
 
     await expect(page).toHaveURL('/')

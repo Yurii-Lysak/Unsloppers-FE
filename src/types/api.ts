@@ -1,3 +1,11 @@
+export interface Session {
+  userId: string
+}
+
+export interface LoginCredentials {
+  email: string
+  password: string
+}
 /**
  * API response TypeScript interfaces
  */
