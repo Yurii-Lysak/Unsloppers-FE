@@ -1,6 +1,7 @@
-import { Home } from 'lucide-react'
+import { Home, Shield } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useLayout } from '@/contexts/LayoutContext'
+import { useFunctionalRolesAccess } from '@/api/hooks/useFunctionalRoles'
 import { SideMenuItem } from './components/SideMenuItem/SideMenuItem'
 import { SideMenuToggle } from './components/SideMenuToggle/SideMenuToggle'
 import { cn } from '@/lib/utils'
@@ -13,6 +14,8 @@ interface SideMenuProps {
 export const SideMenu = ({ collapsible = true, expanded }: SideMenuProps) => {
   const { t } = useTranslation()
   const { toggleSidebar, isMobileSidebarOpen, closeMobileSidebar } = useLayout()
+  const rolesAccessQuery = useFunctionalRolesAccess()
+  const showAdminRoles = rolesAccessQuery.isSuccess
   // The mobile drawer is always rendered at full width, so labels must be
   // visible there even if the desktop sidebar is currently collapsed.
   const showLabels = expanded || isMobileSidebarOpen
@@ -48,6 +51,27 @@ export const SideMenu = ({ collapsible = true, expanded }: SideMenuProps) => {
             expanded={showLabels}
             onNavigate={closeMobileSidebar}
           />
+          {showAdminRoles && (
+            <div className="py-1">
+              {showLabels && (
+                <p
+                  className="px-4 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground"
+                  data-testid="sidebar-admin-section"
+                >
+                  {t('sidebar.admin')}
+                </p>
+              )}
+              <SideMenuItem
+                icon={Shield}
+                label={t('sidebar.adminRoles')}
+                path="/admin/roles"
+                hint={t('sidebar.adminRolesHint')}
+                expanded={showLabels}
+                onNavigate={closeMobileSidebar}
+                data-testid="sidebar-admin-roles"
+              />
+            </div>
+          )}
         </nav>
 
         {/* Desktop-only collapse/expand toggle; mobile uses the header hamburger + backdrop instead */}

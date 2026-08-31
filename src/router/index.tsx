@@ -2,11 +2,13 @@
  * Main router configuration
  */
 
-import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { AppLayout } from '@/components/AppLayout/AppLayout'
 import { HomePage } from '@/pages/HomePage/HomePage'
 import { ErrorPage } from '@/pages/ErrorPage/ErrorPage'
 import { LoginPage } from '@/pages/LoginPage/LoginPage'
+import { FunctionalRolesRoute } from '@/components/FunctionalRolesRoute/FunctionalRolesRoute'
 import { ProtectedRoute } from '@/components/ProtectedRoute/ProtectedRoute'
 
 const router = createBrowserRouter([
@@ -35,6 +37,10 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <HomePage />,
+      },
+      {
+        path: 'admin/roles',
+        element: <FunctionalRolesRoute />,
       },
     ],
   },

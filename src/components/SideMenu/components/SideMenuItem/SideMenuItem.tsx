@@ -10,6 +10,7 @@ interface SideMenuItemProps {
   counter?: number
   expanded: boolean
   onNavigate?: () => void
+  'data-testid'?: string
 }
 
 export const SideMenuItem = ({
@@ -20,6 +21,7 @@ export const SideMenuItem = ({
   counter,
   expanded,
   onNavigate,
+  'data-testid': dataTestId,
 }: SideMenuItemProps) => {
   return (
     <NavLink
@@ -34,6 +36,7 @@ export const SideMenuItem = ({
         )
       }
       title={hint || label}
+      data-testid={dataTestId}
     >
       <Icon className="h-5 w-5 flex-shrink-0" />
       {expanded && <span className="flex-1 truncate text-sm">{label}</span>}
