@@ -27,6 +27,29 @@ export type AccessRole =
   | 'SharedLink'
   | 'FullAccess'
 
+export interface ManagementNoteAuthor {
+  id: string
+  displayName: string
+}
+
+export interface ManagementNoteRead {
+  id: string
+  content: string
+  author: ManagementNoteAuthor
+  createdAt: string
+  updatedAt: string
+}
+
+export interface ManagementNote extends ManagementNoteRead {
+  visibleForEmployee: boolean
+  visibleForPm: boolean
+}
+
+export interface ManagementNotesSection {
+  notes: ManagementNoteRead[] | ManagementNote[]
+  hasHiddenNotes?: boolean
+}
+
 export interface IdentityRelation {
   id: string
   displayName: string
