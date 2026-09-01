@@ -1,16 +1,8 @@
 import { useQuery } from '@tanstack/react-query'
-import { getEmployeeApiCall, listEmployeesApiCall } from '@/api/employees'
-
-export const employeesListQueryKey = ['employees', 'list'] as const
+import { getEmployeeApiCall } from '@/api/employees'
 
 export const employeeDetailQueryKey = (employeeId: string) =>
   ['employees', employeeId] as const
-
-export const useEmployeesList = () =>
-  useQuery({
-    queryKey: employeesListQueryKey,
-    queryFn: listEmployeesApiCall,
-  })
 
 export const useEmployeeDetail = (employeeId: string) =>
   useQuery({

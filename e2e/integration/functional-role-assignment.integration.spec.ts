@@ -1,5 +1,6 @@
 import { expect, type Page, test } from '@playwright/test'
 import { PERMISSION_KEYS } from '../../src/types/permissions'
+import { BUILTIN_FIELD_IDS } from '../../src/types/employees'
 import { testEnv } from '../shared/test-env'
 import { loginBootcampUser } from './helpers/bootcamp-auth'
 
@@ -20,13 +21,19 @@ interface FunctionalRoleSummary {
   name: string
 }
 
+interface EmployeeListResponse {
+  rows: Array<{ employeeId: string; cells: Record<string, unknown> }>
+}
+
 const findAssigneeEmployee = async (page: Page): Promise<EmployeeSummary> => {
   const listResponse = await page.request.get(`${apiBaseUrl}/api/v1/employees`)
   expect(listResponse.ok(), await listResponse.text()).toBeTruthy()
-  const employees = (await listResponse.json()) as EmployeeSummary[]
-  const assignee = employees.find(employee => employee.displayName === ASSIGNEE_NAME)
-  expect(assignee, `Employee "${ASSIGNEE_NAME}" not found`).toBeDefined()
-  return assignee!
+  const body = (await listResponse.json()) as EmployeeListResponse
+  const row = body.rows.find(
+    entry => entry.cells[BUILTIN_FIELD_IDS.name] === ASSIGNEE_NAME,
+  )
+  expect(row, `Employee "${ASSIGNEE_NAME}" not found`).toBeDefined()
+  return { id: row!.employeeId, displayName: ASSIGNEE_NAME }
 }
 
 const clearCampaignRoleFromAssignee = async (
