@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom'
 import type {
   EmployeeFieldFilter,
   EmployeeListQuery,
+  EmployeeListResponse,
   FilterOperator,
   SortOrder,
 } from '@/types/employees'
@@ -10,6 +11,37 @@ import type {
 const DEFAULT_PAGE = 1
 const DEFAULT_PAGE_SIZE = 50
 export const MAX_PAGE_SIZE = 100
+
+const FILTER_OPERATORS: FilterOperator[] = [
+  'eq',
+  'neq',
+  'gt',
+  'gte',
+  'lt',
+  'lte',
+  'contains',
+  'in',
+]
+
+const isFilterOperator = (value: unknown): value is FilterOperator =>
+  typeof value === 'string' && FILTER_OPERATORS.includes(value as FilterOperator)
+
+const isEmployeeFieldFilter = (value: unknown): value is EmployeeFieldFilter => {
+  if (!value || typeof value !== 'object') {
+    return false
+  }
+  const candidate = value as Record<string, unknown>
+  return (
+    typeof candidate.fieldId === 'string' &&
+    isFilterOperator(candidate.operator) &&
+    (typeof candidate.value === 'string' ||
+      typeof candidate.value === 'number' ||
+      typeof candidate.value === 'boolean' ||
+      candidate.value === null ||
+      (Array.isArray(candidate.value) &&
+        candidate.value.every(entry => typeof entry === 'string')))
+  )
+}
 
 const parseFilters = (raw: string | null): EmployeeFieldFilter[] => {
   if (!raw) {
@@ -20,7 +52,7 @@ const parseFilters = (raw: string | null): EmployeeFieldFilter[] => {
     if (!Array.isArray(parsed)) {
       return []
     }
-    return parsed as EmployeeFieldFilter[]
+    return parsed.filter(isEmployeeFieldFilter)
   } catch {
     return []
   }
@@ -41,6 +73,29 @@ const parseColumnIds = (raw: string | null, fallback: string[]): string[] => {
   }
 }
 
+const parseSortOrder = (raw: string | null): SortOrder | undefined => {
+  if (raw === 'asc' || raw === 'desc') {
+    return raw
+  }
+  return undefined
+}
+
+export const buildDirectoryDisplayData = (
+  listData: EmployeeListResponse,
+  selectedColumnIds: string[],
+): EmployeeListResponse => ({
+  ...listData,
+  fields: listData.fields.filter(field => selectedColumnIds.includes(field.id)),
+  rows: listData.rows.map(row => ({
+    employeeId: row.employeeId,
+    cells: Object.fromEntries(
+      selectedColumnIds
+        .filter(fieldId => fieldId in row.cells)
+        .map(fieldId => [fieldId, row.cells[fieldId]]),
+    ),
+  })),
+})
+
 export const useAllEmployeesPage = () => {
   const [searchParams, setSearchParams] = useSearchParams()
 
@@ -48,7 +103,7 @@ export const useAllEmployeesPage = () => {
     const page = Number(searchParams.get('page') ?? DEFAULT_PAGE)
     const pageSize = Number(searchParams.get('pageSize') ?? DEFAULT_PAGE_SIZE)
     const sort = searchParams.get('sort') ?? undefined
-    const order = (searchParams.get('order') as SortOrder | null) ?? undefined
+    const order = parseSortOrder(searchParams.get('order'))
     const filters = parseFilters(searchParams.get('filters'))
 
     return {
@@ -150,6 +205,20 @@ export const useAllEmployeesPage = () => {
     [updateParams],
   )
 
+  const selectedColumnIds = useCallback(
+    (allFieldIds: string[]) =>
+      parseColumnIds(searchParams.get('columns'), allFieldIds),
+    [searchParams],
+  )
+
+  const buildDisplayData = useCallback(
+    (listData: EmployeeListResponse) => {
+      const visibleIds = selectedColumnIds(listData.fields.map(field => field.id))
+      return buildDirectoryDisplayData(listData, visibleIds)
+    },
+    [selectedColumnIds],
+  )
+
   return {
     query,
     setPage,
@@ -161,6 +230,8 @@ export const useAllEmployeesPage = () => {
     visibleColumnIds: searchParams.get('columns'),
     setVisibleColumnIds,
     parseColumnIds,
+    selectedColumnIds,
+    buildDisplayData,
   }
 }
 

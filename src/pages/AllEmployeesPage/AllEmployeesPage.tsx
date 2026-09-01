@@ -1,7 +1,7 @@
 import { Users } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useEmployeeList } from '@/api/hooks/useEmployeeList'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/Button/Button'
 import { EmployeeTable } from './components/EmployeeTable/EmployeeTable'
 import { ColumnPicker } from './components/ColumnPicker/ColumnPicker'
 import { useAllEmployeesPage } from './hooks/useAllEmployeesPage'
@@ -16,36 +16,20 @@ export const AllEmployeesPage = () => {
     clearFilter,
     clearAllFilters,
     activeFilterForField,
-    visibleColumnIds,
     setVisibleColumnIds,
-    parseColumnIds,
+    selectedColumnIds,
+    buildDisplayData,
   } = useAllEmployeesPage()
   const listQuery = useEmployeeList(query)
 
   const shownCount = listQuery.data?.rows.length ?? 0
   const totalCount = listQuery.data?.total ?? 0
   const page = listQuery.data?.page ?? query.page ?? 1
-  const pageSize = listQuery.data?.pageSize ?? query.pageSize ?? 50
+  const pageSize = Math.max(1, listQuery.data?.pageSize ?? query.pageSize ?? 50)
   const totalPages = Math.max(1, Math.ceil(totalCount / pageSize))
   const allFields = listQuery.data?.fields ?? []
-  const selectedColumnIds = parseColumnIds(
-    visibleColumnIds,
-    allFields.map(field => field.id),
-  )
-  const displayData =
-    listQuery.data &&
-    ({
-      ...listQuery.data,
-      fields: allFields.filter(field => selectedColumnIds.includes(field.id)),
-      rows: listQuery.data.rows.map(row => ({
-        employeeId: row.employeeId,
-        cells: Object.fromEntries(
-          selectedColumnIds
-            .filter(fieldId => fieldId in row.cells)
-            .map(fieldId => [fieldId, row.cells[fieldId]]),
-        ),
-      })),
-    } as typeof listQuery.data)
+  const visibleColumnIds = selectedColumnIds(allFields.map(field => field.id))
+  const displayData = listQuery.data ? buildDisplayData(listQuery.data) : undefined
 
   return (
     <div className="space-y-4">
@@ -75,7 +59,7 @@ export const AllEmployeesPage = () => {
           {listQuery.data && (
             <ColumnPicker
               fields={allFields}
-              selectedColumnIds={selectedColumnIds}
+              selectedColumnIds={visibleColumnIds}
               onChange={setVisibleColumnIds}
             />
           )}

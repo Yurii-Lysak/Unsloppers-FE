@@ -1,0 +1,5 @@
+export const dialogContentClassName = ''
+export const dialogHeaderClassName = ''
+export const dialogFooterClassName = ''
+export const dialogTitleClassName = ''
+export const dialogDescriptionClassName = ''

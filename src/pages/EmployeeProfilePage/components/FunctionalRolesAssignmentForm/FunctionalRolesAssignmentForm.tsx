@@ -8,7 +8,7 @@ import {
   useSetEmployeeFunctionalRoles,
 } from '@/api/hooks/useEmployeeFunctionalRoles'
 import { useFunctionalRolesList } from '@/api/hooks/useFunctionalRoles'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/Button/Button'
 
 const schema = z.object({
   roleIds: z.array(z.string()),

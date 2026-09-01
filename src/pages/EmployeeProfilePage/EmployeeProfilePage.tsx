@@ -26,6 +26,19 @@ export const EmployeeProfilePage = ({
   const profile = profileQuery.data
   const showAccessChip = profile && profile.audience.role !== 'Self'
 
+  if (!employeeId) {
+    return (
+      <div className="space-y-4">
+        <p className="text-destructive" role="alert">
+          {t('employeeProfile.invalidId')}
+        </p>
+        <p className="text-sm text-muted-foreground">
+          <Link to="/employees">{t('employeeProfile.backToList')}</Link>
+        </p>
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-2 border-b border-border pb-4">

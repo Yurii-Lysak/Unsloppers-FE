@@ -1,6 +1,7 @@
 import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
+import { Button } from '@/components/Button/Button'
 import {
   Table,
   TableBody,
@@ -63,15 +64,17 @@ export const EmployeeTable = ({
             <TableHead key={field.id}>
               <div className="flex items-center gap-1">
                 {field.sortable ? (
-                  <button
+                  <Button
                     type="button"
-                    className="inline-flex items-center gap-1 text-left"
+                    variant="ghost"
+                    size="sm"
+                    className="inline-flex h-auto items-center gap-1 px-0 text-left font-normal hover:bg-transparent"
                     onClick={() => onToggleSort(field.id)}
                     data-testid={`directory-sort-${field.id}`}
                   >
                     <span>{field.name}</span>
                     {sortIcon(field.id)}
-                  </button>
+                  </Button>
                 ) : (
                   <span>{field.name}</span>
                 )}

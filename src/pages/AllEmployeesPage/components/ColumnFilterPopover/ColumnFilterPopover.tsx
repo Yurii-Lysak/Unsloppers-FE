@@ -1,7 +1,13 @@
 import { Filter } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/Button/Button'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTitle,
+  PopoverTrigger,
+} from '@/components/Popover/Popover'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import type { EmployeeFieldFilter, FieldSpec, FilterOperator } from '@/types/employees'
@@ -83,11 +89,11 @@ export const ColumnFilterPopover = ({
     setSelectedOptions(valueToSelectedOptions(activeFilter?.value))
   }
 
-  const toggleOpen = () => {
-    if (!open) {
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (nextOpen) {
       syncFromActiveFilter()
     }
-    setOpen(current => !current)
+    setOpen(nextOpen)
   }
 
   const toggleOption = (option: string) => {
@@ -130,102 +136,106 @@ export const ColumnFilterPopover = ({
     setOpen(false)
   }
 
+  const handleClear = () => {
+    onClear()
+    setOpen(false)
+  }
+
   return (
-    <div className="relative inline-flex">
-      <Button
-        type="button"
-        variant={activeFilter ? 'secondary' : 'ghost'}
-        size="icon-xs"
-        aria-label={t('directory.filterColumn', { column: field.name })}
-        onClick={toggleOpen}
-        data-testid={`directory-filter-${field.id}`}
-      >
-        <Filter className="size-3.5" />
-      </Button>
+    <Popover open={open} onOpenChange={handleOpenChange}>
+      <PopoverTrigger asChild>
+        <Button
+          type="button"
+          variant={activeFilter ? 'secondary' : 'ghost'}
+          size="icon-xs"
+          aria-label={t('directory.filterColumn', { column: field.name })}
+          data-testid={`directory-filter-${field.id}`}
+        >
+          <Filter className="size-3.5" />
+        </Button>
+      </PopoverTrigger>
 
-      {open && (
-        <div className="absolute left-0 top-full z-20 mt-1 w-56 rounded-lg border border-border bg-card p-3 shadow-lg">
-          <p className="text-sm font-medium text-foreground">{field.name}</p>
+      <PopoverContent align="start">
+        <PopoverTitle>{field.name}</PopoverTitle>
 
-          <div className="mt-3 space-y-2">
-            <Label htmlFor={`filter-operator-${field.id}`}>
-              {t('directory.filterOperator')}
-            </Label>
+        <div className="mt-3 space-y-2">
+          <Label htmlFor={`filter-operator-${field.id}`}>
+            {t('directory.filterOperator')}
+          </Label>
+          <select
+            id={`filter-operator-${field.id}`}
+            className="h-8 w-full rounded-lg border border-border bg-background px-2 text-sm"
+            value={operator}
+            onChange={event => setOperator(event.target.value as FilterOperator)}
+          >
+            {operators.map(entry => (
+              <option key={entry} value={entry}>
+                {t(`directory.operators.${entry}`)}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="mt-3 space-y-2">
+          <Label htmlFor={`filter-value-${field.id}`}>{t('directory.filterValue')}</Label>
+          {field.type === 'boolean' ? (
             <select
-              id={`filter-operator-${field.id}`}
+              id={`filter-value-${field.id}`}
               className="h-8 w-full rounded-lg border border-border bg-background px-2 text-sm"
-              value={operator}
-              onChange={event => setOperator(event.target.value as FilterOperator)}
+              value={value}
+              onChange={event => setValue(event.target.value)}
             >
-              {operators.map(entry => (
-                <option key={entry} value={entry}>
-                  {t(`directory.operators.${entry}`)}
+              <option value="true">{t('directory.boolean.true')}</option>
+              <option value="false">{t('directory.boolean.false')}</option>
+            </select>
+          ) : usesMultiOptionPicker ? (
+            <div className="space-y-1" id={`filter-value-${field.id}`}>
+              {field.options?.map(option => (
+                <label key={option} className="flex items-center gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    checked={selectedOptions.includes(option)}
+                    onChange={() => toggleOption(option)}
+                  />
+                  <span>{option}</span>
+                </label>
+              ))}
+            </div>
+          ) : usesOptionPicker ? (
+            <select
+              id={`filter-value-${field.id}`}
+              className="h-8 w-full rounded-lg border border-border bg-background px-2 text-sm"
+              value={value}
+              onChange={event => setValue(event.target.value)}
+            >
+              <option value="">{t('directory.selectOption')}</option>
+              {field.options?.map(option => (
+                <option key={option} value={option}>
+                  {option}
                 </option>
               ))}
             </select>
-          </div>
-
-          <div className="mt-3 space-y-2">
-            <Label htmlFor={`filter-value-${field.id}`}>{t('directory.filterValue')}</Label>
-            {field.type === 'boolean' ? (
-              <select
-                id={`filter-value-${field.id}`}
-                className="h-8 w-full rounded-lg border border-border bg-background px-2 text-sm"
-                value={value}
-                onChange={event => setValue(event.target.value)}
-              >
-                <option value="true">{t('directory.boolean.true')}</option>
-                <option value="false">{t('directory.boolean.false')}</option>
-              </select>
-            ) : usesMultiOptionPicker ? (
-              <div className="space-y-1" id={`filter-value-${field.id}`}>
-                {field.options?.map(option => (
-                  <label key={option} className="flex items-center gap-2 text-sm">
-                    <input
-                      type="checkbox"
-                      checked={selectedOptions.includes(option)}
-                      onChange={() => toggleOption(option)}
-                    />
-                    <span>{option}</span>
-                  </label>
-                ))}
-              </div>
-            ) : usesOptionPicker ? (
-              <select
-                id={`filter-value-${field.id}`}
-                className="h-8 w-full rounded-lg border border-border bg-background px-2 text-sm"
-                value={value}
-                onChange={event => setValue(event.target.value)}
-              >
-                <option value="">{t('directory.selectOption')}</option>
-                {field.options?.map(option => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-            ) : (
-              <Input
-                id={`filter-value-${field.id}`}
-                value={value}
-                onChange={event => setValue(event.target.value)}
-                type={field.type === 'number' ? 'number' : field.type === 'date' ? 'date' : 'text'}
-              />
-            )}
-          </div>
-
-          <div className="mt-4 flex justify-end gap-2">
-            {activeFilter && (
-              <Button type="button" variant="outline" size="sm" onClick={onClear}>
-                {t('directory.clearFilter')}
-              </Button>
-            )}
-            <Button type="button" size="sm" onClick={apply}>
-              {t('directory.applyFilter')}
-            </Button>
-          </div>
+          ) : (
+            <Input
+              id={`filter-value-${field.id}`}
+              value={value}
+              onChange={event => setValue(event.target.value)}
+              type={field.type === 'number' ? 'number' : field.type === 'date' ? 'date' : 'text'}
+            />
+          )}
         </div>
-      )}
-    </div>
+
+        <div className="mt-4 flex justify-end gap-2">
+          {activeFilter && (
+            <Button type="button" variant="outline" size="sm" onClick={handleClear}>
+              {t('directory.clearFilter')}
+            </Button>
+          )}
+          <Button type="button" size="sm" onClick={apply}>
+            {t('directory.applyFilter')}
+          </Button>
+        </div>
+      </PopoverContent>
+    </Popover>
   )
 }
