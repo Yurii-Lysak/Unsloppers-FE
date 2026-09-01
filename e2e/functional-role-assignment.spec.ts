@@ -18,6 +18,19 @@ const routePermissionsMe = async (
   })
 }
 
+const mockProfileRoute = (
+  page: import('@playwright/test').Page,
+  employeeId: string,
+  profile: object,
+) =>
+  page.route(`${apiBaseUrl}/api/v1/employees/${employeeId}/profile**`, async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(profile),
+    })
+  })
+
 test.describe('Functional role assignment navigation', () => {
   test('shows All Employees nav for authenticated users', async ({ page }) => {
     await setupAuthApi(page, { authenticated: true })
@@ -59,23 +72,16 @@ test.describe('Functional role assignment form', () => {
 
     await setupAuthApi(page, { authenticated: true })
     await routePermissionsMe(page, [])
-
-    await page.route(`${apiBaseUrl}/api/v1/employees/${employeeId}/profile**`, async route => {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          employeeId,
-          displayName: 'Anton Savchenko',
-          audience: { role: 'Colleague', sections: { S1: 'R', S10: 'R', S11: 'R' } },
-          sections: {
-            S1: {
-              accessLevel: 'R',
-              data: { displayName: 'Anton Savchenko' },
-            },
-          },
-        }),
-      })
+    await mockProfileRoute(page, employeeId, {
+      employeeId,
+      displayName: 'Anton Savchenko',
+      audience: { role: 'Colleague', sections: { S1: 'R', S10: 'R', S11: 'R' } },
+      sections: {
+        S1: {
+          accessLevel: 'R',
+          data: { displayName: 'Anton Savchenko' },
+        },
+      },
     })
 
     await page.goto(`/employees/${employeeId}`)
@@ -89,34 +95,19 @@ test.describe('Functional role assignment form', () => {
 
     await setupAuthApi(page, { authenticated: true })
     await routePermissionsMe(page, [PERMISSION_KEYS.MANAGE_FUNCTIONAL_ROLES])
-
-    await page.route(`${apiBaseUrl}/api/v1/employees/${employeeId}/profile**`, async route => {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          employeeId,
-          displayName: 'Anton Savchenko',
-          audience: { role: 'ReportingLine', sections: { S1: 'RW' } },
-          sections: {
-            S1: {
-              accessLevel: 'RW',
-              data: { displayName: 'Anton Savchenko' },
-            },
-          },
-        }),
-      })
+    await mockProfileRoute(page, employeeId, {
+      employeeId,
+      displayName: 'Anton Savchenko',
+      audience: { role: 'ReportingLine', sections: { S1: 'RW' } },
+      sections: {
+        S1: {
+          accessLevel: 'RW',
+          data: { displayName: 'Anton Savchenko' },
+        },
+      },
     })
 
     await page.route(`${apiBaseUrl}/api/v1/employees/${employeeId}**`, async route => {
-      if (route.request().method() === 'GET' && route.request().url().endsWith(`/employees/${employeeId}`)) {
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify({ id: employeeId, displayName: 'Anton Savchenko' }),
-        })
-        return
-      }
       if (route.request().url().includes('/functional-roles')) {
         if (route.request().method() === 'GET') {
           await route.fulfill({
