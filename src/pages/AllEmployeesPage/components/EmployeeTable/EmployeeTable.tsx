@@ -1,5 +1,6 @@
 import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
 import {
   Table,
   TableBody,
@@ -8,7 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import type { EmployeeListResponse } from '@/types/employees'
+import { BUILTIN_FIELD_IDS, type EmployeeListResponse } from '@/types/employees'
 import { ColumnFilterPopover } from '../ColumnFilterPopover/ColumnFilterPopover'
 import { formatCellValue } from '../../hooks/useAllEmployeesPage'
 
@@ -97,11 +98,23 @@ export const EmployeeTable = ({
         ) : (
           data.rows.map(row => (
             <TableRow key={row.employeeId} data-testid={`directory-row-${row.employeeId}`}>
-              {data.fields.map(field => (
-                <TableCell key={field.id}>
-                  {formatCellValue(row.cells[field.id], t)}
-                </TableCell>
-              ))}
+              {data.fields.map(field =>
+                field.id === BUILTIN_FIELD_IDS.name ? (
+                  <TableCell key={field.id}>
+                    <Link
+                      to={`/employees/${row.employeeId}`}
+                      className="font-medium text-primary hover:underline"
+                      data-testid={`directory-employee-link-${row.employeeId}`}
+                    >
+                      {formatCellValue(row.cells[field.id], t)}
+                    </Link>
+                  </TableCell>
+                ) : (
+                  <TableCell key={field.id}>
+                    {formatCellValue(row.cells[field.id], t)}
+                  </TableCell>
+                ),
+              )}
             </TableRow>
           ))
         )}
