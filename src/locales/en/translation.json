@@ -122,6 +122,7 @@
     "emptySection": "No records yet.",
     "sections": {
       "identity": "Identity",
+      "managementNotes": "Management notes",
       "timeline": "Career timeline",
       "leaves": "Leaves and absences",
       "projects": "Projects",
@@ -140,6 +141,19 @@
       "SharedLink": "Shared link",
       "FullAccess": "Full access"
     },
-    "unavailableSection": "Temporarily unavailable"
+    "unavailableSection": "Temporarily unavailable",
+    "s7": {
+      "gated": "A management note exists here. Not shared with your role.",
+      "toggleVisibleToEmployee": "Visible to employee",
+      "toggleVisibleToPm": "Visible to PM",
+      "addNote": "Add note",
+      "empty": "No management notes yet.",
+      "deleteNote": "Delete",
+      "saveFailed": "Could not save management note. Try again.",
+      "validation": {
+        "contentRequired": "Note content is required.",
+        "contentTooLong": "Note content must be at most 10,000 characters."
+      }
+    }
   }
 }

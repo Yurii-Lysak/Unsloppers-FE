@@ -1,13 +1,16 @@
 import type { ReactNode } from 'react'
-import type { SectionId } from '@/types/employee-profile'
 import type {
   EmployeeProfile,
   IdentitySection,
   LeavesSection,
+  ManagementNotesSection as ManagementNotesSectionData,
   ProfileSectionEnvelope,
   ProjectsSection,
+  SectionAccessLevel,
+  SectionId,
   TimelineSection,
 } from '@/types/employee-profile'
+import { ManagementNotesSectionCard } from './components/ManagementNotesSection/ManagementNotesSection'
 
 export const PROFILE_SECTION_ORDER: SectionId[] = [
   'S1',
@@ -30,6 +33,7 @@ export const PROFILE_SECTION_ORDER: SectionId[] = [
 
 export const PROFILE_SECTION_TITLE_KEYS: Partial<Record<SectionId, string>> = {
   S1: 'employeeProfile.sections.identity',
+  S7: 'employeeProfile.sections.managementNotes',
   S9: 'employeeProfile.sections.timeline',
   S10: 'employeeProfile.sections.leaves',
   S11: 'employeeProfile.sections.projects',
@@ -46,7 +50,9 @@ export const orderedProfileSectionIds = (
   PROFILE_SECTION_ORDER.filter((sectionId) => sectionId in sections)
 
 type SectionRenderer = (props: {
+  employeeId: string
   section: ProfileSectionEnvelope<unknown>
+  accessLevel: Exclude<SectionAccessLevel, 'none'>
   t: (key: string) => string
 }) => ReactNode
 
@@ -77,6 +83,14 @@ export const PROFILE_SECTION_RENDERERS: Partial<Record<SectionId, SectionRendere
         </dl>
       )
     },
+    S7: ({ employeeId, section, accessLevel, t }) => (
+      <ManagementNotesSectionCard
+        employeeId={employeeId}
+        section={section as ProfileSectionEnvelope<ManagementNotesSectionData>}
+        accessLevel={accessLevel}
+        t={t}
+      />
+    ),
     S9: ({ section, t }) => {
       if (!isSectionData<TimelineSection>(section)) {
         return null

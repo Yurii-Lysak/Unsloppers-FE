@@ -58,7 +58,7 @@ export const EmployeeProfilePage = ({
       )}
 
       {profile && !showAssignmentOnly && (
-        <ProfileSections profile={profile} />
+        <ProfileSections profile={profile} employeeId={employeeId} />
       )}
 
       {(showAssignmentOnly || canManageRoles) && employeeId && (
@@ -76,7 +76,13 @@ export const EmployeeProfilePage = ({
   )
 }
 
-const ProfileSections = ({ profile }: { profile: EmployeeProfile }) => {
+const ProfileSections = ({
+  profile,
+  employeeId,
+}: {
+  profile: EmployeeProfile
+  employeeId: string
+}) => {
   const { t } = useTranslation()
 
   return (
@@ -84,6 +90,7 @@ const ProfileSections = ({ profile }: { profile: EmployeeProfile }) => {
       {orderedProfileSectionIds(profile.sections).map((sectionId) => (
         <ProfileSectionCard
           key={sectionId}
+          employeeId={employeeId}
           sectionId={sectionId}
           section={profile.sections[sectionId]!}
           title={sectionTitle(t, sectionId)}
@@ -106,11 +113,13 @@ const sectionTitle = (
 }
 
 const ProfileSectionCard = ({
+  employeeId,
   sectionId,
   section,
   title,
   unavailableLabel,
 }: {
+  employeeId: string
   sectionId: SectionId
   section: NonNullable<EmployeeProfile['sections'][SectionId]>
   title: string
@@ -128,7 +137,12 @@ const ProfileSectionCard = ({
       {'status' in section && section.status === 'unavailable' ? (
         <p className="text-sm text-muted-foreground">{unavailableLabel}</p>
       ) : renderer ? (
-        renderer({ section, t })
+        renderer({
+          employeeId,
+          section,
+          accessLevel: section.accessLevel,
+          t,
+        })
       ) : (
         <p className="text-sm text-muted-foreground">
           {t('employeeProfile.emptySection')}
