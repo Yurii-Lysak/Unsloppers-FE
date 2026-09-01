@@ -1,10 +1,9 @@
 import { UserCircle } from 'lucide-react'
-import { Link, useParams } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useCanManageFunctionalRoles } from '@/api/hooks/useMyPermissions'
-import { useEmployeeProfile } from '@/api/hooks/useEmployeeProfile'
 import type { EmployeeProfile, SectionId } from '@/types/employee-profile'
 import { FunctionalRolesAssignmentForm } from './components/FunctionalRolesAssignmentForm/FunctionalRolesAssignmentForm'
+import { useEmployeeProfilePage } from './hooks/useEmployeeProfilePage'
 import {
   orderedProfileSectionIds,
   PROFILE_SECTION_RENDERERS,
@@ -19,12 +18,13 @@ export const EmployeeProfilePage = ({
   showAssignmentOnly = false,
 }: EmployeeProfilePageProps) => {
   const { t } = useTranslation()
-  const { employeeId = '' } = useParams()
-  const profileQuery = useEmployeeProfile(employeeId)
-  const canManageRoles = useCanManageFunctionalRoles()
-
-  const profile = profileQuery.data
-  const showAccessChip = profile && profile.audience.role !== 'Self'
+  const {
+    employeeId,
+    employeeProfile,
+    isProfileError,
+    showAccessChip,
+    showFunctionalRolesSection,
+  } = useEmployeeProfilePage({ showAssignmentOnly })
 
   if (!employeeId) {
     return (
@@ -51,30 +51,30 @@ export const EmployeeProfilePage = ({
             className="text-3xl font-bold text-foreground"
             data-testid="employee-profile-title"
           >
-            {profile?.displayName ?? t('employeeProfile.loading')}
+            {employeeProfile?.displayName ?? t('employeeProfile.loading')}
           </h1>
-          {showAccessChip && (
+          {showAccessChip && employeeProfile && (
             <p
               className="mt-2 text-sm text-muted-foreground"
               data-testid="employee-profile-access-chip"
             >
               {t('employeeProfile.viewingAs', {
-                role: t(`employeeProfile.roles.${profile.audience.role}`),
+                role: t(`employeeProfile.roles.${employeeProfile.audience.role}`),
               })}
             </p>
           )}
         </div>
       </div>
 
-      {profileQuery.isError && (
+      {isProfileError && (
         <p className="text-destructive">{t('employeeProfile.loadFailed')}</p>
       )}
 
-      {profile && !showAssignmentOnly && (
-        <ProfileSections profile={profile} employeeId={employeeId} />
+      {employeeProfile && !showAssignmentOnly && (
+        <ProfileSections profile={employeeProfile} employeeId={employeeId} />
       )}
 
-      {(showAssignmentOnly || canManageRoles) && employeeId && (
+      {showFunctionalRolesSection && (
         <section
           className="rounded-lg border border-border p-4"
           data-testid="employment-section"

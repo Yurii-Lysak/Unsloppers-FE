@@ -1,7 +1,3 @@
-/**
- * Main router configuration
- */
-
 import { Navigate } from 'react-router-dom'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { AppLayout } from '@/components/AppLayout/AppLayout'
@@ -10,11 +6,8 @@ import { ErrorPage } from '@/pages/ErrorPage/ErrorPage'
 import { LoginPage } from '@/pages/LoginPage/LoginPage'
 import { AllEmployeesPage } from '@/pages/AllEmployeesPage/AllEmployeesPage'
 import { CampaignsStubPage } from '@/pages/CampaignsStubPage/CampaignsStubPage'
-import { FunctionalRolesRoute } from '@/components/FunctionalRolesRoute/FunctionalRolesRoute'
-import {
-  EmployeeFunctionalRolesRoute,
-  EmployeeProfileRoute,
-} from '@/components/EmployeeProfileRoute/EmployeeProfileRoute'
+import { AdminRolesPage } from '@/pages/AdminRolesPage/AdminRolesPage'
+import { EmployeeProfilePage } from '@/pages/EmployeeProfilePage/EmployeeProfilePage'
 import { ProtectedRoute } from '@/components/ProtectedRoute/ProtectedRoute'
 
 const router = createBrowserRouter([
@@ -50,15 +43,15 @@ const router = createBrowserRouter([
       },
       {
         path: 'employees/:employeeId',
-        element: <EmployeeProfileRoute />,
+        element: <EmployeeProfilePage />,
       },
       {
         path: 'employees/:employeeId/functional-roles',
-        element: <EmployeeFunctionalRolesRoute />,
+        element: <EmployeeProfilePage showAssignmentOnly />,
       },
       {
         path: 'admin/roles',
-        element: <FunctionalRolesRoute />,
+        element: <AdminRolesPage />,
       },
       {
         path: 'campaigns',

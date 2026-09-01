@@ -11,43 +11,92 @@ Each page is a scoped folder containing everything page-specific:
 
 ```
 pages/
-  ProjectsPage/
-    ProjectsPage.tsx        # Component — UI only
+  AllEmployeesPage/
+    AllEmployeesPage.tsx              # UI only — consumes useAllEmployeesPage
     hooks/
-      useProjectsPage.ts    # Business logic
-    components/             # Page-local child components (same folder-per-component structure)
-    helpers/                # Page-local helpers, split by purpose (e.g. textHelper.ts)
+      useAllEmployeesPage.ts          # page hook — URL state + data hooks
+    components/
+      EmployeeTable/
+        EmployeeTable.tsx
+        hooks/
+          useEmployeeTable.ts         # section hook (when needed)
 ```
 
-- Naming: page `ProjectsPage` → hook `useProjectsPage`
-- Register routes in `src/router/index.tsx`; app routes render inside `AppLayout`
+- Naming: page `AllEmployeesPage` → hook `useAllEmployeesPage`
+- Register routes in `src/router/index.tsx`; app routes render inside `AppLayout` wrapped by `ProtectedRoute`
+- Permission-gated routes are declared in `src/router/route-permissions.ts` — `ProtectedRoute` enforces them before child routes render; page components must not check permissions
 - Only create `hooks/`, `components/`, `helpers/` folders when there are files to put in them
 
-## Components = UI only, hooks = business logic
+## Three-layer data flow
 
-The page component contains ONLY: JSX markup, conditional rendering from hook state, event handler bindings.
+```
+Page component          → page hook only
+Page hook               → data hooks (hooks/data/) + local UI state
+Section component       → section hook only (for components with API/forms)
+Section hook            → data hooks (hooks/data/) + form/local state
+Data hook               → api/hooks/ primitives
+```
 
-The page hook contains: `useState`/`useReducer`, `useEffect`, API calls, form logic, data transformations, navigation (`useNavigate`), location/params reading (`useLocation`).
+**Never import `@/api/hooks/` or `@/hooks/data/` from a page or section component file.**
 
 ```tsx
-// hooks/useFeedbackPage.ts — logic
-export const useFeedbackPage = () => {
-  const [submitStatus, setSubmitStatus] = useState<'idle' | 'submitting'>('idle')
-  const handleSubmit = async (message: string) => {
-    setSubmitStatus('submitting')
-    await apiClient.post('/feedback', { message })
-    setSubmitStatus('success')
-  }
-  return { submitStatus, handleSubmit }
+// ❌ Page component calling data or API hooks directly
+export const AllEmployeesPage = () => {
+  const listQuery = useEmployeeList(query)          // wrong layer
+  const { employeesList } = useEmployeesListData(q) // wrong layer
 }
 
-// FeedbackPage.tsx — UI only
-export const FeedbackPage = () => {
-  const { t } = useTranslation()
-  const { submitStatus, handleSubmit } = useFeedbackPage()
-  return <Button onClick={() => handleSubmit('...')}>{t('feedback.submit')}</Button>
+// ✅ Page component consumes page hook only
+export const AllEmployeesPage = () => {
+  const { employeesList, isEmployeesLoading, setPage } = useAllEmployeesPage()
+  // ...
 }
 ```
+
+## Page hook responsibilities
+
+The page hook owns:
+
+- URL/search params, pagination, filters, dialog open/close state
+- Calls to feature data hooks (`useEmployeesListData`, `usePermissionsData`, …)
+- Derived display values computed from fetched data
+- Navigation (`useNavigate`), route params (`useParams`) when page-specific
+
+```tsx
+// hooks/useAllEmployeesPage.ts
+export const useAllEmployeesPage = () => {
+  const query = useMemo(() => parseSearchParams(searchParams), [searchParams])
+  const { employeesList, isEmployeesLoading, isEmployeesError } = useEmployeesListData(query)
+
+  const displayData = employeesList
+    ? buildDirectoryDisplayData(employeesList, visibleColumnIds)
+    : undefined
+
+  return {
+    query,
+    setPage,
+    employeesList,
+    isEmployeesLoading,
+    isEmployeesError,
+    displayData,
+    // ...
+  }
+}
+```
+
+## Section hooks (page-local components)
+
+When a page child component needs API data or mutations, extract a section hook next to it. The section hook consumes data hooks; the component stays UI-only.
+
+```
+components/
+  FunctionalRolesAssignmentForm/
+    FunctionalRolesAssignmentForm.tsx
+    hooks/
+      useFunctionalRolesAssignmentForm.ts   # consumes useEmployeeFunctionalRolesData, useFunctionalRolesListData
+```
+
+Mutations are always invoked through named handlers — either defined in the data hook (`saveEmployeeRoles`) or in the section/page hook that wraps them. Never call `mutation.mutate()` inline in JSX.
 
 ## When a page hook is NOT needed
 

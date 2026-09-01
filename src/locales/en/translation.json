@@ -31,6 +31,7 @@
     "comingSoon": "Campaigns (coming soon)"
   },
   "permissions": {
+    "loading": "Loading permissions…",
     "loadFailed": "Could not load your permissions.",
     "retry": "Try again"
   },

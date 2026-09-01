@@ -1,6 +1,5 @@
 import { Users } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { useEmployeeList } from '@/api/hooks/useEmployeeList'
 import { Button } from '@/components/Button/Button'
 import { EmployeeTable } from './components/EmployeeTable/EmployeeTable'
 import { ColumnPicker } from './components/ColumnPicker/ColumnPicker'
@@ -17,19 +16,17 @@ export const AllEmployeesPage = () => {
     clearAllFilters,
     activeFilterForField,
     setVisibleColumnIds,
-    selectedColumnIds,
-    buildDisplayData,
+    isEmployeesLoading,
+    isEmployeesError,
+    employeesList,
+    displayData,
+    shownCount,
+    totalCount,
+    page,
+    totalPages,
+    allFields,
+    visibleColumnIds,
   } = useAllEmployeesPage()
-  const listQuery = useEmployeeList(query)
-
-  const shownCount = listQuery.data?.rows.length ?? 0
-  const totalCount = listQuery.data?.total ?? 0
-  const page = listQuery.data?.page ?? query.page ?? 1
-  const pageSize = Math.max(1, listQuery.data?.pageSize ?? query.pageSize ?? 50)
-  const totalPages = Math.max(1, Math.ceil(totalCount / pageSize))
-  const allFields = listQuery.data?.fields ?? []
-  const visibleColumnIds = selectedColumnIds(allFields.map(field => field.id))
-  const displayData = listQuery.data ? buildDisplayData(listQuery.data) : undefined
 
   return (
     <div className="space-y-4">
@@ -56,7 +53,7 @@ export const AllEmployeesPage = () => {
           >
             {t('directory.clearAllFilters')}
           </Button>
-          {listQuery.data && (
+          {employeesList && (
             <ColumnPicker
               fields={allFields}
               selectedColumnIds={visibleColumnIds}
@@ -68,7 +65,7 @@ export const AllEmployeesPage = () => {
           <Button
             type="button"
             variant="outline"
-            disabled={page <= 1 || listQuery.isLoading}
+            disabled={page <= 1 || isEmployeesLoading}
             onClick={() => setPage(page - 1)}
             data-testid="directory-prev-page"
           >
@@ -80,7 +77,7 @@ export const AllEmployeesPage = () => {
           <Button
             type="button"
             variant="outline"
-            disabled={page >= totalPages || listQuery.isLoading}
+            disabled={page >= totalPages || isEmployeesLoading}
             onClick={() => setPage(page + 1)}
             data-testid="directory-next-page"
           >
@@ -89,11 +86,11 @@ export const AllEmployeesPage = () => {
         </div>
       </div>
 
-      {listQuery.isLoading && (
+      {isEmployeesLoading && (
         <p className="text-muted-foreground">{t('directory.loading')}</p>
       )}
 
-      {listQuery.isError && (
+      {isEmployeesError && (
         <p className="text-destructive">{t('directory.loadFailed')}</p>
       )}
 
