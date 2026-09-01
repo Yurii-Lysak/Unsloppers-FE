@@ -66,7 +66,7 @@ test.describe('Directory page', () => {
     await setupAuthApi(page, { authenticated: true })
     await routeEmployees(page)
 
-    await page.goto('/directory')
+    await page.goto('/employees')
     await expect(page.getByTestId('directory-title')).toBeVisible()
     await expect(page.getByTestId('directory-count')).toHaveText('2 of 128')
     await expect(page.getByTestId('directory-page-indicator')).toHaveText('Page 1 of 3')
@@ -76,7 +76,7 @@ test.describe('Directory page', () => {
     await setupAuthApi(page, { authenticated: true })
     await routeEmployees(page)
 
-    await page.goto('/directory')
+    await page.goto('/employees')
     await page.getByTestId(`directory-sort-${BUILTIN_FIELD_IDS.grade}`).click()
 
     await expect(page).toHaveURL(/sort=grade/)
@@ -96,7 +96,7 @@ test.describe('Directory page', () => {
       }),
     )
 
-    await page.goto('/directory?page=2')
+    await page.goto('/employees?page=2')
     await expect(page.getByTestId('directory-page-indicator')).toHaveText('Page 2 of 3')
     await page.getByTestId('directory-next-page').click()
     await expect(page).toHaveURL(/page=3/)

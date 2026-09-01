@@ -6,8 +6,19 @@ const backendEnvPath = '../backend/.env'
 const backendEnv = existsSync(backendEnvPath)
   ? readFileSync(backendEnvPath, 'utf8')
   : ''
-const readBackendEnv = (key: string) =>
-  backendEnv.match(new RegExp(`^${key}=(.*)$`, 'm'))?.[1]
+const readBackendEnv = (key: string) => {
+  const raw = backendEnv.match(new RegExp(`^${key}=(.*)$`, 'm'))?.[1]?.trim()
+  if (!raw) {
+    return undefined
+  }
+  if (
+    (raw.startsWith('"') && raw.endsWith('"')) ||
+    (raw.startsWith("'") && raw.endsWith("'"))
+  ) {
+    return raw.slice(1, -1)
+  }
+  return raw
+}
 
 const backendEnvironment = {
   NODE_ENV: 'test',
@@ -45,7 +56,7 @@ export default defineConfig({
   webServer: [
     {
       command:
-        'npm --prefix ../backend run db:up && npm --prefix ../backend run build && npm --prefix ../backend run start:prod',
+        'npm --prefix ../backend run db:up && npm --prefix ../backend run db:generate && npm --prefix ../backend run build && npm --prefix ../backend run start:prod',
       url: 'http://localhost:3001/api/v1/health',
       env: backendEnvironment,
       reuseExistingServer: false,
@@ -54,7 +65,7 @@ export default defineConfig({
     {
       command: 'npx vite --host localhost',
       url: 'http://localhost:4200',
-      reuseExistingServer: false,
+      reuseExistingServer: !process.env.CI,
       timeout: 120_000,
     },
   ],

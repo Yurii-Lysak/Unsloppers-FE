@@ -1,5 +1,6 @@
 import { apiClient } from '@/api/client'
 import type { EmployeeListQuery, EmployeeListResponse } from '@/types/employees'
+import type { FunctionalRole } from '@/types/functional-roles'
 
 export const listEmployeesApiCall = (query: EmployeeListQuery) => {
   const params: Record<string, string | number | undefined> = {
@@ -15,3 +16,22 @@ export const listEmployeesApiCall = (query: EmployeeListQuery) => {
 
   return apiClient.get<EmployeeListResponse>('/api/v1/employees', { params })
 }
+
+export interface EmployeeSummary {
+  id: string
+  displayName: string
+}
+
+export const getEmployeeApiCall = (employeeId: string) =>
+  apiClient.get<EmployeeSummary>(`/api/v1/employees/${employeeId}`)
+
+export const getEmployeeFunctionalRolesApiCall = (employeeId: string) =>
+  apiClient.get<FunctionalRole[]>(`/api/v1/employees/${employeeId}/functional-roles`)
+
+export const setEmployeeFunctionalRolesApiCall = (
+  employeeId: string,
+  roleIds: string[],
+) =>
+  apiClient.put<FunctionalRole[]>(`/api/v1/employees/${employeeId}/functional-roles`, {
+    roleIds,
+  })

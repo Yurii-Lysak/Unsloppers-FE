@@ -2,16 +2,18 @@ import { Navigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useMyPermissions } from '@/api/hooks/useMyPermissions'
 import { PERMISSION_KEYS } from '@/types/permissions'
-import { AdminRolesPage } from '@/pages/AdminRolesPage/AdminRolesPage'
+import { EmployeeProfilePage } from '@/pages/EmployeeProfilePage/EmployeeProfilePage'
 
-export const FunctionalRolesRoute = () => {
+export const EmployeeProfileRoute = () => <EmployeeProfilePage />
+
+export const EmployeeFunctionalRolesRoute = () => {
   const { t } = useTranslation()
   const permissionsQuery = useMyPermissions()
 
   if (permissionsQuery.isLoading) {
     return (
       <p className="text-muted-foreground" role="status">
-        {t('adminRoles.loading')}
+        {t('employeeProfile.loading')}
       </p>
     )
   }
@@ -24,5 +26,5 @@ export const FunctionalRolesRoute = () => {
     return <Navigate to="/" replace />
   }
 
-  return <AdminRolesPage />
+  return <EmployeeProfilePage showAssignmentOnly />
 }

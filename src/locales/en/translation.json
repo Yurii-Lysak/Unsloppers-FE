@@ -15,8 +15,8 @@
   },
   "sidebar": {
     "home": "Home",
-    "directory": "Directory",
-    "directoryHint": "All Employees",
+    "employees": "All Employees",
+    "campaigns": "Campaigns",
     "admin": "Admin",
     "adminRoles": "Roles",
     "adminRolesHint": "Admin → Roles",
@@ -100,5 +100,46 @@
       "email": "Enter a valid email address.",
       "password": "Enter your password."
     }
+  },
+  "employees": {
+    "title": "All Employees",
+    "loading": "Loading employees…",
+    "loadFailed": "Could not load employees.",
+    "empty": "No employees found."
+  },
+  "employeeProfile": {
+    "backToList": "← All Employees",
+    "loading": "Loading profile…",
+    "loadFailed": "Could not load this employee.",
+    "employmentSection": "Employment",
+    "functionalRoles": "Functional roles",
+    "loadingRoles": "Loading role assignments…",
+    "loadRolesFailed": "Could not load functional roles.",
+    "save": "Save",
+    "saving": "Saving…",
+    "saveFailed": "Could not save role assignments. Try again.",
+    "viewingAs": "Viewing as {{role}}",
+    "emptySection": "No records yet.",
+    "sections": {
+      "identity": "Identity",
+      "timeline": "Career timeline",
+      "leaves": "Leaves and absences",
+      "projects": "Projects",
+      "generic": "Section {{id}}"
+    },
+    "fields": {
+      "manager": "Manager",
+      "peoplePartner": "People partner"
+    },
+    "roles": {
+      "Self": "Self",
+      "ReportingLine": "Reporting line",
+      "ProjectLine": "Project line",
+      "PP": "People partner",
+      "Colleague": "Colleague",
+      "SharedLink": "Shared link",
+      "FullAccess": "Full access"
+    },
+    "unavailableSection": "Temporarily unavailable"
   }
 }
