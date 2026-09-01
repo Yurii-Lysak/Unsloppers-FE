@@ -18,7 +18,9 @@ paths:
 
 ## Component = UI only, logic in a custom hook
 
-Same rule as for pages: if a component has business logic (local state, effects, API calls, data transformations, handlers with logic), extract it into a custom hook next to the component. The component file keeps only JSX, conditional rendering from hook state, and handler bindings.
+Same rule as for pages: if a component has business logic (local state, effects, data transformations, handlers with logic), extract it into a custom hook next to the component. The component file keeps only JSX, conditional rendering from hook state, and handler bindings.
+
+**API data:** shared or page-local components with API needs consume feature data hooks (`hooks/data/`) only through their own component hook — never import `@/api/hooks/` directly. See `react-api.md` and `react-hooks.md` for the full layering.
 
 ```
 components/

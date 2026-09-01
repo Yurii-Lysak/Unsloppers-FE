@@ -1,12 +1,8 @@
 import { Home, Megaphone, Shield, Users } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { useLayout } from '@/contexts/LayoutContext'
-import {
-  useCanCreateFormCampaigns,
-  useCanManageFunctionalRoles,
-} from '@/api/hooks/useMyPermissions'
 import { SideMenuItem } from './components/SideMenuItem/SideMenuItem'
 import { SideMenuToggle } from './components/SideMenuToggle/SideMenuToggle'
+import { useSideMenu } from './hooks/useSideMenu'
 import { cn } from '@/lib/utils'
 
 interface SideMenuProps {
@@ -16,9 +12,13 @@ interface SideMenuProps {
 
 export const SideMenu = ({ collapsible = true, expanded }: SideMenuProps) => {
   const { t } = useTranslation()
-  const { toggleSidebar, isMobileSidebarOpen, closeMobileSidebar } = useLayout()
-  const showAdminRoles = useCanManageFunctionalRoles()
-  const showCampaigns = useCanCreateFormCampaigns()
+  const {
+    toggleSidebar,
+    isMobileSidebarOpen,
+    closeMobileSidebar,
+    showAdminRoles,
+    showCampaigns,
+  } = useSideMenu()
   const showLabels = expanded || isMobileSidebarOpen
 
   return (

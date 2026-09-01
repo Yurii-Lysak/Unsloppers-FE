@@ -6,8 +6,16 @@ import { useAdminRolesPage } from './hooks/useAdminRolesPage'
 
 export const AdminRolesPage = () => {
   const { t } = useTranslation()
-  const { rolesQuery, dialogRole, dialogOpen, openCreate, openEdit, closeDialog } =
-    useAdminRolesPage()
+  const {
+    rolesList,
+    isRolesLoading,
+    isRolesError,
+    dialogRole,
+    dialogOpen,
+    openCreate,
+    openEdit,
+    closeDialog,
+  } = useAdminRolesPage()
 
   return (
     <div className="space-y-6">
@@ -23,17 +31,17 @@ export const AdminRolesPage = () => {
         </Button>
       </div>
 
-      {rolesQuery.isLoading && (
+      {isRolesLoading && (
         <p className="text-muted-foreground">{t('adminRoles.loading')}</p>
       )}
 
-      {rolesQuery.isError && (
+      {isRolesError && (
         <p className="text-destructive">{t('adminRoles.loadFailed')}</p>
       )}
 
-      {rolesQuery.data && (
+      {rolesList && (
         <ul className="divide-y divide-border rounded-lg border border-border" data-testid="admin-roles-list">
-          {rolesQuery.data.map(role => (
+          {rolesList.map(role => (
             <li
               key={role.id}
               className="flex items-center justify-between gap-4 p-4"

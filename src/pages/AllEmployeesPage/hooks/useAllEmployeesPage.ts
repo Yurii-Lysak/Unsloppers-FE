@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import { useSearchParams } from 'react-router-dom'
+import { useEmployeesListData } from '@/hooks/data/useEmployeesData'
 import type {
   EmployeeFieldFilter,
   EmployeeListQuery,
@@ -211,13 +212,23 @@ export const useAllEmployeesPage = () => {
     [searchParams],
   )
 
-  const buildDisplayData = useCallback(
-    (listData: EmployeeListResponse) => {
-      const visibleIds = selectedColumnIds(listData.fields.map(field => field.id))
-      return buildDirectoryDisplayData(listData, visibleIds)
-    },
-    [selectedColumnIds],
+  const { employeesList, isEmployeesLoading, isEmployeesError } =
+    useEmployeesListData(query)
+
+  const allFields = employeesList?.fields ?? []
+  const visibleColumnIds = selectedColumnIds(allFields.map(field => field.id))
+  const displayData = employeesList
+    ? buildDirectoryDisplayData(employeesList, visibleColumnIds)
+    : undefined
+
+  const shownCount = employeesList?.rows.length ?? 0
+  const totalCount = employeesList?.total ?? 0
+  const page = employeesList?.page ?? query.page ?? 1
+  const pageSize = Math.max(
+    1,
+    employeesList?.pageSize ?? query.pageSize ?? DEFAULT_PAGE_SIZE,
   )
+  const totalPages = Math.max(1, Math.ceil(totalCount / pageSize))
 
   return {
     query,
@@ -227,11 +238,18 @@ export const useAllEmployeesPage = () => {
     clearFilter,
     clearAllFilters,
     activeFilterForField,
-    visibleColumnIds: searchParams.get('columns'),
     setVisibleColumnIds,
-    parseColumnIds,
-    selectedColumnIds,
-    buildDisplayData,
+    employeesList,
+    isEmployeesLoading,
+    isEmployeesError,
+    displayData,
+    shownCount,
+    totalCount,
+    page,
+    pageSize,
+    totalPages,
+    allFields,
+    visibleColumnIds,
   }
 }
 

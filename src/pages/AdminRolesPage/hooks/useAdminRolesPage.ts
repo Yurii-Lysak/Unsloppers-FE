@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import { useFunctionalRolesList } from '@/api/hooks/useFunctionalRoles'
+import { useFunctionalRolesListData } from '@/hooks/data/useFunctionalRolesData'
 import type { FunctionalRole } from '@/types/functional-roles'
 
 export const useAdminRolesPage = () => {
-  const rolesQuery = useFunctionalRolesList(true)
+  const { rolesList, isRolesLoading, isRolesError } = useFunctionalRolesListData(true)
   const [dialogRole, setDialogRole] = useState<FunctionalRole | undefined>(undefined)
   const [dialogOpen, setDialogOpen] = useState(false)
 
@@ -23,7 +23,9 @@ export const useAdminRolesPage = () => {
   }
 
   return {
-    rolesQuery,
+    rolesList,
+    isRolesLoading,
+    isRolesError,
     dialogRole,
     dialogOpen,
     openCreate,
