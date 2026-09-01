@@ -1,4 +1,4 @@
-import { Home, Shield } from 'lucide-react'
+import { Home, Shield, Users } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useLayout } from '@/contexts/LayoutContext'
 import { useFunctionalRolesAccess } from '@/api/hooks/useFunctionalRoles'
@@ -50,6 +50,15 @@ export const SideMenu = ({ collapsible = true, expanded }: SideMenuProps) => {
             hint={t('sidebar.home')}
             expanded={showLabels}
             onNavigate={closeMobileSidebar}
+          />
+          <SideMenuItem
+            icon={Users}
+            label={t('sidebar.directory')}
+            path="/directory"
+            hint={t('sidebar.directoryHint')}
+            expanded={showLabels}
+            onNavigate={closeMobileSidebar}
+            data-testid="sidebar-directory"
           />
           {showAdminRoles && (
             <div className="py-1">

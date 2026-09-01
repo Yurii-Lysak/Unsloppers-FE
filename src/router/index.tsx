@@ -8,6 +8,7 @@ import { AppLayout } from '@/components/AppLayout/AppLayout'
 import { HomePage } from '@/pages/HomePage/HomePage'
 import { ErrorPage } from '@/pages/ErrorPage/ErrorPage'
 import { LoginPage } from '@/pages/LoginPage/LoginPage'
+import { AllEmployeesPage } from '@/pages/AllEmployeesPage/AllEmployeesPage'
 import { FunctionalRolesRoute } from '@/components/FunctionalRolesRoute/FunctionalRolesRoute'
 import { ProtectedRoute } from '@/components/ProtectedRoute/ProtectedRoute'
 
@@ -37,6 +38,10 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <HomePage />,
+      },
+      {
+        path: 'directory',
+        element: <AllEmployeesPage />,
       },
       {
         path: 'admin/roles',

@@ -15,10 +15,46 @@
   },
   "sidebar": {
     "home": "Home",
+    "directory": "Directory",
+    "directoryHint": "All Employees",
     "admin": "Admin",
     "adminRoles": "Roles",
     "adminRolesHint": "Admin → Roles",
     "openMenu": "Open menu"
+  },
+  "directory": {
+    "title": "All Employees",
+    "count": "{{shown}} of {{total}}",
+    "loading": "Loading employees…",
+    "loadFailed": "Could not load the employee directory.",
+    "emptyFiltered": "No employees match this filter.",
+    "clearAllFilters": "Clear filters",
+    "columns": "Columns",
+    "visibleColumns": "Visible columns",
+    "clearFilter": "Clear",
+    "applyFilter": "Apply",
+    "filterColumn": "Filter {{column}}",
+    "filterOperator": "Operator",
+    "filterValue": "Value",
+    "previousPage": "Previous",
+    "nextPage": "Next",
+    "pageIndicator": "Page {{page}} of {{totalPages}}",
+    "cellEmpty": "—",
+    "selectOption": "Select…",
+    "boolean": {
+      "true": "Yes",
+      "false": "No"
+    },
+    "operators": {
+      "eq": "Equals",
+      "neq": "Not equals",
+      "gt": "Greater than",
+      "gte": "Greater than or equal",
+      "lt": "Less than",
+      "lte": "Less than or equal",
+      "contains": "Contains",
+      "in": "In"
+    }
   },
   "adminRoles": {
     "title": "Functional roles",
