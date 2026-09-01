@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs'
 import { expect, test } from '@playwright/test'
+import { loginBootcampUser } from './helpers/bootcamp-auth'
 
 interface SeedManifest {
   identities: Array<{ id: number; email: string }>
@@ -22,11 +23,7 @@ test('Site Administrator can reach Admin → Roles and create a custom role', as
     throw new Error('Integration seed password was not configured')
   }
 
-  await page.goto('/login')
-  await page.getByLabel('Email').fill(siteAdministrator.email)
-  await page.getByLabel('Password').fill(password)
-  await page.getByRole('button', { name: 'Sign in' }).click()
-  await expect(page).toHaveURL('/')
+  await loginBootcampUser(page, siteAdministrator.email, password)
 
   await page.getByTestId('sidebar-admin-roles').click()
   await expect(page).toHaveURL('/admin/roles')
