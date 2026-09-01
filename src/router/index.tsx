@@ -9,6 +9,7 @@ import { HomePage } from '@/pages/HomePage/HomePage'
 import { ErrorPage } from '@/pages/ErrorPage/ErrorPage'
 import { LoginPage } from '@/pages/LoginPage/LoginPage'
 import { AllEmployeesPage } from '@/pages/AllEmployeesPage/AllEmployeesPage'
+import { CampaignsStubPage } from '@/pages/CampaignsStubPage/CampaignsStubPage'
 import { FunctionalRolesRoute } from '@/components/FunctionalRolesRoute/FunctionalRolesRoute'
 import {
   EmployeeFunctionalRolesRoute,
@@ -61,11 +62,7 @@ const router = createBrowserRouter([
       },
       {
         path: 'campaigns',
-        element: (
-          <div className="p-6 text-muted-foreground" data-testid="campaigns-stub">
-            Campaigns (coming soon)
-          </div>
-        ),
+        element: <CampaignsStubPage />,
       },
     ],
   },

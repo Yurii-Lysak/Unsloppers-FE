@@ -1,6 +1,6 @@
 import { Menu } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/Button/Button'
 import { Logo } from './components/Logo/Logo'
 import { useMainHeader } from './hooks/useMainHeader'
 
@@ -19,14 +19,16 @@ export const MainHeader = ({ showMenuButton = false }: MainHeaderProps) => {
     >
       <div className="flex items-center">
         {showMenuButton && (
-          <button
+          <Button
+            type="button"
+            variant="ghost"
             onClick={openMobileSidebar}
-            className="flex h-full items-center px-3 text-sidebar-foreground hover:bg-sidebar-accent transition-colors md:hidden"
+            className="h-full rounded-none px-3 text-sidebar-foreground hover:bg-sidebar-accent md:hidden"
             aria-label={t('sidebar.openMenu')}
             data-testid="mobile-menu-button"
           >
             <Menu className="h-5 w-5" />
-          </button>
+          </Button>
         )}
         <Logo />
       </div>

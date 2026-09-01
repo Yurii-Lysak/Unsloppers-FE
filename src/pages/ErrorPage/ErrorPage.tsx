@@ -4,7 +4,7 @@
 
 import { useTranslation } from 'react-i18next'
 import { AlertCircle, RotateCcw } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/Button/Button'
 import { useErrorPage } from './hooks/useErrorPage'
 
 export const ErrorPage = () => {

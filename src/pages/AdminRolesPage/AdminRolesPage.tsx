@@ -1,31 +1,13 @@
 import { Shield } from 'lucide-react'
-import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useFunctionalRolesList } from '@/api/hooks/useFunctionalRoles'
-import { Button } from '@/components/ui/button'
-import type { FunctionalRole } from '@/types/functional-roles'
+import { Button } from '@/components/Button/Button'
 import { RoleFormDialog } from './components/RoleFormDialog/RoleFormDialog'
+import { useAdminRolesPage } from './hooks/useAdminRolesPage'
 
 export const AdminRolesPage = () => {
   const { t } = useTranslation()
-  const rolesQuery = useFunctionalRolesList(true)
-  const [dialogRole, setDialogRole] = useState<FunctionalRole | undefined>(undefined)
-  const [dialogOpen, setDialogOpen] = useState(false)
-
-  const openCreate = () => {
-    setDialogRole(undefined)
-    setDialogOpen(true)
-  }
-
-  const openEdit = (role: FunctionalRole) => {
-    setDialogRole(role)
-    setDialogOpen(true)
-  }
-
-  const closeDialog = () => {
-    setDialogOpen(false)
-    setDialogRole(undefined)
-  }
+  const { rolesQuery, dialogRole, dialogOpen, openCreate, openEdit, closeDialog } =
+    useAdminRolesPage()
 
   return (
     <div className="space-y-6">

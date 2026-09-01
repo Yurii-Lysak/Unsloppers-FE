@@ -1,7 +1,12 @@
 import { Columns3 } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/Button/Button'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/Popover/Popover'
 import { Label } from '@/components/ui/label'
 import type { FieldSpec } from '@/types/employees'
 
@@ -27,34 +32,29 @@ export const ColumnPicker = ({ fields, selectedColumnIds, onChange }: ColumnPick
   }
 
   return (
-    <div className="relative">
-      <Button
-        type="button"
-        variant="outline"
-        onClick={() => setOpen(current => !current)}
-        data-testid="directory-column-picker"
-      >
-        <Columns3 className="size-4" />
-        {t('directory.columns')}
-      </Button>
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button type="button" variant="outline" data-testid="directory-column-picker">
+          <Columns3 className="size-4" />
+          {t('directory.columns')}
+        </Button>
+      </PopoverTrigger>
 
-      {open && (
-        <div className="absolute left-0 top-full z-20 mt-1 w-56 rounded-lg border border-border bg-card p-3 shadow-lg">
-          <Label>{t('directory.visibleColumns')}</Label>
-          <div className="mt-2 max-h-64 space-y-2 overflow-y-auto">
-            {fields.map(field => (
-              <label key={field.id} className="flex items-center gap-2 text-sm">
-                <input
-                  type="checkbox"
-                  checked={selectedColumnIds.includes(field.id)}
-                  onChange={() => toggleColumn(field.id)}
-                />
-                <span>{field.name}</span>
-              </label>
-            ))}
-          </div>
+      <PopoverContent align="start">
+        <Label>{t('directory.visibleColumns')}</Label>
+        <div className="mt-2 max-h-64 space-y-2 overflow-y-auto">
+          {fields.map(field => (
+            <label key={field.id} className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={selectedColumnIds.includes(field.id)}
+                onChange={() => toggleColumn(field.id)}
+              />
+              <span>{field.name}</span>
+            </label>
+          ))}
         </div>
-      )}
-    </div>
+      </PopoverContent>
+    </Popover>
   )
 }

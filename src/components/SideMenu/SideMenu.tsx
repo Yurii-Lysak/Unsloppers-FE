@@ -25,7 +25,7 @@ export const SideMenu = ({ collapsible = true, expanded }: SideMenuProps) => {
     <>
       {isMobileSidebarOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/50 md:hidden"
+          className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm md:hidden"
           onClick={closeMobileSidebar}
           aria-hidden="true"
         />

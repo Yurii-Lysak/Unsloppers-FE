@@ -83,12 +83,11 @@ export const PROFILE_SECTION_RENDERERS: Partial<Record<SectionId, SectionRendere
         </dl>
       )
     },
-    S7: ({ employeeId, section, accessLevel, t }) => (
+    S7: ({ employeeId, section, accessLevel }) => (
       <ManagementNotesSectionCard
         employeeId={employeeId}
         section={section as ProfileSectionEnvelope<ManagementNotesSectionData>}
         accessLevel={accessLevel}
-        t={t}
       />
     ),
     S9: ({ section, t }) => {

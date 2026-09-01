@@ -17,9 +17,11 @@ export const testIds = {
     homeTitle: 'home-title',
   },
   employeeList: {
-    table: 'employee-list-table',
-    row: (employeeId: string) => `employee-list-row-${employeeId}`,
-    filter: (field: string) => `employee-list-filter-${field}`,
+    table: 'directory-table',
+    row: (employeeId: string) => `directory-row-${employeeId}`,
+    filter: (field: string) => `directory-filter-${field}`,
+    columnPicker: 'directory-column-picker',
+    clearFilters: 'directory-clear-filters',
   },
   profile: {
     /** One per registered section, so a test can assert absence by key. */

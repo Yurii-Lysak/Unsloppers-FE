@@ -1,8 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/Button/Button'
 import {
   useCreateManagementNote,
   useDeleteManagementNote,
@@ -15,6 +16,7 @@ import type {
   ProfileSectionEnvelope,
   SectionAccessLevel,
 } from '@/types/employee-profile'
+import { isSectionData } from '../../profile-sections'
 
 const createNoteFormSchema = (t: (key: string) => string) =>
   z.object({
@@ -48,24 +50,19 @@ const isWritableNote = (
 ): note is ManagementNote =>
   'visibleForEmployee' in note && 'visibleForPm' in note
 
-const isSectionData = <T,>(
-  section: ProfileSectionEnvelope<T> | undefined,
-): section is ProfileSectionEnvelope<T> & { data: T } =>
-  Boolean(section && 'data' in section)
-
 interface ManagementNotesSectionCardProps {
   employeeId: string
   section: ProfileSectionEnvelope<ManagementNotesSectionData>
   accessLevel: Exclude<SectionAccessLevel, 'none'>
-  t: (key: string) => string
 }
 
 export const ManagementNotesSectionCard = ({
   employeeId,
   section,
   accessLevel,
-  t,
 }: ManagementNotesSectionCardProps) => {
+  const { t } = useTranslation()
+
   if (!isSectionData<ManagementNotesSectionData>(section)) {
     return null
   }
@@ -96,15 +93,12 @@ export const ManagementNotesSectionCard = ({
               employeeId={employeeId}
               note={note}
               canWrite={canWrite}
-              t={t}
             />
           ))}
         </ul>
       )}
 
-      {canWrite && (
-        <AddManagementNoteForm employeeId={employeeId} t={t} />
-      )}
+      {canWrite && <AddManagementNoteForm employeeId={employeeId} />}
     </div>
   )
 }
@@ -113,13 +107,12 @@ const ManagementNoteItem = ({
   employeeId,
   note,
   canWrite,
-  t,
 }: {
   employeeId: string
   note: ManagementNoteRead | ManagementNote
   canWrite: boolean
-  t: (key: string) => string
 }) => {
+  const { t } = useTranslation()
   const updateNote = useUpdateManagementNote(employeeId)
   const deleteNote = useDeleteManagementNote(employeeId)
   const form = useForm<EditNoteFormValues>({
@@ -160,6 +153,10 @@ const ManagementNoteItem = ({
   }
 
   const onDelete = async () => {
+    if (!window.confirm(t('employeeProfile.s7.confirmDelete'))) {
+      return
+    }
+
     try {
       form.reset({ content: note.content })
       await deleteNote.mutateAsync(note.id)
@@ -253,13 +250,8 @@ const ManagementNoteItem = ({
   )
 }
 
-const AddManagementNoteForm = ({
-  employeeId,
-  t,
-}: {
-  employeeId: string
-  t: (key: string) => string
-}) => {
+const AddManagementNoteForm = ({ employeeId }: { employeeId: string }) => {
+  const { t } = useTranslation()
   const createNote = useCreateManagementNote(employeeId)
   const form = useForm<CreateNoteFormValues>({
     resolver: zodResolver(createNoteFormSchema(t)),

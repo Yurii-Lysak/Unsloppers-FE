@@ -64,9 +64,21 @@ Skip the hook for purely presentational components (props in, JSX out — e.g. `
 ## shadcn/ui (`components/ui/`)
 
 - `components/ui/` is managed by the shadcn CLI — flat files, do NOT restructure into per-component folders
-- Add components only via `npx shadcn@latest add [component-name]` (config in `components.json`)
-- Customize by editing the generated file directly, not by wrapping
-- Import via alias: `import { Button } from '@/components/ui/button'`
+- Add primitives only via `npx shadcn@latest add [component-name]` (config in `components.json`)
+- Customize primitives by editing the generated file directly, not by wrapping inside `ui/`
+- **App code must import shared wrappers** from `components/<Name>/<Name>.tsx`, not from `@/components/ui/*` directly
+- Each shared wrapper lives in its own folder with a co-located styles file (`<Name>.styles.ts`):
+  `Button`, `Dialog`, `Modal`, `SideSheet`, `ConfirmationModal`, `Tooltip`, `Popover`
+- Wrappers re-export or compose shadcn primitives and centralize app-level class overrides in the styles file
+
+```tsx
+// ✅ App / page code
+import { Button } from '@/components/Button/Button'
+import { Modal } from '@/components/Modal/Modal'
+
+// ❌ Do not import shadcn primitives outside wrappers
+import { Button } from '@/components/ui/button'
+```
 
 ## Icons
 

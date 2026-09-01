@@ -1,5 +1,6 @@
 import { Navigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { Button } from '@/components/Button/Button'
 import { useMyPermissions } from '@/api/hooks/useMyPermissions'
 import { PERMISSION_KEYS } from '@/types/permissions'
 import { AdminRolesPage } from '@/pages/AdminRolesPage/AdminRolesPage'
@@ -13,6 +14,17 @@ export const FunctionalRolesRoute = () => {
       <p className="text-muted-foreground" role="status">
         {t('adminRoles.loading')}
       </p>
+    )
+  }
+
+  if (permissionsQuery.isError) {
+    return (
+      <div className="space-y-3" role="alert">
+        <p className="text-destructive">{t('permissions.loadFailed')}</p>
+        <Button type="button" variant="outline" onClick={() => permissionsQuery.refetch()}>
+          {t('permissions.retry')}
+        </Button>
+      </div>
     )
   }
 

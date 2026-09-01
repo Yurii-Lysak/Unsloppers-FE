@@ -1,4 +1,7 @@
 {
+  "app": {
+    "brand": "People"
+  },
   "home": {
     "title": "Home",
     "description": "Welcome to the starter. Replace this page with your own content."
@@ -20,7 +23,16 @@
     "admin": "Admin",
     "adminRoles": "Roles",
     "adminRolesHint": "Admin → Roles",
-    "openMenu": "Open menu"
+    "openMenu": "Open menu",
+    "collapse": "Collapse sidebar",
+    "expand": "Expand sidebar"
+  },
+  "campaigns": {
+    "comingSoon": "Campaigns (coming soon)"
+  },
+  "permissions": {
+    "loadFailed": "Could not load your permissions.",
+    "retry": "Try again"
   },
   "directory": {
     "title": "All Employees",
@@ -110,6 +122,7 @@
   "employeeProfile": {
     "backToList": "← All Employees",
     "loading": "Loading profile…",
+    "invalidId": "This employee profile link is invalid.",
     "loadFailed": "Could not load this employee.",
     "employmentSection": "Employment",
     "functionalRoles": "Functional roles",
@@ -149,6 +162,7 @@
       "addNote": "Add note",
       "empty": "No management notes yet.",
       "deleteNote": "Delete",
+      "confirmDelete": "Delete this management note?",
       "saveFailed": "Could not save management note. Try again.",
       "validation": {
         "contentRequired": "Note content is required.",

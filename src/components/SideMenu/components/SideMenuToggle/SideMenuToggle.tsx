@@ -1,4 +1,6 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
+import { Button } from '@/components/Button/Button'
 import { cn } from '@/lib/utils'
 
 interface SideMenuToggleProps {
@@ -7,17 +9,20 @@ interface SideMenuToggleProps {
 }
 
 export const SideMenuToggle = ({ expanded, onToggle }: SideMenuToggleProps) => {
+  const { t } = useTranslation()
+
   return (
-    <button
+    <Button
+      type="button"
+      variant="ghost"
       onClick={onToggle}
       className={cn(
-        'flex items-center justify-center border-t border-sidebar-border bg-sidebar py-2 text-sidebar-foreground transition-colors',
-        'hover:bg-sidebar-accent'
+        'h-auto w-full rounded-none border-t border-sidebar-border bg-sidebar py-2 text-sidebar-foreground hover:bg-sidebar-accent',
       )}
-      aria-label={expanded ? 'Collapse sidebar' : 'Expand sidebar'}
+      aria-label={expanded ? t('sidebar.collapse') : t('sidebar.expand')}
       data-testid="sidebar-toggle"
     >
       {expanded ? <ChevronLeft className="h-6 w-6" /> : <ChevronRight className="h-6 w-6" />}
-    </button>
+    </Button>
   )
 }
