@@ -14,10 +14,12 @@ import type {
 export const functionalRolesQueryKey = ['functional-roles', 'list'] as const
 export const permissionCatalogQueryKey = ['permissions', 'catalog'] as const
 
-export const useFunctionalRolesAccess = () =>
+/** Loads the role catalog for assignment multi-select (HR Admin only). */
+export const useFunctionalRolesList = (enabled: boolean) =>
   useQuery({
     queryKey: functionalRolesQueryKey,
     queryFn: listFunctionalRolesApiCall,
+    enabled,
     retry: (_, error) => {
       if (
         axios.isAxiosError(error) &&

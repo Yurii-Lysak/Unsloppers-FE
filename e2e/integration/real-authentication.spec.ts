@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs'
 import { expect, test } from '@playwright/test'
+import { loginBootcampUser } from './helpers/bootcamp-auth'
 
 interface SeedManifest {
   identities: Array<{ email: string }>
@@ -35,14 +36,8 @@ test('uses real backend bootstrap and browser cookies for the core auth flow', a
   expect(preflight.headers()['access-control-allow-origin']).toBe('http://localhost:4200')
   expect(preflight.headers()['access-control-allow-credentials']).toBe('true')
 
-  await page.goto('/')
-  await expect(page).toHaveURL('/login')
-  await page.getByLabel('Email').fill(manifest.identities[0].email)
-  await page.getByLabel('Password').fill(password)
-  await page.getByRole('button', { name: 'Sign in' }).click()
+  await loginBootcampUser(page, manifest.identities[0].email, password)
 
-  await expect(page).toHaveURL('/')
-  await expect(page.getByTestId('home-title')).toBeVisible()
   const sessionCookie = (await context.cookies()).find(cookie => cookie.name === 'session')
   expect(sessionCookie).toMatchObject({
     httpOnly: true,

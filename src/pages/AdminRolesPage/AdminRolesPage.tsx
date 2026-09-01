@@ -1,14 +1,14 @@
 import { Shield } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useFunctionalRolesAccess } from '@/api/hooks/useFunctionalRoles'
+import { useFunctionalRolesList } from '@/api/hooks/useFunctionalRoles'
 import { Button } from '@/components/ui/button'
 import type { FunctionalRole } from '@/types/functional-roles'
 import { RoleFormDialog } from './components/RoleFormDialog/RoleFormDialog'
 
 export const AdminRolesPage = () => {
   const { t } = useTranslation()
-  const rolesQuery = useFunctionalRolesAccess()
+  const rolesQuery = useFunctionalRolesList(true)
   const [dialogRole, setDialogRole] = useState<FunctionalRole | undefined>(undefined)
   const [dialogOpen, setDialogOpen] = useState(false)
 

@@ -49,32 +49,47 @@ const routePermissionCatalog = async (
   })
 }
 
+const routePermissionsMe = async (
+  page: import('@playwright/test').Page,
+  permissions: string[],
+) => {
+  await page.route(`${apiBaseUrl}/api/v1/permissions/me**`, async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ permissions }),
+    })
+  })
+}
+
 test.describe('Admin roles navigation', () => {
-  test('shows Admin → Roles in the sidebar when roles list returns 200', async ({ page }) => {
+  test('shows Admin → Roles in the sidebar when permissions/me includes manage_functional_roles', async ({
+    page,
+  }) => {
     await setupAuthApi(page, { authenticated: true })
-    await routeFunctionalRoles(page, 200)
-    await routePermissionCatalog(page, 200)
+    await routePermissionsMe(page, ['manage_functional_roles'])
 
     await page.goto('/')
-    await page.waitForResponse(
-      response =>
-        response.url().includes('/api/v1/functional-roles') && response.status() === 200,
-    )
+    await page.waitForResponse(response => response.url().includes('/permissions/me'))
     await expect(page.getByRole('link', { name: 'Roles' })).toBeVisible()
     await expect(page.getByTestId('sidebar-admin-section')).toBeVisible()
   })
 
-  test('hides Admin → Roles in the sidebar when roles list returns 403', async ({ page }) => {
+  test('hides Admin → Roles in the sidebar when permissions/me omits manage_functional_roles', async ({
+    page,
+  }) => {
     await setupAuthApi(page, { authenticated: true })
-    await routeFunctionalRoles(page, 403)
+    await routePermissionsMe(page, [])
 
     await page.goto('/')
     await expect(page.getByRole('link', { name: 'Roles' })).toHaveCount(0)
   })
 
-  test('redirects deep-linked /admin/roles when roles list returns 403', async ({ page }) => {
+  test('redirects deep-linked /admin/roles when permissions/me omits manage_functional_roles', async ({
+    page,
+  }) => {
     await setupAuthApi(page, { authenticated: true })
-    await routeFunctionalRoles(page, 403)
+    await routePermissionsMe(page, [])
 
     await page.goto('/admin/roles')
     await expect(page).toHaveURL('/')
@@ -84,6 +99,7 @@ test.describe('Admin roles navigation', () => {
 test.describe('Admin roles form', () => {
   test('shows catalog failure instead of an empty permission list', async ({ page }) => {
     await setupAuthApi(page, { authenticated: true })
+    await routePermissionsMe(page, ['manage_functional_roles'])
     await routeFunctionalRoles(page, 200)
     await routePermissionCatalog(page, 503, { message: 'Service unavailable' })
 
@@ -98,6 +114,7 @@ test.describe('Admin roles form', () => {
     let roles = [...sampleRoles]
 
     await setupAuthApi(page, { authenticated: true })
+    await routePermissionsMe(page, ['manage_functional_roles'])
     await routePermissionCatalog(page, 200)
 
     await page.route(`${apiBaseUrl}/api/v1/functional-roles**`, async route => {
