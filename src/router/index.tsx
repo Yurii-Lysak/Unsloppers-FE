@@ -8,13 +8,13 @@ import { AppLayout } from '@/components/AppLayout/AppLayout'
 import { HomePage } from '@/pages/HomePage/HomePage'
 import { ErrorPage } from '@/pages/ErrorPage/ErrorPage'
 import { LoginPage } from '@/pages/LoginPage/LoginPage'
+import { AllEmployeesPage } from '@/pages/AllEmployeesPage/AllEmployeesPage'
 import { FunctionalRolesRoute } from '@/components/FunctionalRolesRoute/FunctionalRolesRoute'
 import {
   EmployeeFunctionalRolesRoute,
   EmployeeProfileRoute,
 } from '@/components/EmployeeProfileRoute/EmployeeProfileRoute'
 import { ProtectedRoute } from '@/components/ProtectedRoute/ProtectedRoute'
-import { EmployeesPage } from '@/pages/EmployeesPage/EmployeesPage'
 
 const router = createBrowserRouter([
   {
@@ -45,7 +45,7 @@ const router = createBrowserRouter([
       },
       {
         path: 'employees',
-        element: <EmployeesPage />,
+        element: <AllEmployeesPage />,
       },
       {
         path: 'employees/:employeeId',
