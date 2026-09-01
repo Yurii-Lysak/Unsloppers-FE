@@ -83,6 +83,29 @@
     "loadRolesFailed": "Could not load functional roles.",
     "save": "Save",
     "saving": "Saving…",
-    "saveFailed": "Could not save role assignments. Try again."
+    "saveFailed": "Could not save role assignments. Try again.",
+    "viewingAs": "Viewing as {{role}}",
+    "emptySection": "No records yet.",
+    "sections": {
+      "identity": "Identity",
+      "timeline": "Career timeline",
+      "leaves": "Leaves and absences",
+      "projects": "Projects",
+      "generic": "Section {{id}}"
+    },
+    "fields": {
+      "manager": "Manager",
+      "peoplePartner": "People partner"
+    },
+    "roles": {
+      "Self": "Self",
+      "ReportingLine": "Reporting line",
+      "ProjectLine": "Project line",
+      "PP": "People partner",
+      "Colleague": "Colleague",
+      "SharedLink": "Shared link",
+      "FullAccess": "Full access"
+    },
+    "unavailableSection": "Temporarily unavailable"
   }
 }
