@@ -8,7 +8,7 @@ import { FunctionalRolesAssignmentForm } from './components/FunctionalRolesAssig
 import { ProfileHeader } from './components/ProfileHeader/ProfileHeader'
 import { SharedLinkManagerDialog } from './components/SharedLinkManagerDialog/SharedLinkManagerDialog'
 import { useEmployeeProfilePage } from './hooks/useEmployeeProfilePage'
-import { LINK_CREATOR_ROLES } from './shared-link-sections'
+import { LINK_CREATOR_ROLES, LINK_MANAGE_ROLES } from './shared-link-sections'
 import {
   orderedProfileSectionIds,
   PROFILE_SECTION_RENDERERS,
@@ -32,9 +32,15 @@ export const EmployeeProfilePage = ({
     showFunctionalRolesSection,
   } = useEmployeeProfilePage({ showAssignmentOnly })
 
-  const canShareProfile =
+  const canCreateSharedLink =
     employeeProfile !== undefined &&
     LINK_CREATOR_ROLES.has(employeeProfile.audience.role)
+
+  const canManageSharedLinks =
+    employeeProfile !== undefined &&
+    LINK_MANAGE_ROLES.has(employeeProfile.audience.role)
+
+  const canOpenShareDialog = canCreateSharedLink || canManageSharedLinks
 
   if (!employeeId) {
     return (
@@ -74,7 +80,7 @@ export const EmployeeProfilePage = ({
                   role: t(`employeeProfile.roles.${employeeProfile.audience.role}`),
                 })}
               </p>
-              {canShareProfile && (
+              {canOpenShareDialog && (
                 <Button
                   type="button"
                   variant="outline"
@@ -109,11 +115,13 @@ export const EmployeeProfilePage = ({
         </section>
       )}
 
-      {canShareProfile && (
+      {canOpenShareDialog && (
         <SharedLinkManagerDialog
           employeeId={employeeId}
           open={shareDialogOpen}
           onClose={() => setShareDialogOpen(false)}
+          canCreate={canCreateSharedLink}
+          canManage={canManageSharedLinks}
         />
       )}
     </div>

@@ -218,7 +218,37 @@
       "copyUrl": "Copy URL",
       "createdHint": "Share this URL with the named recipient. They must sign in to view it.",
       "createFailed": "Could not create the shared link. Try again.",
-      "loadFailed": "Could not load this shared profile.",
+      "revokeFailed": "Could not revoke the shared link. Try again.",
+      "tabCreate": "Create",
+      "tabManage": "Manage links",
+      "noActiveLinks": "No active shared links for this employee.",
+      "expiresAt": "Expires {{date}}",
+      "sectionsSummary": "Sections: {{sections}}",
+      "viewLog": "View log",
+      "hideLog": "Hide log",
+      "revoke": "Revoke",
+      "emptyLog": "No access attempts recorded yet.",
+      "logEntry": "{{time}} — {{outcome}} ({{reason}})",
+      "manageLoadFailed": "Could not load shared links for this employee.",
+      "logLoadFailed": "Could not load the access log for this link.",
+      "noDenialReason": "n/a",
+      "outcomes": {
+        "granted": "Granted",
+        "denied": "Denied"
+      },
+      "denialReasons": {
+        "expired": "Expired",
+        "revoked": "Revoked",
+        "wrong_recipient": "Wrong recipient"
+      },
+      "expiry": {
+        "label": "Link expires after",
+        "1h": "1 hour",
+        "24h": "24 hours",
+        "48h": "48 hours",
+        "168h": "7 days"
+      },
+      "loadFailed": "This shared profile is not available.",
       "invalidToken": "This shared link URL is invalid.",
       "viewingScope": "Shared link — sections: {{sections}}",
       "sectionLabels": {
