@@ -39,3 +39,10 @@ export const LINK_CREATOR_ROLES = new Set([
   'ProjectLine',
   'PP',
 ])
+
+export const LINK_MANAGE_ROLES = new Set([
+  'ReportingLine',
+  'ProjectLine',
+  'PP',
+  'FullAccess',
+])

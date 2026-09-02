@@ -79,8 +79,8 @@ test.describe('Shared link create and view', () => {
     await page.goto(`/employees/${employeeId}`)
     await expect(page.getByTestId('employee-profile-share-button')).toBeVisible()
     await page.getByTestId('employee-profile-share-button').click()
-    await expect(page.getByRole('combobox')).toBeEnabled()
-    await page.getByRole('combobox').click()
+    await expect(page.getByRole('combobox', { name: 'Recipient' })).toBeEnabled()
+    await page.getByRole('combobox', { name: 'Recipient' }).click()
     await page.getByRole('option', { name: 'Mila Kovalenko' }).click()
     await page.getByLabel('Career timeline').check()
     await page.getByRole('button', { name: 'Create link' }).click()
@@ -120,5 +120,47 @@ test.describe('Shared link create and view', () => {
     await expect(page.getByTestId('profile-section-s1')).toBeVisible()
     await expect(page.getByTestId('profile-section-s9')).toBeVisible()
     await expectSectionAbsent(page, 's2')
+  })
+
+  test('manager can open manage tab and see active links', async ({
+    page,
+    stubNetworkCall,
+  }) => {
+    const linkId = '33333333-3333-4333-8333-333333333333'
+
+    await setupAuthApi(page, { authenticated: true })
+    await stubNetworkCall({
+      url: `${apiBaseUrl}/api/v1/permissions/me`,
+      body: { permissions: [] },
+    })
+    await stubNetworkCall({
+      url: `${apiBaseUrl}/api/v1/employees/${employeeId}/profile`,
+      body: managerProfile,
+    })
+    await stubNetworkCall({
+      url: `${apiBaseUrl}/api/v1/employees/${employeeId}/shared-links`,
+      method: 'GET',
+      body: {
+        links: [
+          {
+            id: linkId,
+            recipient: { id: recipientId, displayName: 'Mila Kovalenko' },
+            creator: { id: '44444444-4444-4444-8444-444444444444', displayName: 'Manager' },
+            expiresAt: '2026-09-03T12:00:00.000Z',
+            createdAt: '2026-09-02T12:00:00.000Z',
+            sectionIds: ['S1', 'S9'],
+          },
+        ],
+      },
+    })
+
+    await page.goto(`/employees/${employeeId}`)
+    await page.getByTestId('employee-profile-share-button').click()
+    await page.getByTestId('shared-link-tab-manage').click()
+
+    await expect(page.getByTestId('shared-link-manage-panel')).toBeVisible()
+    await expect(page.getByTestId(`shared-link-row-${linkId}`)).toContainText(
+      'Mila Kovalenko',
+    )
   })
 })
