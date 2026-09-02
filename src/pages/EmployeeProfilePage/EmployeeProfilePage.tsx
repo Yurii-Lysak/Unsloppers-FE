@@ -1,10 +1,14 @@
 import { UserCircle } from 'lucide-react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import type { EmployeeProfile, SectionId } from '@/types/employee-profile'
+import { Button } from '@/components/Button/Button'
 import { FunctionalRolesAssignmentForm } from './components/FunctionalRolesAssignmentForm/FunctionalRolesAssignmentForm'
 import { ProfileHeader } from './components/ProfileHeader/ProfileHeader'
+import { SharedLinkManagerDialog } from './components/SharedLinkManagerDialog/SharedLinkManagerDialog'
 import { useEmployeeProfilePage } from './hooks/useEmployeeProfilePage'
+import { LINK_CREATOR_ROLES } from './shared-link-sections'
 import {
   orderedProfileSectionIds,
   PROFILE_SECTION_RENDERERS,
@@ -19,6 +23,7 @@ export const EmployeeProfilePage = ({
   showAssignmentOnly = false,
 }: EmployeeProfilePageProps) => {
   const { t } = useTranslation()
+  const [shareDialogOpen, setShareDialogOpen] = useState(false)
   const {
     employeeId,
     employeeProfile,
@@ -26,6 +31,10 @@ export const EmployeeProfilePage = ({
     showAccessChip,
     showFunctionalRolesSection,
   } = useEmployeeProfilePage({ showAssignmentOnly })
+
+  const canShareProfile =
+    employeeProfile !== undefined &&
+    LINK_CREATOR_ROLES.has(employeeProfile.audience.role)
 
   if (!employeeId) {
     return (
@@ -56,14 +65,26 @@ export const EmployeeProfilePage = ({
           </h1>
           {employeeProfile && <ProfileHeader profile={employeeProfile} />}
           {showAccessChip && employeeProfile && (
-            <p
-              className="mt-2 text-sm text-muted-foreground"
-              data-testid="employee-profile-access-chip"
-            >
-              {t('employeeProfile.viewingAs', {
-                role: t(`employeeProfile.roles.${employeeProfile.audience.role}`),
-              })}
-            </p>
+            <div className="mt-2 flex flex-wrap items-center gap-2">
+              <p
+                className="text-sm text-muted-foreground"
+                data-testid="employee-profile-access-chip"
+              >
+                {t('employeeProfile.viewingAs', {
+                  role: t(`employeeProfile.roles.${employeeProfile.audience.role}`),
+                })}
+              </p>
+              {canShareProfile && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  data-testid="employee-profile-share-button"
+                  onClick={() => setShareDialogOpen(true)}
+                >
+                  {t('employeeProfile.sharedLink.shareAction')}
+                </Button>
+              )}
+            </div>
           )}
         </div>
       </div>
@@ -86,6 +107,14 @@ export const EmployeeProfilePage = ({
           </h2>
           <FunctionalRolesAssignmentForm employeeId={employeeId} />
         </section>
+      )}
+
+      {canShareProfile && (
+        <SharedLinkManagerDialog
+          employeeId={employeeId}
+          open={shareDialogOpen}
+          onClose={() => setShareDialogOpen(false)}
+        />
       )}
     </div>
   )

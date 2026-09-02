@@ -202,6 +202,34 @@
       "empty": "No custom fields to show.",
       "notSet": "Not set",
       "noneSelected": "None selected"
+    },
+    "sharedLink": {
+      "title": "Share profile",
+      "shareAction": "Share…",
+      "recipient": "Recipient",
+      "recipientPlaceholder": "Select an employee",
+      "recipientRequired": "Choose who should receive this link.",
+      "sections": "Additional sections",
+      "s1DefaultHint": "Identity (S1) is always included. Select any extra sections to share.",
+      "create": "Create link",
+      "creating": "Creating…",
+      "cancel": "Cancel",
+      "close": "Close",
+      "copyUrl": "Copy URL",
+      "createdHint": "Share this URL with the named recipient. They must sign in to view it.",
+      "createFailed": "Could not create the shared link. Try again.",
+      "loadFailed": "Could not load this shared profile.",
+      "invalidToken": "This shared link URL is invalid.",
+      "viewingScope": "Shared link — sections: {{sections}}",
+      "sectionLabels": {
+        "S2": "Personal contacts",
+        "S4": "Employment",
+        "S5": "Documents",
+        "S6": "Risks",
+        "S8": "Feedbacks",
+        "S12": "CDS",
+        "S15": "Request history"
+      }
     }
   }
 }
