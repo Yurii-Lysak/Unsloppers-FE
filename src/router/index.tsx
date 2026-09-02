@@ -8,6 +8,7 @@ import { AllEmployeesPage } from '@/pages/AllEmployeesPage/AllEmployeesPage'
 import { CampaignsStubPage } from '@/pages/CampaignsStubPage/CampaignsStubPage'
 import { AdminRolesPage } from '@/pages/AdminRolesPage/AdminRolesPage'
 import { EmployeeProfilePage } from '@/pages/EmployeeProfilePage/EmployeeProfilePage'
+import { SharedLinkViewPage } from '@/pages/SharedLinkViewPage/SharedLinkViewPage'
 import { ProtectedRoute } from '@/components/ProtectedRoute/ProtectedRoute'
 
 const router = createBrowserRouter([
@@ -56,6 +57,10 @@ const router = createBrowserRouter([
       {
         path: 'campaigns',
         element: <CampaignsStubPage />,
+      },
+      {
+        path: 'shared-links/:token',
+        element: <SharedLinkViewPage />,
       },
     ],
   },
