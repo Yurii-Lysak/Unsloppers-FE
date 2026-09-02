@@ -10,6 +10,21 @@ test.describe('Authentication', () => {
 
     await expect(page).toHaveURL('/login')
     await expect(page.getByRole('heading', { name: 'Sign in' })).toBeVisible()
+    await expect(
+      page.getByRole('heading', { name: 'We couldn’t verify your session' }),
+    ).not.toBeVisible()
+  })
+
+  test('redirects to login when session expires before first navigation', async ({ page }) => {
+    const authApi = await setupAuthApi(page, { authenticated: true })
+    authApi.expireSession()
+    await page.goto('/')
+
+    await expect(page).toHaveURL('/login')
+    await expect(page.getByRole('heading', { name: 'Sign in' })).toBeVisible()
+    await expect(
+      page.getByRole('heading', { name: 'We couldn’t verify your session' }),
+    ).not.toBeVisible()
   })
 
   test('validates the form and shows only a generic credential error', async ({ page }) => {
@@ -112,6 +127,9 @@ test.describe('Authentication', () => {
     await page.reload()
 
     await expect(page).toHaveURL('/login')
+    await expect(
+      page.getByRole('heading', { name: 'We couldn’t verify your session' }),
+    ).not.toBeVisible()
   })
 
   test('periodically revalidates and expires an idle protected session', async ({ page }) => {

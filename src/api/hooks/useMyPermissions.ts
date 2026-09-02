@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { getMyPermissionsApiCall } from '@/api/permissions'
+import { permissionApiService } from '@/api/services/permission.service'
 import { PERMISSION_KEYS } from '@/types/permissions'
 
 export const myPermissionsQueryKey = ['permissions', 'me'] as const
@@ -7,7 +7,7 @@ export const myPermissionsQueryKey = ['permissions', 'me'] as const
 export const useMyPermissions = () =>
   useQuery({
     queryKey: myPermissionsQueryKey,
-    queryFn: getMyPermissionsApiCall,
+    queryFn: permissionApiService.getMyPermissions,
     refetchOnWindowFocus: true,
   })
 

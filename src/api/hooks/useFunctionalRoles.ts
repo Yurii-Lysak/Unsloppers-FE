@@ -1,11 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import axios from 'axios'
-import {
-  createFunctionalRoleApiCall,
-  getPermissionCatalogApiCall,
-  listFunctionalRolesApiCall,
-  updateFunctionalRoleApiCall,
-} from '@/api/functional-roles'
+import { useTranslation } from 'react-i18next'
+import { toast } from 'sonner'
+import { functionalRoleApiService } from '@/api/services/functional-role.service'
 import type {
   CreateFunctionalRoleInput,
   UpdateFunctionalRoleInput,
@@ -18,7 +15,7 @@ export const permissionCatalogQueryKey = ['permissions', 'catalog'] as const
 export const useFunctionalRolesList = (enabled: boolean) =>
   useQuery({
     queryKey: functionalRolesQueryKey,
-    queryFn: listFunctionalRolesApiCall,
+    queryFn: functionalRoleApiService.getFunctionalRolesList,
     enabled,
     retry: (_, error) => {
       if (
@@ -34,7 +31,7 @@ export const useFunctionalRolesList = (enabled: boolean) =>
 export const usePermissionCatalog = (enabled: boolean) =>
   useQuery({
     queryKey: permissionCatalogQueryKey,
-    queryFn: getPermissionCatalogApiCall,
+    queryFn: functionalRoleApiService.getPermissionCatalog,
     enabled,
     retry: (_, error) => {
       if (axios.isAxiosError(error) && error.response?.status && error.response.status >= 500) {
@@ -51,24 +48,35 @@ export const usePermissionCatalog = (enabled: boolean) =>
   })
 
 export const useCreateFunctionalRole = () => {
+  const { t } = useTranslation()
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (input: CreateFunctionalRoleInput) => createFunctionalRoleApiCall(input),
+    mutationFn: (input: CreateFunctionalRoleInput) =>
+      functionalRoleApiService.createFunctionalRole(input),
     onSuccess: async () => {
+      toast.success(t('adminRoles.create.success'))
       await queryClient.invalidateQueries({ queryKey: functionalRolesQueryKey })
+    },
+    onError: () => {
+      toast.error(t('adminRoles.create.error'))
     },
   })
 }
 
 export const useUpdateFunctionalRole = () => {
+  const { t } = useTranslation()
   const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: ({ id, input }: { id: string; input: UpdateFunctionalRoleInput }) =>
-      updateFunctionalRoleApiCall(id, input),
+      functionalRoleApiService.updateFunctionalRole(id, input),
     onSuccess: async () => {
+      toast.success(t('adminRoles.update.success'))
       await queryClient.invalidateQueries({ queryKey: functionalRolesQueryKey })
+    },
+    onError: () => {
+      toast.error(t('adminRoles.update.error'))
     },
   })
 }
