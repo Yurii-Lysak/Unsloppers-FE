@@ -53,7 +53,7 @@ E2E tests live in `e2e/` (flows + shared utilities).
 - Never hardcode user-facing text — always use i18n translation keys
 - All code comments in English
 - Don't create empty folders
-- Forms: `react-hook-form` + `zod` are NOT installed yet — add them (`npm i react-hook-form @hookform/resolvers zod`) when the first form appears
+- Forms: `react-hook-form` + `zod` + `@hookform/resolvers` — see `.claude/rules/react-forms.md`
 
 ## Environment
 

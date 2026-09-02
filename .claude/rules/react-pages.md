@@ -93,9 +93,13 @@ When a page child component needs API data or mutations, extract a section hook 
 components/
   FunctionalRolesAssignmentForm/
     FunctionalRolesAssignmentForm.tsx
+    schemas/
+      functional-roles-assignment-form.schema.ts
     hooks/
       useFunctionalRolesAssignmentForm.ts   # consumes useEmployeeFunctionalRolesData, useFunctionalRolesListData
 ```
+
+Form validation schemas live in `schemas/`; hooks return `{ form, onSubmit }`; components use `Form` + field wrappers — see `react-forms.md`.
 
 Mutations are always invoked through named handlers — either defined in the data hook (`saveEmployeeRoles`) or in the section/page hook that wraps them. Never call `mutation.mutate()` inline in JSX.
 

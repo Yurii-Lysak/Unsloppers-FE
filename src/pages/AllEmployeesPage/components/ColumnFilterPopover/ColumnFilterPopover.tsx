@@ -1,5 +1,5 @@
 import { Filter } from 'lucide-react'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/Button/Button'
 import {
@@ -8,8 +8,9 @@ import {
   PopoverTitle,
   PopoverTrigger,
 } from '@/components/Popover/Popover'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { Checkbox } from '@/components/Checkbox/Checkbox'
+import { Input } from '@/components/Input/Input'
+import { Select } from '@/components/Select/Select'
 import type { EmployeeFieldFilter, FieldSpec, FilterOperator } from '@/types/employees'
 import { defaultFilterOperatorForType } from '../../hooks/useAllEmployeesPage'
 
@@ -82,6 +83,32 @@ export const ColumnFilterPopover = ({
   const usesOptionPicker =
     hasOptions && (field.type === 'select' || field.type === 'multi_select')
   const usesMultiOptionPicker = usesOptionPicker && operator === 'in'
+
+  const operatorOptions = useMemo(
+    () =>
+      operators.map(entry => ({
+        value: entry,
+        label: t(`directory.operators.${entry}`),
+      })),
+    [operators, t],
+  )
+
+  const booleanOptions = useMemo(
+    () => [
+      { value: 'true', label: t('directory.boolean.true') },
+      { value: 'false', label: t('directory.boolean.false') },
+    ],
+    [t],
+  )
+
+  const fieldOptions = useMemo(
+    () =>
+      (field.options ?? []).map(option => ({
+        value: option,
+        label: option,
+      })),
+    [field.options],
+  )
 
   const syncFromActiveFilter = () => {
     setOperator(activeFilter?.operator ?? defaultFilterOperatorForType(field.type))
@@ -158,66 +185,54 @@ export const ColumnFilterPopover = ({
       <PopoverContent align="start">
         <PopoverTitle>{field.name}</PopoverTitle>
 
-        <div className="mt-3 space-y-2">
-          <Label htmlFor={`filter-operator-${field.id}`}>
-            {t('directory.filterOperator')}
-          </Label>
-          <select
+        <div className="mt-3">
+          <Select
             id={`filter-operator-${field.id}`}
-            className="h-8 w-full rounded-lg border border-border bg-background px-2 text-sm"
+            label={t('directory.filterOperator')}
             value={operator}
-            onChange={event => setOperator(event.target.value as FilterOperator)}
-          >
-            {operators.map(entry => (
-              <option key={entry} value={entry}>
-                {t(`directory.operators.${entry}`)}
-              </option>
-            ))}
-          </select>
+            options={operatorOptions}
+            onValueChange={nextValue => setOperator(nextValue as FilterOperator)}
+          />
         </div>
 
-        <div className="mt-3 space-y-2">
-          <Label htmlFor={`filter-value-${field.id}`}>{t('directory.filterValue')}</Label>
+        <div className="mt-3">
           {field.type === 'boolean' ? (
-            <select
+            <Select
               id={`filter-value-${field.id}`}
-              className="h-8 w-full rounded-lg border border-border bg-background px-2 text-sm"
+              label={t('directory.filterValue')}
               value={value}
-              onChange={event => setValue(event.target.value)}
-            >
-              <option value="true">{t('directory.boolean.true')}</option>
-              <option value="false">{t('directory.boolean.false')}</option>
-            </select>
+              options={booleanOptions}
+              onValueChange={setValue}
+            />
           ) : usesMultiOptionPicker ? (
-            <div className="space-y-1" id={`filter-value-${field.id}`}>
-              {field.options?.map(option => (
-                <label key={option} className="flex items-center gap-2 text-sm">
-                  <input
-                    type="checkbox"
+            <div className="space-y-2" id={`filter-value-${field.id}`}>
+              <p className="text-sm font-medium text-foreground">
+                {t('directory.filterValue')}
+              </p>
+              <div className="space-y-1">
+                {field.options?.map(option => (
+                  <Checkbox
+                    key={option}
                     checked={selectedOptions.includes(option)}
-                    onChange={() => toggleOption(option)}
+                    label={option}
+                    onCheckedChange={() => toggleOption(option)}
                   />
-                  <span>{option}</span>
-                </label>
-              ))}
+                ))}
+              </div>
             </div>
           ) : usesOptionPicker ? (
-            <select
+            <Select
               id={`filter-value-${field.id}`}
-              className="h-8 w-full rounded-lg border border-border bg-background px-2 text-sm"
+              label={t('directory.filterValue')}
               value={value}
-              onChange={event => setValue(event.target.value)}
-            >
-              <option value="">{t('directory.selectOption')}</option>
-              {field.options?.map(option => (
-                <option key={option} value={option}>
-                  {option}
-                </option>
-              ))}
-            </select>
+              placeholder={t('directory.selectOption')}
+              options={fieldOptions}
+              onValueChange={setValue}
+            />
           ) : (
             <Input
               id={`filter-value-${field.id}`}
+              label={t('directory.filterValue')}
               value={value}
               onChange={event => setValue(event.target.value)}
               type={field.type === 'number' ? 'number' : field.type === 'date' ? 'date' : 'text'}

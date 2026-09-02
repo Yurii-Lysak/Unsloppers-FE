@@ -1,5 +1,9 @@
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/Button/Button'
+import { Form } from '@/components/Form/Form'
+import { FormRootError } from '@/components/Form/components/FormRootError/FormRootError'
+import { Switch } from '@/components/Switch/Switch'
+import { Textarea } from '@/components/Textarea/Textarea'
 import type {
   ManagementNote,
   ManagementNoteRead,
@@ -77,7 +81,7 @@ const ManagementNoteItem = ({
   canWrite: boolean
 }) => {
   const { t } = useTranslation()
-  const { form, isMutating, saveContent, toggleVisibility, handleDelete } =
+  const { form, onSubmit, isMutating, toggleVisibility, handleDelete } =
     useManagementNoteItem(employeeId, note)
 
   return (
@@ -90,57 +94,33 @@ const ManagementNoteItem = ({
       </p>
 
       {canWrite ? (
-        <form className="mt-2 space-y-2" onSubmit={saveContent}>
-          <textarea
-            className="min-h-20 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-            {...form.register('content')}
-          />
-          {form.formState.errors.content && (
-            <p className="text-xs text-destructive">
-              {form.formState.errors.content.message}
-            </p>
-          )}
+        <Form form={form} onSubmit={onSubmit} className="mt-2 space-y-2">
+          <Textarea name="content" className="min-h-20" />
           <div className="flex flex-wrap gap-4">
             {isWritableNote(note) && (
               <>
-                <label className="flex items-center gap-2 text-sm">
-                  <input
-                    type="checkbox"
-                    checked={note.visibleForEmployee}
-                    disabled={isMutating}
-                    onChange={(event) => {
-                      void toggleVisibility(
-                        'visibleForEmployee',
-                        event.target.checked,
-                      )
-                    }}
-                    data-testid={`management-note-${note.id}-visible-employee`}
-                  />
-                  {t('employeeProfile.s7.toggleVisibleToEmployee')}
-                </label>
-                <label className="flex items-center gap-2 text-sm">
-                  <input
-                    type="checkbox"
-                    checked={note.visibleForPm}
-                    disabled={isMutating}
-                    onChange={(event) => {
-                      void toggleVisibility(
-                        'visibleForPm',
-                        event.target.checked,
-                      )
-                    }}
-                    data-testid={`management-note-${note.id}-visible-pm`}
-                  />
-                  {t('employeeProfile.s7.toggleVisibleToPm')}
-                </label>
+                <Switch
+                  checked={note.visibleForEmployee}
+                  disabled={isMutating}
+                  label={t('employeeProfile.s7.toggleVisibleToEmployee')}
+                  onCheckedChange={checked => {
+                    void toggleVisibility('visibleForEmployee', checked)
+                  }}
+                  data-testid={`management-note-${note.id}-visible-employee`}
+                />
+                <Switch
+                  checked={note.visibleForPm}
+                  disabled={isMutating}
+                  label={t('employeeProfile.s7.toggleVisibleToPm')}
+                  onCheckedChange={checked => {
+                    void toggleVisibility('visibleForPm', checked)
+                  }}
+                  data-testid={`management-note-${note.id}-visible-pm`}
+                />
               </>
             )}
           </div>
-          {form.formState.errors.root && (
-            <p role="alert" className="text-xs text-destructive">
-              {form.formState.errors.root.message}
-            </p>
-          )}
+          <FormRootError />
           <div className="flex gap-2">
             <Button type="submit" size="sm" disabled={isMutating}>
               {t('employeeProfile.save')}
@@ -157,7 +137,7 @@ const ManagementNoteItem = ({
               {t('employeeProfile.s7.deleteNote')}
             </Button>
           </div>
-        </form>
+        </Form>
       ) : (
         <p className="mt-2 whitespace-pre-wrap">{note.content}</p>
       )}
@@ -167,51 +147,40 @@ const ManagementNoteItem = ({
 
 const AddManagementNoteForm = ({ employeeId }: { employeeId: string }) => {
   const { t } = useTranslation()
-  const { form, submit, isCreatingNote } = useAddManagementNoteForm(employeeId)
+  const { form, onSubmit, isCreatingNote } = useAddManagementNoteForm(employeeId)
 
   return (
-    <form className="space-y-2 border-t border-border pt-4" onSubmit={submit}>
+    <Form
+      form={form}
+      onSubmit={onSubmit}
+      className="space-y-2 border-t border-border pt-4"
+    >
       <h3 className="text-sm font-medium text-foreground">
         {t('employeeProfile.s7.addNote')}
       </h3>
-      <textarea
-        className="min-h-20 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-        {...form.register('content')}
+      <Textarea
+        name="content"
+        className="min-h-20"
         data-testid="management-note-add-content"
       />
-      {form.formState.errors.content && (
-        <p className="text-xs text-destructive">
-          {form.formState.errors.content.message}
-        </p>
-      )}
       <div className="flex flex-wrap gap-4">
-        <label className="flex items-center gap-2 text-sm">
-          <input
-            type="checkbox"
-            {...form.register('visibleForEmployee')}
-            disabled={isCreatingNote}
-            data-testid="management-note-add-visible-employee"
-          />
-          {t('employeeProfile.s7.toggleVisibleToEmployee')}
-        </label>
-        <label className="flex items-center gap-2 text-sm">
-          <input
-            type="checkbox"
-            {...form.register('visibleForPm')}
-            disabled={isCreatingNote}
-            data-testid="management-note-add-visible-pm"
-          />
-          {t('employeeProfile.s7.toggleVisibleToPm')}
-        </label>
+        <Switch
+          name="visibleForEmployee"
+          disabled={isCreatingNote}
+          label={t('employeeProfile.s7.toggleVisibleToEmployee')}
+          data-testid="management-note-add-visible-employee"
+        />
+        <Switch
+          name="visibleForPm"
+          disabled={isCreatingNote}
+          label={t('employeeProfile.s7.toggleVisibleToPm')}
+          data-testid="management-note-add-visible-pm"
+        />
       </div>
-      {form.formState.errors.root && (
-        <p role="alert" className="text-xs text-destructive">
-          {form.formState.errors.root.message}
-        </p>
-      )}
+      <FormRootError />
       <Button type="submit" size="sm" disabled={isCreatingNote}>
         {t('employeeProfile.s7.addNote')}
       </Button>
-    </form>
+    </Form>
   )
 }

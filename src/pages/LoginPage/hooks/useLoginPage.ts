@@ -3,10 +3,13 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { z } from 'zod'
 import { useAuth } from '@/contexts/AuthContext'
 import { isUnauthorizedError } from '@/api/errors'
 import { getSafePostLoginDestination } from '../helpers/redirect'
+import {
+  createLoginFormSchema,
+  type LoginFormValues,
+} from '../schemas/login-form.schema'
 
 interface LoginLocationState {
   from?: string
@@ -17,15 +20,7 @@ export const useLoginPage = () => {
   const { session, status, login, retrySession } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
-  const schema = useMemo(
-    () =>
-      z.object({
-        email: z.email(t('auth.validation.email')),
-        password: z.string().min(1, t('auth.validation.password')),
-      }),
-    [t]
-  )
-  type LoginFormValues = z.infer<typeof schema>
+  const { schema } = useMemo(() => createLoginFormSchema(t), [t])
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(schema),
@@ -41,7 +36,7 @@ export const useLoginPage = () => {
     }
   }, [destination, navigate, session])
 
-  const submit = form.handleSubmit(async values => {
+  const onSubmit = async (values: LoginFormValues) => {
     try {
       await login(values)
       navigate(destination, { replace: true })
@@ -52,14 +47,13 @@ export const useLoginPage = () => {
           : t('auth.loginUnavailable'),
       })
     }
-  })
+  }
 
   return {
-    register: form.register,
-    errors: form.formState.errors,
+    form,
+    onSubmit,
     isSubmitting: form.formState.isSubmitting,
     sessionUnavailable: status === 'unavailable',
     retrySession,
-    submit,
   }
 }

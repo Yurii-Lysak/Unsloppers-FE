@@ -1,26 +1,18 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { z } from 'zod'
 import { useManagementNotesData } from '@/hooks/data/useManagementNotesData'
 import type {
   ManagementNote,
   ManagementNoteRead,
 } from '@/types/employee-profile'
-
-const editNoteFormSchema = (t: (key: string) => string) =>
-  z.object({
-    content: z
-      .string()
-      .trim()
-      .min(1, { message: t('employeeProfile.s7.validation.contentRequired') })
-      .max(10_000, {
-        message: t('employeeProfile.s7.validation.contentTooLong'),
-      }),
-  })
-
-type EditNoteFormValues = z.infer<ReturnType<typeof editNoteFormSchema>>
+import {
+  createAddManagementNoteFormSchema,
+  createEditManagementNoteFormSchema,
+  type AddManagementNoteFormValues,
+  type EditManagementNoteFormValues,
+} from '../schemas/management-note-form.schema'
 
 export const isWritableNote = (
   note: ManagementNoteRead | ManagementNote,
@@ -34,25 +26,31 @@ export const useManagementNoteItem = (
   const { t } = useTranslation()
   const { updateNote, deleteNote, isMutatingNote } =
     useManagementNotesData(employeeId)
+  const { schema } = useMemo(() => createEditManagementNoteFormSchema(t), [t])
+  const defaultValues = useMemo<EditManagementNoteFormValues>(
+    () => ({ content: note.content }),
+    [note.content],
+  )
 
-  const form = useForm<EditNoteFormValues>({
-    resolver: zodResolver(editNoteFormSchema(t)),
-    defaultValues: { content: note.content },
+  const form = useForm<EditManagementNoteFormValues>({
+    resolver: zodResolver(schema),
+    defaultValues,
+    values: defaultValues,
   })
 
   useEffect(() => {
-    form.reset({ content: note.content })
-  }, [form, note.content, note.id])
+    form.reset(defaultValues)
+  }, [defaultValues, form, note.id])
 
   const isMutating = isMutatingNote || form.formState.isSubmitting
 
-  const saveContent = form.handleSubmit(async values => {
+  const onSubmit = async (values: EditManagementNoteFormValues) => {
     try {
       await updateNote(note.id, { content: values.content })
     } catch {
       form.setError('root', { message: t('employeeProfile.s7.saveFailed') })
     }
-  })
+  }
 
   const toggleVisibility = async (
     field: 'visibleForEmployee' | 'visibleForPm',
@@ -71,7 +69,7 @@ export const useManagementNoteItem = (
     }
 
     try {
-      form.reset({ content: note.content })
+      form.reset(defaultValues)
       await deleteNote(note.id)
     } catch {
       form.setError('root', { message: t('employeeProfile.s7.saveFailed') })
@@ -80,34 +78,20 @@ export const useManagementNoteItem = (
 
   return {
     form,
+    onSubmit,
     isMutating,
-    saveContent,
     toggleVisibility,
     handleDelete,
   }
 }
 
-const createNoteFormSchema = (t: (key: string) => string) =>
-  z.object({
-    content: z
-      .string()
-      .trim()
-      .min(1, { message: t('employeeProfile.s7.validation.contentRequired') })
-      .max(10_000, {
-        message: t('employeeProfile.s7.validation.contentTooLong'),
-      }),
-    visibleForEmployee: z.boolean(),
-    visibleForPm: z.boolean(),
-  })
-
-type CreateNoteFormValues = z.infer<ReturnType<typeof createNoteFormSchema>>
-
 export const useAddManagementNoteForm = (employeeId: string) => {
   const { t } = useTranslation()
   const { createNote, isCreatingNote } = useManagementNotesData(employeeId)
+  const { schema } = useMemo(() => createAddManagementNoteFormSchema(t), [t])
 
-  const form = useForm<CreateNoteFormValues>({
-    resolver: zodResolver(createNoteFormSchema(t)),
+  const form = useForm<AddManagementNoteFormValues>({
+    resolver: zodResolver(schema),
     defaultValues: {
       content: '',
       visibleForEmployee: false,
@@ -115,7 +99,7 @@ export const useAddManagementNoteForm = (employeeId: string) => {
     },
   })
 
-  const submit = form.handleSubmit(async values => {
+  const onSubmit = async (values: AddManagementNoteFormValues) => {
     try {
       await createNote({
         content: values.content,
@@ -130,11 +114,11 @@ export const useAddManagementNoteForm = (employeeId: string) => {
     } catch {
       form.setError('root', { message: t('employeeProfile.s7.saveFailed') })
     }
-  })
+  }
 
   return {
     form,
-    submit,
+    onSubmit,
     isCreatingNote,
   }
 }
