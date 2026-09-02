@@ -1,5 +1,8 @@
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/Button/Button'
+import { Checkbox } from '@/components/Checkbox/Checkbox'
+import { Form } from '@/components/Form/Form'
+import { FormRootError } from '@/components/Form/components/FormRootError/FormRootError'
 import { useFunctionalRolesAssignmentForm } from './hooks/useFunctionalRolesAssignmentForm'
 
 interface FunctionalRolesAssignmentFormProps {
@@ -12,10 +15,10 @@ export const FunctionalRolesAssignmentForm = ({
   const { t } = useTranslation()
   const {
     form,
+    onSubmit,
     roleOptions,
     selectedRoleIds,
     toggleRole,
-    submit,
     isLoading,
     isError,
     isSavingRoles,
@@ -30,31 +33,30 @@ export const FunctionalRolesAssignmentForm = ({
   }
 
   return (
-    <form className="space-y-4" onSubmit={submit} data-testid="functional-roles-form">
+    <Form
+      form={form}
+      onSubmit={onSubmit}
+      className="space-y-4"
+      data-testid="functional-roles-form"
+    >
       <fieldset className="space-y-2">
         <legend className="text-sm font-medium text-foreground">
           {t('employeeProfile.functionalRoles')}
         </legend>
         <div className="max-h-64 space-y-2 overflow-y-auto rounded-md border border-border p-3">
           {roleOptions.map(role => (
-            <label key={role.id} className="flex items-start gap-2 text-sm">
-              <input
-                type="checkbox"
-                checked={selectedRoleIds.includes(role.id)}
-                onChange={() => toggleRole(role.id)}
-                data-testid={`functional-role-option-${role.id}`}
-              />
-              <span>{role.name}</span>
-            </label>
+            <Checkbox
+              key={role.id}
+              checked={selectedRoleIds.includes(role.id)}
+              label={role.name}
+              onCheckedChange={() => toggleRole(role.id)}
+              data-testid={`functional-role-option-${role.id}`}
+            />
           ))}
         </div>
       </fieldset>
 
-      {form.formState.errors.root && (
-        <p role="alert" className="text-sm text-destructive">
-          {form.formState.errors.root.message}
-        </p>
-      )}
+      <FormRootError />
 
       <Button
         type="submit"
@@ -63,6 +65,6 @@ export const FunctionalRolesAssignmentForm = ({
       >
         {isSavingRoles ? t('employeeProfile.saving') : t('employeeProfile.save')}
       </Button>
-    </form>
+    </Form>
   )
 }

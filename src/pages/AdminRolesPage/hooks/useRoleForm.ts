@@ -1,20 +1,16 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMemo } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { z } from 'zod'
 import {
   useFunctionalRoleMutations,
 } from '@/hooks/data/useFunctionalRolesData'
 import { usePermissionCatalogData } from '@/hooks/data/usePermissionsData'
 import type { FunctionalRole } from '@/types/functional-roles'
-
-const roleFormSchema = z.object({
-  name: z.string().trim().min(1),
-  permissionKeys: z.array(z.string()),
-})
-
-export type RoleFormValues = z.infer<typeof roleFormSchema>
+import {
+  createRoleFormSchema,
+  type RoleFormValues,
+} from '../schemas/role-form.schema'
 
 interface UseRoleFormOptions {
   role?: FunctionalRole
@@ -46,13 +42,15 @@ export const useRoleForm = ({ role, onSaved, enabled = true }: UseRoleFormOption
     [role],
   )
 
+  const { schema } = useMemo(() => createRoleFormSchema(t), [t])
+
   const form = useForm<RoleFormValues>({
-    resolver: zodResolver(roleFormSchema),
+    resolver: zodResolver(schema),
     defaultValues,
     values: defaultValues,
   })
 
-  const submit = form.handleSubmit(async values => {
+  const onSubmit = async (values: RoleFormValues) => {
     if (role) {
       await updateRole(role.id, {
         ...(role.isBuiltIn ? {} : { name: values.name }),
@@ -62,7 +60,7 @@ export const useRoleForm = ({ role, onSaved, enabled = true }: UseRoleFormOption
       await createRole(values)
     }
     onSaved()
-  })
+  }
 
   const nameDisabled = Boolean(role?.isBuiltIn)
   const rootError =
@@ -70,10 +68,30 @@ export const useRoleForm = ({ role, onSaved, enabled = true }: UseRoleFormOption
   const catalogError = isCatalogError ? t('adminRoles.catalogFailed') : undefined
   const canSubmit = !isCatalogLoading && !isCatalogError && isCatalogSuccess
 
+  const selectedKeys = useWatch({
+    control: form.control,
+    name: 'permissionKeys',
+  }) ?? []
+
+  const togglePermission = (key: string) => {
+    const current = form.getValues('permissionKeys')
+    if (current.includes(key)) {
+      form.setValue(
+        'permissionKeys',
+        current.filter(entry => entry !== key),
+        { shouldValidate: true },
+      )
+      return
+    }
+    form.setValue('permissionKeys', [...current, key], { shouldValidate: true })
+  }
+
   return {
     form,
+    onSubmit,
     catalog: permissionCatalog,
-    submit,
+    selectedKeys,
+    togglePermission,
     nameDisabled,
     isSubmitting: isSavingRole,
     rootError,

@@ -70,7 +70,7 @@ Skip the hook for purely presentational components (props in, JSX out — e.g. `
 - Customize primitives by editing the generated file directly, not by wrapping inside `ui/`
 - **App code must import shared wrappers** from `components/<Name>/<Name>.tsx`, not from `@/components/ui/*` directly
 - Each shared wrapper lives in its own folder with a co-located styles file (`<Name>.styles.ts`):
-  `Button`, `Dialog`, `Modal`, `SideSheet`, `ConfirmationModal`, `Tooltip`, `Popover`
+  `Button`, `Dialog`, `Modal`, `SideSheet`, `ConfirmationModal`, `Tooltip`, `Popover`, `Input`, `Textarea`, `Switch`, `Checkbox`, `Select`, `Label`, `Form`
 - Wrappers re-export or compose shadcn primitives and centralize app-level class overrides in the styles file
 
 ```tsx

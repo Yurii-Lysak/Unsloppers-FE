@@ -1,16 +1,13 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect, useMemo } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { z } from 'zod'
 import { useEmployeeFunctionalRolesData } from '@/hooks/data/useEmployeesData'
 import { useFunctionalRolesListData } from '@/hooks/data/useFunctionalRolesData'
-
-const schema = z.object({
-  roleIds: z.array(z.string()),
-})
-
-type FormValues = z.infer<typeof schema>
+import {
+  functionalRolesAssignmentFormSchema,
+  type FunctionalRolesAssignmentFormValues,
+} from '../schemas/functional-roles-assignment-form.schema'
 
 export const useFunctionalRolesAssignmentForm = (employeeId: string) => {
   const { t } = useTranslation()
@@ -24,18 +21,26 @@ export const useFunctionalRolesAssignmentForm = (employeeId: string) => {
   const { rolesList, isRolesLoading, isRolesError } =
     useFunctionalRolesListData(true)
 
-  const form = useForm<FormValues>({
-    resolver: zodResolver(schema),
+  const form = useForm<FunctionalRolesAssignmentFormValues>({
+    resolver: zodResolver(functionalRolesAssignmentFormSchema.schema),
     defaultValues: { roleIds: [] },
   })
 
+  const defaultValues = useMemo<FunctionalRolesAssignmentFormValues>(
+    () => ({ roleIds: assignedRoles?.map(role => role.id) ?? [] }),
+    [assignedRoles],
+  )
+
   useEffect(() => {
     if (assignedRoles) {
-      form.reset({ roleIds: assignedRoles.map(role => role.id) })
+      form.reset(defaultValues)
     }
-  }, [assignedRoles, form])
+  }, [assignedRoles, defaultValues, form])
 
-  const selectedRoleIds = form.watch('roleIds')
+  const selectedRoleIds = useWatch({
+    control: form.control,
+    name: 'roleIds',
+  }) ?? []
 
   const roleOptions = useMemo(() => {
     const byId = new Map((rolesList ?? []).map(role => [role.id, role]))
@@ -60,20 +65,20 @@ export const useFunctionalRolesAssignmentForm = (employeeId: string) => {
     form.setValue('roleIds', [...current, roleId], { shouldDirty: true })
   }
 
-  const submit = form.handleSubmit(async values => {
+  const onSubmit = async (values: FunctionalRolesAssignmentFormValues) => {
     try {
       await saveEmployeeRoles(values.roleIds)
     } catch {
       form.setError('root', { message: t('employeeProfile.saveFailed') })
     }
-  })
+  }
 
   return {
     form,
+    onSubmit,
     roleOptions,
     selectedRoleIds,
     toggleRole,
-    submit,
     isLoading: isAssignedRolesLoading || isRolesLoading,
     isError: isAssignedRolesError || isRolesError,
     isSavingRoles,

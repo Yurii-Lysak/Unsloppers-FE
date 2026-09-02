@@ -7,20 +7,13 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { LoginForm } from './components/LoginForm/LoginForm'
 import { useLoginPage } from './hooks/useLoginPage'
 
 export const LoginPage = () => {
   const { t } = useTranslation()
-  const {
-    register,
-    errors,
-    isSubmitting,
-    sessionUnavailable,
-    retrySession,
-    submit,
-  } = useLoginPage()
+  const { form, onSubmit, isSubmitting, sessionUnavailable, retrySession } =
+    useLoginPage()
 
   if (sessionUnavailable) {
     return (
@@ -52,48 +45,7 @@ export const LoginPage = () => {
           <CardDescription>{t('auth.login.description')}</CardDescription>
         </CardHeader>
         <CardContent>
-          <form className="space-y-4" noValidate onSubmit={submit}>
-            <div className="space-y-2">
-              <Label htmlFor="email">{t('auth.login.email')}</Label>
-              <Input
-                id="email"
-                type="email"
-                autoComplete="username"
-                aria-invalid={Boolean(errors.email)}
-                aria-describedby={errors.email ? 'email-error' : undefined}
-                {...register('email')}
-              />
-              {errors.email && (
-                <p id="email-error" className="text-sm text-destructive">
-                  {errors.email.message}
-                </p>
-              )}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">{t('auth.login.password')}</Label>
-              <Input
-                id="password"
-                type="password"
-                autoComplete="current-password"
-                aria-invalid={Boolean(errors.password)}
-                aria-describedby={errors.password ? 'password-error' : undefined}
-                {...register('password')}
-              />
-              {errors.password && (
-                <p id="password-error" className="text-sm text-destructive">
-                  {errors.password.message}
-                </p>
-              )}
-            </div>
-            {errors.root && (
-              <p role="alert" className="text-sm text-destructive">
-                {errors.root.message}
-              </p>
-            )}
-            <Button className="w-full" type="submit" disabled={isSubmitting}>
-              {isSubmitting ? t('auth.login.submitting') : t('auth.login.submit')}
-            </Button>
-          </form>
+          <LoginForm form={form} onSubmit={onSubmit} isSubmitting={isSubmitting} />
         </CardContent>
       </Card>
     </main>

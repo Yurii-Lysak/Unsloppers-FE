@@ -7,7 +7,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/Popover/Popover'
-import { Label } from '@/components/ui/label'
+import { Checkbox } from '@/components/Checkbox/Checkbox'
+import { Label } from '@/components/Label/Label'
 import type { FieldSpec } from '@/types/employees'
 
 interface ColumnPickerProps {
@@ -44,14 +45,12 @@ export const ColumnPicker = ({ fields, selectedColumnIds, onChange }: ColumnPick
         <Label>{t('directory.visibleColumns')}</Label>
         <div className="mt-2 max-h-64 space-y-2 overflow-y-auto">
           {fields.map(field => (
-            <label key={field.id} className="flex items-center gap-2 text-sm">
-              <input
-                type="checkbox"
-                checked={selectedColumnIds.includes(field.id)}
-                onChange={() => toggleColumn(field.id)}
-              />
-              <span>{field.name}</span>
-            </label>
+            <Checkbox
+              key={field.id}
+              checked={selectedColumnIds.includes(field.id)}
+              label={field.name}
+              onCheckedChange={() => toggleColumn(field.id)}
+            />
           ))}
         </div>
       </PopoverContent>
