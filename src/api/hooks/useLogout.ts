@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query'
-import { logoutApiCall } from '@/api/auth'
+import { authApiService } from '@/api/services/auth.service'
 
 export const useLogout = () =>
   useMutation({
-    mutationFn: logoutApiCall,
+    mutationFn: authApiService.logout,
   })

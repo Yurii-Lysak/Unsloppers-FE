@@ -85,6 +85,14 @@
     "loadFailed": "Could not load functional roles.",
     "catalogFailed": "Could not load the permission catalog.",
     "saveFailed": "Could not save the role. Try again.",
+    "create": {
+      "success": "Role created.",
+      "error": "Could not create the role. Try again."
+    },
+    "update": {
+      "success": "Role updated.",
+      "error": "Could not update the role. Try again."
+    },
     "validation": {
       "name": "Enter a role name."
     }
@@ -132,6 +140,24 @@
     "save": "Save",
     "saving": "Saving…",
     "saveFailed": "Could not save role assignments. Try again.",
+    "functionalRolesSave": {
+      "success": "Role assignments saved.",
+      "error": "Could not save role assignments. Try again."
+    },
+    "managementNotes": {
+      "create": {
+        "success": "Management note added.",
+        "error": "Could not add management note. Try again."
+      },
+      "update": {
+        "success": "Management note updated.",
+        "error": "Could not update management note. Try again."
+      },
+      "delete": {
+        "success": "Management note deleted.",
+        "error": "Could not delete management note. Try again."
+      }
+    },
     "viewingAs": "Viewing as {{role}}",
     "emptySection": "No records yet.",
     "sections": {

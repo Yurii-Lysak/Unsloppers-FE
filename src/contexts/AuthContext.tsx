@@ -1,10 +1,15 @@
-import { createContext, useContext, useEffect, type ReactNode } from 'react'
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  type ReactNode,
+} from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { apiClient } from '@/api/client'
 import { authSessionQueryKey, useAuthSession } from '@/api/hooks/useAuthSession'
 import { useLogin } from '@/api/hooks/useLogin'
 import { useLogout } from '@/api/hooks/useLogout'
-import { isUnauthorizedError } from '@/api/errors'
 import { purgeProtectedQueryCache } from '@/api/query-cache'
 import type { LoginCredentials, Session } from '@/types/api'
 
@@ -29,6 +34,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const sessionQuery = useAuthSession()
   const loginMutation = useLogin()
   const logoutMutation = useLogout()
+  const previousSessionRef = useRef<Session | null | undefined>(undefined)
 
   useEffect(
     () =>
@@ -36,8 +42,33 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         queryClient.setQueryData(authSessionQueryKey, null)
         purgeProtectedQueryCache(queryClient)
       }),
-    [queryClient]
+    [queryClient],
   )
+
+  useEffect(() => {
+    if (sessionQuery.isPending) {
+      return
+    }
+
+    const previousSession = previousSessionRef.current
+    const currentSession = sessionQuery.data ?? null
+
+    if (
+      previousSession !== undefined &&
+      previousSession !== null &&
+      currentSession === null &&
+      sessionQuery.isSuccess
+    ) {
+      purgeProtectedQueryCache(queryClient)
+    }
+
+    previousSessionRef.current = currentSession
+  }, [
+    queryClient,
+    sessionQuery.data,
+    sessionQuery.isPending,
+    sessionQuery.isSuccess,
+  ])
 
   const login = async (credentials: LoginCredentials) => {
     await queryClient.cancelQueries({ queryKey: authSessionQueryKey })
@@ -53,7 +84,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const status: AuthContextValue['status'] = sessionQuery.isPending
     ? 'loading'
-    : sessionQuery.isError && !isUnauthorizedError(sessionQuery.error)
+    : sessionQuery.isError
       ? 'unavailable'
       : sessionQuery.data
         ? 'authenticated'

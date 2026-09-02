@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
-import { listEmployeesApiCall } from '@/api/employees'
+import { employeeApiService } from '@/api/services/employee.service'
 import type { EmployeeListQuery } from '@/types/employees'
 
 export const employeeListQueryKey = (query: EmployeeListQuery) =>
@@ -9,7 +9,7 @@ export const employeeListQueryKey = (query: EmployeeListQuery) =>
 export const useEmployeeList = (query: EmployeeListQuery) =>
   useQuery({
     queryKey: employeeListQueryKey(query),
-    queryFn: () => listEmployeesApiCall(query),
+    queryFn: () => employeeApiService.getEmployeesList(query),
     retry: (_, error) => {
       if (
         axios.isAxiosError(error) &&

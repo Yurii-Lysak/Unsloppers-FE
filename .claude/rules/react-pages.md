@@ -35,6 +35,7 @@ Page hook               → data hooks (hooks/data/) + local UI state
 Section component       → section hook only (for components with API/forms)
 Section hook            → data hooks (hooks/data/) + form/local state
 Data hook               → api/hooks/ primitives
+Query primitive         → ApiService singleton (api/services/)
 ```
 
 **Never import `@/api/hooks/` or `@/hooks/data/` from a page or section component file.**

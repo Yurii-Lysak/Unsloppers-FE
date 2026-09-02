@@ -6,7 +6,7 @@ import {
 import type {
   CreateManagementNotePayload,
   UpdateManagementNotePayload,
-} from '@/api/management-notes'
+} from '@/types/employee-profile'
 
 export const useManagementNotesData = (employeeId: string) => {
   const createNoteMutation = useCreateManagementNote(employeeId)

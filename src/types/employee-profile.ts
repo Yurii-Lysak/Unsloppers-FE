@@ -50,6 +50,18 @@ export interface ManagementNotesSection {
   hasHiddenNotes?: boolean
 }
 
+export interface CreateManagementNotePayload {
+  content: string
+  visibleForEmployee?: boolean
+  visibleForPm?: boolean
+}
+
+export interface UpdateManagementNotePayload {
+  content?: string
+  visibleForEmployee?: boolean
+  visibleForPm?: boolean
+}
+
 export interface IdentityRelation {
   id: string
   displayName: string

@@ -36,9 +36,11 @@ class ApiClient {
       error => {
         if (axios.isAxiosError(error) && error.response?.status === 401) {
           const requestUrl = error.config?.url ?? ''
-          const isAuthAttempt =
-            requestUrl.includes('/auth/login') || requestUrl.includes('/auth/logout')
-          if (!isAuthAttempt) {
+          const isAuthFlowRequest =
+            requestUrl.includes('/auth/login') ||
+            requestUrl.includes('/auth/logout') ||
+            requestUrl.includes('/auth/session')
+          if (!isAuthFlowRequest) {
             this.unauthorizedListeners.forEach(listener => listener())
           }
         }

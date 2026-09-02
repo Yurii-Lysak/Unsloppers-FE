@@ -60,6 +60,11 @@ export interface EmployeeListQuery {
   filters?: EmployeeFieldFilter[]
 }
 
+export interface EmployeeSummary {
+  id: string
+  displayName: string
+}
+
 export const BUILTIN_FIELD_IDS = {
   name: 'name',
   grade: 'grade',
