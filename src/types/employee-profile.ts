@@ -90,6 +90,30 @@ export interface ProjectsSection {
   projects: Array<{ name: string }>
 }
 
+export type CustomFieldValueType =
+  | 'text'
+  | 'number'
+  | 'date'
+  | 'boolean'
+  | 'select'
+  | 'multi_select'
+
+export interface CustomFieldSpec {
+  id: string
+  name: string
+  type: CustomFieldValueType
+}
+
+/** Mirrors the backend's `FieldValue` union (field-registry.contract.ts). */
+export type CustomFieldValue = string | number | boolean | string[] | null
+
+export interface CustomFieldsSection {
+  /** Only fields that passed per-field visibility for this viewer/subject. */
+  fields: CustomFieldSpec[]
+  /** Stored values keyed by field id — a never-set field is omitted (AD-6). */
+  values: Record<string, CustomFieldValue>
+}
+
 export interface ProfileSectionUnavailable {
   accessLevel: Exclude<SectionAccessLevel, 'none'>
   status: 'unavailable'

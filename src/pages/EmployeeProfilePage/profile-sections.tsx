@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import type {
+  CustomFieldsSection as CustomFieldsSectionData,
   EmployeeProfile,
   IdentitySection,
   LeavesSection,
@@ -10,6 +11,7 @@ import type {
   SectionId,
   TimelineSection,
 } from '@/types/employee-profile'
+import { CustomFieldsSectionCard } from './components/CustomFieldsSection/CustomFieldsSection'
 import { ManagementNotesSectionCard } from './components/ManagementNotesSection/ManagementNotesSection'
 
 export const PROFILE_SECTION_ORDER: SectionId[] = [
@@ -37,6 +39,7 @@ export const PROFILE_SECTION_TITLE_KEYS: Partial<Record<SectionId, string>> = {
   S9: 'employeeProfile.sections.timeline',
   S10: 'employeeProfile.sections.leaves',
   S11: 'employeeProfile.sections.projects',
+  S16: 'employeeProfile.sections.customFields',
 }
 
 export const isSectionData = <T,>(
@@ -142,4 +145,9 @@ export const PROFILE_SECTION_RENDERERS: Partial<Record<SectionId, SectionRendere
         </ul>
       )
     },
+    S16: ({ section }) => (
+      <CustomFieldsSectionCard
+        section={section as ProfileSectionEnvelope<CustomFieldsSectionData>}
+      />
+    ),
   }
