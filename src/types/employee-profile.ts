@@ -71,7 +71,7 @@ export interface IdentitySection {
   displayName: string
   manager?: IdentityRelation | null
   peoplePartner?: IdentityRelation | null
-  mentor?: IdentityRelation | null
+  mentor?: IdentityRelation
 }
 
 export interface LeavePeriod {

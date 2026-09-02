@@ -159,6 +159,11 @@
       }
     },
     "viewingAs": "Viewing as {{role}}",
+    "header": {
+      "manager": "Manager",
+      "peoplePartner": "People partner",
+      "mentor": "Mentor"
+    },
     "emptySection": "No records yet.",
     "sections": {
       "identity": "Identity",
@@ -168,10 +173,6 @@
       "projects": "Projects",
       "customFields": "Custom fields",
       "generic": "Section {{id}}"
-    },
-    "fields": {
-      "manager": "Manager",
-      "peoplePartner": "People partner"
     },
     "roles": {
       "Self": "Self",

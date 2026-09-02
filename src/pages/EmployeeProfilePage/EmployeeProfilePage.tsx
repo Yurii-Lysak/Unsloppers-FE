@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import type { EmployeeProfile, SectionId } from '@/types/employee-profile'
 import { FunctionalRolesAssignmentForm } from './components/FunctionalRolesAssignmentForm/FunctionalRolesAssignmentForm'
+import { ProfileHeader } from './components/ProfileHeader/ProfileHeader'
 import { useEmployeeProfilePage } from './hooks/useEmployeeProfilePage'
 import {
   orderedProfileSectionIds,
@@ -53,6 +54,7 @@ export const EmployeeProfilePage = ({
           >
             {employeeProfile?.displayName ?? t('employeeProfile.loading')}
           </h1>
+          {employeeProfile && <ProfileHeader profile={employeeProfile} />}
           {showAccessChip && employeeProfile && (
             <p
               className="mt-2 text-sm text-muted-foreground"
