@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { getSessionApiCall } from '@/api/auth'
+import { authApiService } from '@/api/services/auth.service'
 import { isUnauthorizedError } from '@/api/errors'
 import type { Session } from '@/types/api'
 
@@ -8,7 +8,7 @@ export const AUTH_SESSION_REFRESH_INTERVAL_MS = 60_000
 
 export const fetchAuthSession = async (): Promise<Session | null> => {
   try {
-    return await getSessionApiCall()
+    return await authApiService.getSession()
   } catch (error) {
     if (isUnauthorizedError(error)) {
       return null

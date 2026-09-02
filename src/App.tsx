@@ -1,6 +1,7 @@
 import { LayoutProvider } from '@/contexts/LayoutContext'
 import { AuthProvider } from '@/contexts/AuthContext'
 import { TooltipProvider } from '@/components/Tooltip/Tooltip'
+import { Toaster } from '@/components/ui/sonner'
 import { Router } from '@/router'
 
 const App = () => {
@@ -13,6 +14,7 @@ const App = () => {
           </LayoutProvider>
         </AuthProvider>
       </TooltipProvider>
+      <Toaster />
     </div>
   )
 }

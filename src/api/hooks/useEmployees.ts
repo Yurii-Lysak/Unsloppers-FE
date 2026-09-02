@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { getEmployeeApiCall } from '@/api/employees'
+import { employeeApiService } from '@/api/services/employee.service'
 
 export const employeeDetailQueryKey = (employeeId: string) =>
   ['employees', employeeId] as const
@@ -7,6 +7,6 @@ export const employeeDetailQueryKey = (employeeId: string) =>
 export const useEmployeeDetail = (employeeId: string) =>
   useQuery({
     queryKey: employeeDetailQueryKey(employeeId),
-    queryFn: () => getEmployeeApiCall(employeeId),
+    queryFn: () => employeeApiService.getEmployee(employeeId),
     enabled: Boolean(employeeId),
   })

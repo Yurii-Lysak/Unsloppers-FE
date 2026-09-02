@@ -24,7 +24,7 @@ A clean React starter that will grow into a new product. Detailed per-area conve
 
 ## Project Structure (`src/`)
 
-- `api/` — axios client (`client.ts`), ApiCall functions, and thin query primitives in `api/hooks/`
+- `api/` — axios client (`client.ts`), feature ApiService singletons (`services/*.service.ts`), and thin query primitives in `api/hooks/`
 - `hooks/data/` — feature data hooks (aggregate queries/mutations per domain; consumed by page and section hooks)
 - `components/` — shared components, one folder per component (AppLayout, MainLayout, MainHeader, SideMenu); `components/ui/` is shadcn-CLI-managed
 - `config/env.ts` — type-safe env access; all env vars must be `VITE_`-prefixed

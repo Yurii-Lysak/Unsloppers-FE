@@ -28,9 +28,10 @@ hooks/data/
 
 Each data hook:
 
-- Calls the matching `@/api/hooks/*` primitives internally
+- Calls the matching `@/api/hooks/*` primitives internally — never ApiService or `apiClient` directly
 - Destructures query results with explicit names — never return a raw query object
 - Wraps every mutation in a named async handler that calls `mutateAsync`
+- Does **not** duplicate toast logic — toasts live in the `api/hooks/` mutation primitives (`onSuccess` / `onError`)
 
 ```tsx
 // hooks/data/useEmployeesData.ts
@@ -73,4 +74,4 @@ export const useEmployeeFunctionalRolesData = (employeeId: string, enabled: bool
 - One hook per file, file named after the hook: `useLocalStorage.ts`
 - Type generically where it makes sense (`useLocalStorage<T>`)
 - No JSX in these hooks — if a hook needs to render something, it's a component
-- No API calls here — those belong in `hooks/data/`
+- No API calls here — those belong in `api/hooks/` via ApiService (see `react-api.md`)

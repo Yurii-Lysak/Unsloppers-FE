@@ -28,7 +28,7 @@ React 19 SPA for the people management product — Vite 8, TanStack Query, Tailw
 - React components are arrow functions only — never `function` declarations.
 - Import via `@/` alias — no deep relative paths (`../../../`).
 - User-facing text uses i18n — add keys to `src/locales/en/translation.json` first; keys are type-checked via `src/@types/i18next.d.ts`.
-- All HTTP goes through TanStack Query: `api/hooks/` (primitives) → `hooks/data/` (feature data hooks) → page/section hooks → components. Never call `apiClient` from components; never import `@/api/hooks/` from page or section components.
+- All HTTP goes through TanStack Query: ApiService singletons (`api/services/`) → `api/hooks/` (primitives) → `hooks/data/` (feature data hooks) → page/section hooks → components. Never call `apiClient` or ApiService from components; never import `@/api/hooks/` from page or section components. Mutations must show success/error toasts in `onSuccess`/`onError`.
 - Use semantic Tailwind tokens (`bg-background`, `text-foreground`, etc.) — no palette colors, hex, or manual `dark:` variants; see `.claude/rules/react-styling.md`.
 - `react-hook-form` and `zod` are not installed — add them when the first form appears.
 
