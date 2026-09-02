@@ -2,7 +2,6 @@ import type { ReactNode } from 'react'
 import type {
   CustomFieldsSection as CustomFieldsSectionData,
   EmployeeProfile,
-  IdentitySection,
   LeavesSection,
   ManagementNotesSection as ManagementNotesSectionData,
   ProfileSectionEnvelope,
@@ -61,31 +60,7 @@ type SectionRenderer = (props: {
 
 export const PROFILE_SECTION_RENDERERS: Partial<Record<SectionId, SectionRenderer>> =
   {
-    S1: ({ section, t }) => {
-      if (!isSectionData<IdentitySection>(section)) {
-        return null
-      }
-      return (
-        <dl className="grid gap-2 text-sm">
-          {section.data.manager && (
-            <div>
-              <dt className="text-muted-foreground">
-                {t('employeeProfile.fields.manager')}
-              </dt>
-              <dd>{section.data.manager.displayName}</dd>
-            </div>
-          )}
-          {section.data.peoplePartner && (
-            <div>
-              <dt className="text-muted-foreground">
-                {t('employeeProfile.fields.peoplePartner')}
-              </dt>
-              <dd>{section.data.peoplePartner.displayName}</dd>
-            </div>
-          )}
-        </dl>
-      )
-    },
+    S1: () => null,
     S7: ({ employeeId, section, accessLevel }) => (
       <ManagementNotesSectionCard
         employeeId={employeeId}
