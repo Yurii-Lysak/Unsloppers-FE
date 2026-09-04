@@ -11,9 +11,9 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { BUILTIN_FIELD_IDS, type EmployeeListResponse, type FieldValue } from '@/types/employees'
-import { ColumnFilterPopover } from '../ColumnFilterPopover/ColumnFilterPopover'
+import { ColumnFilterPopover } from '@/components/AudienceBuilder/ColumnFilterPopover/ColumnFilterPopover'
+import { formatCellValue } from '@/components/AudienceBuilder/filter-utils'
 import { EditableCell } from '../EditableCell/EditableCell'
-import { formatCellValue } from '../../hooks/useAllEmployeesPage'
 
 interface EmployeeTableProps {
   data: EmployeeListResponse

@@ -1,6 +1,7 @@
 import type { Page } from '@playwright/test'
 import {
   createCampaignFixture,
+  mockEmployeesListResponse,
   mockPermissions,
   mockSession,
   type CampaignFixture,
@@ -8,6 +9,7 @@ import {
 } from './fixtures'
 
 const campaignsListPath = /\/api\/v1\/campaigns$/
+const campaignDetailPath = /\/api\/v1\/campaigns\/[^/]+$/
 
 export const setupCampaignsFlow = async (page: Page) => {
   const campaigns: CampaignFixture[] = []
@@ -28,6 +30,14 @@ export const setupCampaignsFlow = async (page: Page) => {
     })
   })
 
+  await page.route('**/api/v1/employees**', async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(mockEmployeesListResponse),
+    })
+  })
+
   await page.route('**/api/v1/campaigns**', async route => {
     const request = route.request()
     const url = request.url()
@@ -38,6 +48,19 @@ export const setupCampaignsFlow = async (page: Page) => {
         status: 200,
         contentType: 'application/json',
         body: JSON.stringify(campaigns),
+      })
+      return
+    }
+
+    if (method === 'GET' && campaignDetailPath.test(url)) {
+      const campaignId = url.split('/').pop() ?? ''
+      const campaign = campaigns.find(entry => entry.id === campaignId)
+      await route.fulfill({
+        status: campaign ? 200 : 404,
+        contentType: 'application/json',
+        body: JSON.stringify(
+          campaign ?? { message: `Campaign ${campaignId} not found` },
+        ),
       })
       return
     }
@@ -55,6 +78,25 @@ export const setupCampaignsFlow = async (page: Page) => {
         status: 201,
         contentType: 'application/json',
         body: JSON.stringify(created),
+      })
+      return
+    }
+
+    if (method === 'PUT' && /\/audience$/.test(url)) {
+      const segments = url.split('/')
+      const campaignId = segments[segments.length - 2] ?? ''
+      const campaign = campaigns.find(entry => entry.id === campaignId)
+      if (!campaign) {
+        await route.fulfill({ status: 404, body: JSON.stringify({ message: 'Not found' }) })
+        return
+      }
+      const audience = request.postDataJSON() as CampaignFixture['audience']
+      campaign.audience = audience
+      campaign.updatedAt = new Date().toISOString()
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(campaign),
       })
       return
     }

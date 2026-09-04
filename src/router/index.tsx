@@ -6,6 +6,7 @@ import { ErrorPage } from '@/pages/ErrorPage/ErrorPage'
 import { LoginPage } from '@/pages/LoginPage/LoginPage'
 import { AllEmployeesPage } from '@/pages/AllEmployeesPage/AllEmployeesPage'
 import { CampaignsPage } from '@/pages/CampaignsPage/CampaignsPage'
+import { CampaignDetailPage } from '@/pages/CampaignDetailPage/CampaignDetailPage'
 import { AdminRolesPage } from '@/pages/AdminRolesPage/AdminRolesPage'
 import { EmployeeProfilePage } from '@/pages/EmployeeProfilePage/EmployeeProfilePage'
 import { SharedLinkViewPage } from '@/pages/SharedLinkViewPage/SharedLinkViewPage'
@@ -57,6 +58,10 @@ const router = createBrowserRouter([
       {
         path: 'campaigns',
         element: <CampaignsPage />,
+      },
+      {
+        path: 'campaigns/:campaignId',
+        element: <CampaignDetailPage />,
       },
       {
         path: 'shared-links/:token',
