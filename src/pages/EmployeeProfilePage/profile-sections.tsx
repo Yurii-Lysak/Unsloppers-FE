@@ -6,12 +6,14 @@ import type {
   ManagementNotesSection as ManagementNotesSectionData,
   ProfileSectionEnvelope,
   ProjectsSection,
+  RisksSection as RisksSectionData,
   SectionAccessLevel,
   SectionId,
   TimelineSection,
 } from '@/types/employee-profile'
 import { CustomFieldsSectionCard } from './components/CustomFieldsSection/CustomFieldsSection'
 import { ManagementNotesSectionCard } from './components/ManagementNotesSection/ManagementNotesSection'
+import { RisksSectionCard } from './components/RisksSection/RisksSection'
 
 export const PROFILE_SECTION_ORDER: SectionId[] = [
   'S1',
@@ -34,6 +36,7 @@ export const PROFILE_SECTION_ORDER: SectionId[] = [
 
 export const PROFILE_SECTION_TITLE_KEYS: Partial<Record<SectionId, string>> = {
   S1: 'employeeProfile.sections.identity',
+  S6: 'employeeProfile.sections.risks',
   S7: 'employeeProfile.sections.managementNotes',
   S9: 'employeeProfile.sections.timeline',
   S10: 'employeeProfile.sections.leaves',
@@ -61,6 +64,13 @@ type SectionRenderer = (props: {
 export const PROFILE_SECTION_RENDERERS: Partial<Record<SectionId, SectionRenderer>> =
   {
     S1: () => null,
+    S6: ({ employeeId, section, accessLevel }) => (
+      <RisksSectionCard
+        employeeId={employeeId}
+        section={section as ProfileSectionEnvelope<RisksSectionData>}
+        accessLevel={accessLevel}
+      />
+    ),
     S7: ({ employeeId, section, accessLevel }) => (
       <ManagementNotesSectionCard
         employeeId={employeeId}

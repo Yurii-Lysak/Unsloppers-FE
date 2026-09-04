@@ -45,7 +45,7 @@ const managerProfile = {
       accessLevel: 'RW',
       data: { displayName: 'Anton Savchenko', manager: null, peoplePartner: null },
     },
-    S6: { accessLevel: 'RW', status: 'unavailable' },
+    S6: { accessLevel: 'RW', data: { records: [] } },
     S9: { accessLevel: 'RW', data: { events: [] } },
     S10: { accessLevel: 'R', status: 'unavailable' },
   },
@@ -100,6 +100,7 @@ test.describe('Employee profile assembly', () => {
 
     await expect(page.getByTestId('profile-section-s1')).toBeVisible()
     await expect(page.getByTestId('profile-section-s6')).toBeVisible()
+    await expect(page.getByTestId('risks-section')).toBeVisible()
     await expect(page.getByTestId('profile-section-s9')).toBeVisible()
     await expect(page.getByTestId('profile-section-s11')).toHaveCount(0)
   })

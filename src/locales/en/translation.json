@@ -158,6 +158,12 @@
         "error": "Could not delete management note. Try again."
       }
     },
+    "risks": {
+      "create": {
+        "success": "Risk record added.",
+        "error": "Could not add risk record. Try again."
+      }
+    },
     "viewingAs": "Viewing as {{role}}",
     "header": {
       "manager": "Manager",
@@ -167,6 +173,7 @@
     "emptySection": "No records yet.",
     "sections": {
       "identity": "Identity",
+      "risks": "Risks",
       "managementNotes": "Management notes",
       "timeline": "Career timeline",
       "leaves": "Leaves and absences",
@@ -184,6 +191,31 @@
       "FullAccess": "Full access"
     },
     "unavailableSection": "Temporarily unavailable",
+    "s6": {
+      "empty": "No risk history recorded.",
+      "currentLevel": "Current level: {{level}}",
+      "addRecord": "Record risk",
+      "level": "Risk level",
+      "description": "Description",
+      "details": "Details",
+      "recordedAt": "Date recorded",
+      "saveFailed": "Could not save risk record. Try again.",
+      "levels": {
+        "low": "Low",
+        "need_attention": "Need attention",
+        "medium": "Medium",
+        "high": "High",
+        "leaver": "Leaver"
+      },
+      "validation": {
+        "descriptionRequired": "Description is required.",
+        "descriptionTooLong": "Description must be at most 500 characters.",
+        "detailsRequired": "Details are required.",
+        "detailsTooLong": "Details must be at most 5,000 characters.",
+        "recordedAtRequired": "Date recorded is required.",
+        "recordedAtInvalid": "Date recorded must be a valid calendar date."
+      }
+    },
     "s7": {
       "gated": "A management note exists here. Not shared with your role.",
       "toggleVisibleToEmployee": "Visible to employee",
