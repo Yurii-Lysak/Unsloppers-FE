@@ -50,6 +50,40 @@ export interface ManagementNotesSection {
   hasHiddenNotes?: boolean
 }
 
+export type RiskLevel =
+  | 'low'
+  | 'need_attention'
+  | 'medium'
+  | 'high'
+  | 'leaver'
+
+export interface RiskRecordAuthor {
+  id: string
+  displayName: string
+}
+
+export interface RiskRecord {
+  id: string
+  level: RiskLevel
+  description: string
+  details: string
+  recordedAt: string
+  author: RiskRecordAuthor
+  createdAt: string
+}
+
+export interface RisksSection {
+  records: RiskRecord[]
+  currentLevel?: RiskLevel
+}
+
+export interface CreateRiskRecordPayload {
+  level: RiskLevel
+  description: string
+  details: string
+  recordedAt: string
+}
+
 export interface CreateManagementNotePayload {
   content: string
   visibleForEmployee?: boolean
