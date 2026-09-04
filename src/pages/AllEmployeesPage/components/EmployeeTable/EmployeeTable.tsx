@@ -10,8 +10,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { BUILTIN_FIELD_IDS, type EmployeeListResponse } from '@/types/employees'
+import { BUILTIN_FIELD_IDS, type EmployeeListResponse, type FieldValue } from '@/types/employees'
 import { ColumnFilterPopover } from '../ColumnFilterPopover/ColumnFilterPopover'
+import { EditableCell } from '../EditableCell/EditableCell'
 import { formatCellValue } from '../../hooks/useAllEmployeesPage'
 
 interface EmployeeTableProps {
@@ -32,6 +33,8 @@ interface EmployeeTableProps {
         value: import('@/types/employees').FieldValue | string[]
       }
     | undefined
+  onSaveField: (employeeId: string, fieldId: string, value: FieldValue) => Promise<void>
+  isSavingField?: boolean
 }
 
 export const EmployeeTable = ({
@@ -42,6 +45,8 @@ export const EmployeeTable = ({
   onApplyFilter,
   onClearFilter,
   activeFilterForField,
+  onSaveField,
+  isSavingField = false,
 }: EmployeeTableProps) => {
   const { t } = useTranslation()
 
@@ -55,6 +60,9 @@ export const EmployeeTable = ({
       <ArrowUp className="size-3.5" />
     )
   }
+
+  const isWritable = (row: EmployeeListResponse['rows'][number], fieldId: string) =>
+    row.writableFieldIds?.includes(fieldId) ?? false
 
   return (
     <Table data-testid="directory-table">
@@ -114,7 +122,14 @@ export const EmployeeTable = ({
                   </TableCell>
                 ) : (
                   <TableCell key={field.id}>
-                    {formatCellValue(row.cells[field.id], t)}
+                    <EditableCell
+                      field={field}
+                      value={row.cells[field.id] ?? null}
+                      writable={isWritable(row, field.id)}
+                      displayValue={formatCellValue(row.cells[field.id], t)}
+                      onSave={value => onSaveField(row.employeeId, field.id, value)}
+                      isSavingExternal={isSavingField}
+                    />
                   </TableCell>
                 ),
               )}

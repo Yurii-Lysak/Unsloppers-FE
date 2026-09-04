@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { useEmployeesListData } from '@/hooks/data/useEmployeesData'
+import { useEmployeesListData, useUpdateEmployeeFieldData } from '@/hooks/data/useEmployeesData'
 import type {
   EmployeeFieldFilter,
   EmployeeListQuery,
@@ -89,6 +89,9 @@ export const buildDirectoryDisplayData = (
   fields: listData.fields.filter(field => selectedColumnIds.includes(field.id)),
   rows: listData.rows.map(row => ({
     employeeId: row.employeeId,
+    writableFieldIds: row.writableFieldIds?.filter(fieldId =>
+      selectedColumnIds.includes(fieldId),
+    ),
     cells: Object.fromEntries(
       selectedColumnIds
         .filter(fieldId => fieldId in row.cells)
@@ -214,6 +217,7 @@ export const useAllEmployeesPage = () => {
 
   const { employeesList, isEmployeesLoading, isEmployeesError } =
     useEmployeesListData(query)
+  const { saveEmployeeField, isSavingField } = useUpdateEmployeeFieldData(query)
 
   const allFields = employeesList?.fields ?? []
   const visibleColumnIds = selectedColumnIds(allFields.map(field => field.id))
@@ -250,6 +254,8 @@ export const useAllEmployeesPage = () => {
     totalPages,
     allFields,
     visibleColumnIds,
+    saveEmployeeField,
+    isSavingField,
   }
 }
 
