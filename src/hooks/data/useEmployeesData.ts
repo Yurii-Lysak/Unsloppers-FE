@@ -4,7 +4,8 @@ import {
   useSetEmployeeFunctionalRoles,
 } from '@/api/hooks/useEmployeeFunctionalRoles'
 import { useEmployeeProfile } from '@/api/hooks/useEmployeeProfile'
-import type { EmployeeListQuery } from '@/types/employees'
+import { useUpdateEmployeeField } from '@/api/hooks/useUpdateEmployeeField'
+import type { EmployeeListQuery, FieldValue } from '@/types/employees'
 
 export const useEmployeesListData = (query: EmployeeListQuery) => {
   const {
@@ -56,5 +57,22 @@ export const useEmployeeFunctionalRolesData = (
     isAssignedRolesError,
     saveEmployeeRoles,
     isSavingRoles: saveRolesMutation.isPending,
+  }
+}
+
+export const useUpdateEmployeeFieldData = (query: EmployeeListQuery) => {
+  const updateFieldMutation = useUpdateEmployeeField(query)
+
+  const saveEmployeeField = async (
+    employeeId: string,
+    fieldId: string,
+    value: FieldValue,
+  ) => {
+    await updateFieldMutation.mutateAsync({ employeeId, fieldId, value })
+  }
+
+  return {
+    saveEmployeeField,
+    isSavingField: updateFieldMutation.isPending,
   }
 }

@@ -1,5 +1,11 @@
 import { apiClient } from '@/api/client'
-import type { EmployeeListQuery, EmployeeListResponse, EmployeeSummary } from '@/types/employees'
+import type {
+  EmployeeFieldUpdate,
+  EmployeeListQuery,
+  EmployeeListResponse,
+  EmployeeSummary,
+  FieldValue,
+} from '@/types/employees'
 import type { FunctionalRole } from '@/types/functional-roles'
 
 class EmployeeApiService {
@@ -30,6 +36,17 @@ class EmployeeApiService {
     return apiClient.put<FunctionalRole[]>(`/api/v1/employees/${employeeId}/functional-roles`, {
       roleIds,
     })
+  }
+
+  public updateEmployeeField(
+    employeeId: string,
+    fieldId: string,
+    value: FieldValue,
+  ): Promise<EmployeeFieldUpdate> {
+    return apiClient.patch<EmployeeFieldUpdate>(
+      `/api/v1/employees/${employeeId}/fields/${fieldId}`,
+      { value },
+    )
   }
 }
 

@@ -67,6 +67,11 @@
       "lte": "Less than or equal",
       "contains": "Contains",
       "in": "In"
+    },
+    "inlineEdit": {
+      "save": "Save",
+      "saveSuccess": "Changes saved.",
+      "saveFailed": "Couldn't save. Try again."
     }
   },
   "adminRoles": {

@@ -26,6 +26,8 @@ export const AllEmployeesPage = () => {
     totalPages,
     allFields,
     visibleColumnIds,
+    saveEmployeeField,
+    isSavingField,
   } = useAllEmployeesPage()
 
   return (
@@ -103,6 +105,8 @@ export const AllEmployeesPage = () => {
           onApplyFilter={upsertFilter}
           onClearFilter={clearFilter}
           activeFilterForField={activeFilterForField}
+          onSaveField={saveEmployeeField}
+          isSavingField={isSavingField}
         />
       )}
     </div>

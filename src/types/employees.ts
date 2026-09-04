@@ -29,6 +29,7 @@ export interface FieldSpec {
   source: FieldSource
   sortable: boolean
   filterable: boolean
+  editable?: boolean
   visibility?: 'management' | 'employee' | 'colleague'
   options?: string[]
 }
@@ -42,6 +43,13 @@ export interface EmployeeFieldFilter {
 export interface EmployeeRow {
   employeeId: string
   cells: Record<string, FieldValue>
+  writableFieldIds?: string[]
+}
+
+export interface EmployeeFieldUpdate {
+  employeeId: string
+  fieldId: string
+  value: FieldValue
 }
 
 export interface EmployeeListResponse {
