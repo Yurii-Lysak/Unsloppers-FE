@@ -25,6 +25,19 @@ const valueToDraft = (value: FieldValue): string => {
   return String(value)
 }
 
+const fieldValuesEqual = (left: FieldValue, right: FieldValue): boolean => {
+  if (left === right) {
+    return true
+  }
+  if (left === null || right === null) {
+    return false
+  }
+  if (Array.isArray(left) && Array.isArray(right)) {
+    return left.length === right.length && left.every((entry, index) => entry === right[index])
+  }
+  return false
+}
+
 export const EditableCell = ({
   field,
   value,
@@ -53,7 +66,7 @@ export const EditableCell = ({
     setIsEditing(false)
   }, [value])
 
-  const parseDraftValue = (): FieldValue => {
+  const parseDraftValue = useCallback((): FieldValue => {
     if (field.type === 'boolean') {
       return draft === 'true'
     }
@@ -71,11 +84,15 @@ export const EditableCell = ({
       return draft.length > 0 ? draft : null
     }
     return draft.length > 0 ? draft : null
-  }
+  }, [draft, field.type, selectedOptions])
 
   const commitWithValue = useCallback(
     async (nextValue: FieldValue) => {
       if (isBusy) {
+        return
+      }
+      if (fieldValuesEqual(nextValue, value)) {
+        setIsEditing(false)
         return
       }
       setIsSaving(true)
@@ -90,12 +107,12 @@ export const EditableCell = ({
         setIsSaving(false)
       }
     },
-    [isBusy, onSave],
+    [isBusy, onSave, value],
   )
 
   const commitEdit = useCallback(async () => {
     await commitWithValue(parseDraftValue())
-  }, [commitWithValue, draft, field.type, selectedOptions])
+  }, [commitWithValue, parseDraftValue])
 
   const startEdit = () => {
     if (!writable || isBusy) {
@@ -107,6 +124,18 @@ export const EditableCell = ({
     )
     setIsEditing(true)
     window.setTimeout(() => inputRef.current?.focus(), 0)
+  }
+
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'Escape') {
+      event.preventDefault()
+      cancelEdit()
+      return
+    }
+    if (event.key === 'Enter') {
+      event.preventDefault()
+      void commitEdit()
+    }
   }
 
   if (!writable || !field.editable) {
@@ -130,56 +159,51 @@ export const EditableCell = ({
     )
   }
 
-  const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === 'Escape') {
-      event.preventDefault()
-      cancelEdit()
-    }
-    if (event.key === 'Enter') {
-      event.preventDefault()
-      void commitEdit()
-    }
-  }
-
   if (field.type === 'boolean') {
     return (
-      <Select
-        value={draft}
-        disabled={isBusy}
-        onValueChange={nextValue => {
-          setDraft(nextValue)
-          void commitWithValue(nextValue === 'true')
-        }}
-        options={[
-          { value: 'true', label: t('directory.boolean.true') },
-          { value: 'false', label: t('directory.boolean.false') },
-        ]}
-        data-testid={`directory-cell-editor-${field.id}`}
-      />
+      <div onKeyDown={handleKeyDown} data-testid={`directory-cell-editor-${field.id}`}>
+        <Select
+          value={draft}
+          disabled={isBusy}
+          onValueChange={nextValue => {
+            setDraft(nextValue)
+            void commitWithValue(nextValue === 'true')
+          }}
+          options={[
+            { value: 'true', label: t('directory.boolean.true') },
+            { value: 'false', label: t('directory.boolean.false') },
+          ]}
+        />
+      </div>
     )
   }
 
   if (field.type === 'select' && (field.options?.length ?? 0) > 0) {
     return (
-      <Select
-        value={draft}
-        disabled={isBusy}
-        onValueChange={nextValue => {
-          setDraft(nextValue)
-          void commitWithValue(nextValue.length > 0 ? nextValue : null)
-        }}
-        options={[
-          { value: '', label: t('directory.selectOption') },
-          ...(field.options ?? []).map(option => ({ value: option, label: option })),
-        ]}
-        data-testid={`directory-cell-editor-${field.id}`}
-      />
+      <div onKeyDown={handleKeyDown} data-testid={`directory-cell-editor-${field.id}`}>
+        <Select
+          value={draft}
+          disabled={isBusy}
+          onValueChange={nextValue => {
+            setDraft(nextValue)
+            void commitWithValue(nextValue.length > 0 ? nextValue : null)
+          }}
+          options={[
+            { value: '', label: t('directory.selectOption') },
+            ...(field.options ?? []).map(option => ({ value: option, label: option })),
+          ]}
+        />
+      </div>
     )
   }
 
   if (field.type === 'multi_select' && (field.options?.length ?? 0) > 0) {
     return (
-      <div className="space-y-1" data-testid={`directory-cell-editor-${field.id}`}>
+      <div
+        className="space-y-1"
+        onKeyDown={handleKeyDown}
+        data-testid={`directory-cell-editor-${field.id}`}
+      >
         {(field.options ?? []).map(option => (
           <label key={option} className="flex items-center gap-2 text-sm">
             <Checkbox
