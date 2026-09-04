@@ -71,6 +71,23 @@
         "dueDateRequired": "Choose a due date.",
         "dueDateInvalid": "Due date must be a valid calendar date."
       }
+    },
+    "detail": {
+      "back": "Back to campaigns",
+      "loading": "Loading campaign…",
+      "summary": "Campaign details"
+    },
+    "audience": {
+      "title": "Audience",
+      "save": "Save audience",
+      "saveSuccess": "Audience saved.",
+      "count": "{{count}} recipients in preview",
+      "addEmployee": "Add employee",
+      "selectEmployee": "Select an employee",
+      "remove": "Remove",
+      "actions": "Actions",
+      "loadingPreview": "Loading audience preview…",
+      "emptyPreview": "No recipients yet. Add filters or employees, then save."
     }
   },
   "permissions": {

@@ -1,5 +1,6 @@
 import { Megaphone } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/Button/Button'
 import { cn } from '@/lib/utils'
 import { CampaignFormDialog } from './components/CampaignFormDialog/CampaignFormDialog'
@@ -7,14 +8,13 @@ import { useCampaignsPage } from './hooks/useCampaignsPage'
 
 export const CampaignsPage = () => {
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const {
     campaignsList,
     isCampaignsLoading,
     isCampaignsError,
-    dialogCampaign,
     dialogOpen,
     openCreate,
-    openEdit,
     closeDialog,
   } = useCampaignsPage()
 
@@ -62,7 +62,11 @@ export const CampaignsPage = () => {
               <li key={campaign.id}>
                 <button
                   type="button"
-                  onClick={() => isDraft && openEdit(campaign)}
+                  onClick={() =>
+                    isDraft
+                      ? navigate(`/campaigns/${campaign.id}`)
+                      : undefined
+                  }
                   disabled={!isDraft}
                   aria-disabled={!isDraft}
                   className={cn(
@@ -91,7 +95,7 @@ export const CampaignsPage = () => {
       )}
 
       <CampaignFormDialog
-        campaign={dialogCampaign}
+        campaign={undefined}
         open={dialogOpen}
         onClose={closeDialog}
       />
