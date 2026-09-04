@@ -62,6 +62,20 @@
   --sidebar-accent-foreground: oklch(0.205 0.008 286);
   --sidebar-border: oklch(0.898 0.003 286);
   --sidebar-ring: oklch(0.398 0.045 286);
+
+  /* Risk severity + success tokens (DESIGN.md) */
+  --success: oklch(0.6 0.15 145);
+  --success-foreground: oklch(0.985 0 0);
+  --risk-low: oklch(0.6 0.15 145);
+  --risk-low-foreground: oklch(0.985 0 0);
+  --risk-attention: oklch(0.75 0.15 90);
+  --risk-attention-foreground: oklch(0.205 0.008 286);
+  --risk-medium: oklch(0.72 0.19 60);
+  --risk-medium-foreground: oklch(0.205 0.008 286);
+  --risk-high: oklch(0.577 0.245 27.325);
+  --risk-high-foreground: oklch(0.985 0 0);
+  --risk-leaver: oklch(0.35 0.02 286);
+  --risk-leaver-foreground: oklch(0.985 0 0);
 }
 
 .dark {
@@ -103,6 +117,19 @@
   --sidebar-accent-foreground: oklch(0.985 0.001 286);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.708 0.012 286);
+
+  --success: oklch(0.7 0.16 145);
+  --success-foreground: oklch(0.145 0.008 286);
+  --risk-low: oklch(0.68 0.16 145);
+  --risk-low-foreground: oklch(0.145 0.008 286);
+  --risk-attention: oklch(0.8 0.15 90);
+  --risk-attention-foreground: oklch(0.145 0.008 286);
+  --risk-medium: oklch(0.76 0.18 60);
+  --risk-medium-foreground: oklch(0.145 0.008 286);
+  --risk-high: oklch(0.65 0.22 27.325);
+  --risk-high-foreground: oklch(0.145 0.008 286);
+  --risk-leaver: oklch(0.5 0.02 286);
+  --risk-leaver-foreground: oklch(0.985 0.001 286);
 }
 
 @theme inline {
@@ -140,6 +167,19 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-risk-low: var(--risk-low);
+  --color-risk-low-foreground: var(--risk-low-foreground);
+  --color-risk-attention: var(--risk-attention);
+  --color-risk-attention-foreground: var(--risk-attention-foreground);
+  --color-risk-medium: var(--risk-medium);
+  --color-risk-medium-foreground: var(--risk-medium-foreground);
+  --color-risk-high: var(--risk-high);
+  --color-risk-high-foreground: var(--risk-high-foreground);
+  --color-risk-leaver: var(--risk-leaver);
+  --color-risk-leaver-foreground: var(--risk-leaver-foreground);
 }
 
 @layer base {

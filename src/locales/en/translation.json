@@ -207,6 +207,10 @@
         "high": "High",
         "leaver": "Leaver"
       },
+      "trend": {
+        "worsening": "Risk worsening",
+        "improving": "Risk improving"
+      },
       "validation": {
         "descriptionRequired": "Description is required.",
         "descriptionTooLong": "Description must be at most 500 characters.",
