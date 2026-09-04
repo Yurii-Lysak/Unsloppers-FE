@@ -1,14 +1,27 @@
+import { useEffect, useRef, useState } from 'react'
 import { Users } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { toast } from 'sonner'
 import { Button } from '@/components/Button/Button'
+import { ConfirmationModal } from '@/components/ConfirmationModal/ConfirmationModal'
+import { useSavedViewsData } from '@/hooks/data/useSavedViewsData'
 import { EmployeeTable } from './components/EmployeeTable/EmployeeTable'
 import { ColumnPicker } from './components/ColumnPicker/ColumnPicker'
+import { SaveViewDialog } from './components/SaveViewDialog/SaveViewDialog'
+import { ShareViewDialog } from './components/ShareViewDialog/ShareViewDialog'
+import { ViewTabs } from './components/ViewTabs/ViewTabs'
 import { useAllEmployeesPage } from './hooks/useAllEmployeesPage'
+import type { CreateSavedViewInput, SavedView } from '@/types/saved-views'
 
 export const AllEmployeesPage = () => {
   const { t } = useTranslation()
+  const [isSaveDialogOpen, setIsSaveDialogOpen] = useState(false)
+  const [shareView, setShareView] = useState<SavedView | null>(null)
+  const [deleteView, setDeleteView] = useState<SavedView | null>(null)
+
   const {
     query,
+    activeViewId,
     setPage,
     toggleSort,
     upsertFilter,
@@ -16,6 +29,9 @@ export const AllEmployeesPage = () => {
     clearAllFilters,
     activeFilterForField,
     setVisibleColumnIds,
+    selectAllTab,
+    applySavedView,
+    getCurrentViewConfig,
     isEmployeesLoading,
     isEmployeesError,
     employeesList,
@@ -30,6 +46,49 @@ export const AllEmployeesPage = () => {
     isSavingField,
   } = useAllEmployeesPage()
 
+  const {
+    savedViews,
+    isSavedViewsLoading,
+    createSavedView,
+    deleteSavedView,
+    shareSavedView,
+    isCreatingSavedView,
+    isSharingSavedView,
+  } = useSavedViewsData()
+
+  const handleSaveView = async (input: CreateSavedViewInput) => {
+    const created = await createSavedView(input)
+    applySavedView(created)
+  }
+
+  const handleDeleteView = async () => {
+    if (!deleteView) {
+      return
+    }
+    await deleteSavedView(deleteView.id)
+    if (activeViewId === deleteView.id) {
+      selectAllTab()
+    }
+    setDeleteView(null)
+  }
+
+  // Story 3.4 — the server drops a saved view's stored filters entirely when
+  // they reference a field this viewer can't see (e.g. a shared view with a
+  // management-only filter). Notify once per view/result rather than on
+  // every render.
+  const lastNoticeKeyRef = useRef<string | null>(null)
+  useEffect(() => {
+    if (!employeesList?.filtersHidden) {
+      return
+    }
+    const noticeKey = `${activeViewId ?? 'all'}:${JSON.stringify(query.filters)}`
+    if (lastNoticeKeyRef.current === noticeKey) {
+      return
+    }
+    lastNoticeKeyRef.current = noticeKey
+    toast.info(t('directory.savedViews.filtersHiddenNotice'))
+  }, [employeesList?.filtersHidden, activeViewId, query.filters, t])
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between gap-4 border-b border-border pb-4">
@@ -43,6 +102,18 @@ export const AllEmployeesPage = () => {
           {t('directory.count', { shown: shownCount, total: totalCount })}
         </p>
       </div>
+
+      {!isSavedViewsLoading && (
+        <ViewTabs
+          savedViews={savedViews ?? []}
+          activeViewId={activeViewId}
+          onSelectAll={selectAllTab}
+          onSelectView={applySavedView}
+          onSaveCurrent={() => setIsSaveDialogOpen(true)}
+          onShareView={setShareView}
+          onDeleteView={setDeleteView}
+        />
+      )}
 
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-2">
@@ -109,6 +180,45 @@ export const AllEmployeesPage = () => {
           isSavingField={isSavingField}
         />
       )}
+
+      <SaveViewDialog
+        open={isSaveDialogOpen}
+        onOpenChange={setIsSaveDialogOpen}
+        currentConfig={getCurrentViewConfig(visibleColumnIds)}
+        onSave={handleSaveView}
+        isSaving={isCreatingSavedView}
+      />
+
+      <ShareViewDialog
+        open={shareView !== null}
+        onOpenChange={open => {
+          if (!open) {
+            setShareView(null)
+          }
+        }}
+        view={shareView}
+        onShare={async (viewId, recipientEmployeeIds) => {
+          await shareSavedView(viewId, { recipientEmployeeIds })
+        }}
+        isSharing={isSharingSavedView}
+      />
+
+      <ConfirmationModal
+        open={deleteView !== null}
+        onOpenChange={open => {
+          if (!open) {
+            setDeleteView(null)
+          }
+        }}
+        title={t('directory.savedViews.deleteDialogTitle')}
+        description={t('directory.savedViews.deleteDialogDescription', {
+          name: deleteView?.name ?? '',
+        })}
+        confirmLabel={t('directory.savedViews.delete')}
+        cancelLabel={t('directory.savedViews.cancel')}
+        confirmVariant="destructive"
+        onConfirm={handleDeleteView}
+      />
     </div>
   )
 }

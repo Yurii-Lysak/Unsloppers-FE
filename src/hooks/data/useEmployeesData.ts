@@ -3,6 +3,7 @@ import {
   useEmployeeFunctionalRoles,
   useSetEmployeeFunctionalRoles,
 } from '@/api/hooks/useEmployeeFunctionalRoles'
+import { useEmployeeLookup } from '@/api/hooks/useEmployeeLookup'
 import { useEmployeeProfile } from '@/api/hooks/useEmployeeProfile'
 import { useUpdateEmployeeField } from '@/api/hooks/useUpdateEmployeeField'
 import type { EmployeeListQuery, FieldValue } from '@/types/employees'
@@ -57,6 +58,20 @@ export const useEmployeeFunctionalRolesData = (
     isAssignedRolesError,
     saveEmployeeRoles,
     isSavingRoles: saveRolesMutation.isPending,
+  }
+}
+
+export const useEmployeeLookupData = (enabled: boolean) => {
+  const {
+    data: employeeOptions,
+    isLoading: isEmployeeLookupLoading,
+    isError: isEmployeeLookupError,
+  } = useEmployeeLookup(enabled)
+
+  return {
+    employeeOptions,
+    isEmployeeLookupLoading,
+    isEmployeeLookupError,
   }
 }
 

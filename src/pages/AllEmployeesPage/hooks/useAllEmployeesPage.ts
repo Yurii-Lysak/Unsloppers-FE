@@ -8,6 +8,7 @@ import type {
   FilterOperator,
   SortOrder,
 } from '@/types/employees'
+import type { CreateSavedViewInput, SavedView } from '@/types/saved-views'
 
 const DEFAULT_PAGE = 1
 const DEFAULT_PAGE_SIZE = 50
@@ -122,6 +123,8 @@ export const useAllEmployeesPage = () => {
     }
   }, [searchParams])
 
+  const activeViewId = searchParams.get('view')
+
   const updateParams = useCallback(
     (updates: Record<string, string | undefined>) => {
       setSearchParams(prev => {
@@ -209,6 +212,44 @@ export const useAllEmployeesPage = () => {
     [updateParams],
   )
 
+  const selectAllTab = useCallback(() => {
+    updateParams({
+      view: undefined,
+      filters: undefined,
+      columns: undefined,
+      sort: undefined,
+      order: undefined,
+      page: '1',
+    })
+  }, [updateParams])
+
+  const applySavedView = useCallback(
+    (view: SavedView) => {
+      updateParams({
+        view: view.id,
+        filters:
+          view.filters.length > 0 ? JSON.stringify(view.filters) : undefined,
+        columns:
+          view.columnIds.length > 0 ? JSON.stringify(view.columnIds) : undefined,
+        sort: view.sort,
+        order: view.order,
+        page: '1',
+      })
+    },
+    [updateParams],
+  )
+
+  const getCurrentViewConfig = useCallback(
+    (columnIds: string[]): CreateSavedViewInput => ({
+      name: '',
+      filters: parseFilters(searchParams.get('filters')),
+      columnIds,
+      sort: searchParams.get('sort') ?? undefined,
+      order: parseSortOrder(searchParams.get('order')),
+    }),
+    [searchParams],
+  )
+
   const selectedColumnIds = useCallback(
     (allFieldIds: string[]) =>
       parseColumnIds(searchParams.get('columns'), allFieldIds),
@@ -236,6 +277,7 @@ export const useAllEmployeesPage = () => {
 
   return {
     query,
+    activeViewId,
     setPage,
     toggleSort,
     upsertFilter,
@@ -243,6 +285,9 @@ export const useAllEmployeesPage = () => {
     clearAllFilters,
     activeFilterForField,
     setVisibleColumnIds,
+    selectAllTab,
+    applySavedView,
+    getCurrentViewConfig,
     employeesList,
     isEmployeesLoading,
     isEmployeesError,
