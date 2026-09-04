@@ -28,7 +28,50 @@
     "expand": "Expand sidebar"
   },
   "campaigns": {
-    "comingSoon": "Campaigns (coming soon)"
+    "title": "Campaigns",
+    "newCampaign": "New campaign",
+    "createCampaign": "Create campaign",
+    "editCampaign": "Edit campaign",
+    "empty": "No campaigns yet.",
+    "loading": "Loading campaigns…",
+    "loadFailed": "Could not load campaigns.",
+    "save": "Save",
+    "saving": "Saving…",
+    "cancel": "Cancel",
+    "saveFailed": "Couldn't save. Try again.",
+    "status": {
+      "draft": "Draft",
+      "active": "Active"
+    },
+    "create": {
+      "success": "Campaign created.",
+      "error": "Could not create the campaign. Try again."
+    },
+    "update": {
+      "success": "Campaign updated.",
+      "error": "Could not update the campaign. Try again."
+    },
+    "form": {
+      "title": "Title",
+      "description": "Short description",
+      "purpose": "Purpose",
+      "link": "Link to the external form",
+      "linkPlaceholder": "https://forms.office.com/...",
+      "dueDate": "Due date",
+      "validation": {
+        "titleRequired": "Enter a title.",
+        "titleTooLong": "Title must be at most 200 characters.",
+        "descriptionRequired": "Enter a short description.",
+        "descriptionTooLong": "Description must be at most 500 characters.",
+        "purposeRequired": "Enter a purpose.",
+        "purposeTooLong": "Purpose must be at most 2,000 characters.",
+        "linkRequired": "Enter a link to the external form.",
+        "linkTooLong": "Link must be at most 2,048 characters.",
+        "linkInvalid": "Enter a valid URL, including https://.",
+        "dueDateRequired": "Choose a due date.",
+        "dueDateInvalid": "Due date must be a valid calendar date."
+      }
+    }
   },
   "permissions": {
     "loading": "Loading permissions…",

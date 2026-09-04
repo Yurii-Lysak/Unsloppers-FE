@@ -1,0 +1,68 @@
+import type { Page } from '@playwright/test'
+import {
+  createCampaignFixture,
+  mockPermissions,
+  mockSession,
+  type CampaignFixture,
+  validCampaignFormInput,
+} from './fixtures'
+
+const campaignsListPath = /\/api\/v1\/campaigns$/
+
+export const setupCampaignsFlow = async (page: Page) => {
+  const campaigns: CampaignFixture[] = []
+
+  await page.route('**/api/v1/auth/session', async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(mockSession),
+    })
+  })
+
+  await page.route('**/api/v1/permissions/me', async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(mockPermissions),
+    })
+  })
+
+  await page.route('**/api/v1/campaigns**', async route => {
+    const request = route.request()
+    const url = request.url()
+    const method = request.method()
+
+    if (method === 'GET' && campaignsListPath.test(url)) {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(campaigns),
+      })
+      return
+    }
+
+    if (method === 'POST' && campaignsListPath.test(url)) {
+      const input = request.postDataJSON() as typeof validCampaignFormInput
+      const created = createCampaignFixture({
+        id: `campaign-${campaigns.length + 1}`,
+        ...input,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      })
+      campaigns.unshift(created)
+      await route.fulfill({
+        status: 201,
+        contentType: 'application/json',
+        body: JSON.stringify(created),
+      })
+      return
+    }
+
+    await route.fallback()
+  })
+
+  return { campaigns }
+}
+
+export { validCampaignFormInput }

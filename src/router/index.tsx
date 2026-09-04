@@ -5,7 +5,7 @@ import { HomePage } from '@/pages/HomePage/HomePage'
 import { ErrorPage } from '@/pages/ErrorPage/ErrorPage'
 import { LoginPage } from '@/pages/LoginPage/LoginPage'
 import { AllEmployeesPage } from '@/pages/AllEmployeesPage/AllEmployeesPage'
-import { CampaignsStubPage } from '@/pages/CampaignsStubPage/CampaignsStubPage'
+import { CampaignsPage } from '@/pages/CampaignsPage/CampaignsPage'
 import { AdminRolesPage } from '@/pages/AdminRolesPage/AdminRolesPage'
 import { EmployeeProfilePage } from '@/pages/EmployeeProfilePage/EmployeeProfilePage'
 import { SharedLinkViewPage } from '@/pages/SharedLinkViewPage/SharedLinkViewPage'
@@ -56,7 +56,7 @@ const router = createBrowserRouter([
       },
       {
         path: 'campaigns',
-        element: <CampaignsStubPage />,
+        element: <CampaignsPage />,
       },
       {
         path: 'shared-links/:token',
