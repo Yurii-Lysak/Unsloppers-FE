@@ -6,6 +6,20 @@ const apiBaseUrl = testEnv.api.baseUrl
 const employeeId = '11111111-1111-4111-8111-111111111102'
 const profileUrl = `${apiBaseUrl}/api/v1/employees/${employeeId}/profile`
 
+const stubRiskRecord = (
+  id: string,
+  level: 'low' | 'need_attention' | 'medium' | 'high' | 'leaver',
+  recordedAt: string,
+) => ({
+  id,
+  level,
+  description: 'Assessment',
+  details: 'Details',
+  recordedAt,
+  author: { id: 'author-1', displayName: 'Manager' },
+  createdAt: `${recordedAt}T10:00:00.000Z`,
+})
+
 const colleagueProfile = {
   employeeId,
   displayName: 'Anton Savchenko',
@@ -45,7 +59,17 @@ const managerProfile = {
       accessLevel: 'RW',
       data: { displayName: 'Anton Savchenko', manager: null, peoplePartner: null },
     },
-    S6: { accessLevel: 'RW', data: { records: [] } },
+    S6: {
+      accessLevel: 'RW',
+      data: {
+        records: [
+          stubRiskRecord('risk-2', 'medium', '2026-01-04'),
+          stubRiskRecord('risk-1', 'low', '2026-01-01'),
+        ],
+        currentLevel: 'medium',
+        trend: 'up',
+      },
+    },
     S9: { accessLevel: 'RW', data: { events: [] } },
     S10: { accessLevel: 'R', status: 'unavailable' },
   },
@@ -101,7 +125,125 @@ test.describe('Employee profile assembly', () => {
     await expect(page.getByTestId('profile-section-s1')).toBeVisible()
     await expect(page.getByTestId('profile-section-s6')).toBeVisible()
     await expect(page.getByTestId('risks-section')).toBeVisible()
+    await expect(page.getByTestId('risk-trend-up')).toBeVisible()
     await expect(page.getByTestId('profile-section-s9')).toBeVisible()
     await expect(page.getByTestId('profile-section-s11')).toHaveCount(0)
+  })
+
+  test('renders down trend arrow in success color for improving risk', async ({
+    page,
+    stubNetworkCall,
+    interceptNetworkCall,
+  }) => {
+    await setupAuthApi(page, { authenticated: true })
+    await stubNetworkCall({
+      url: `${apiBaseUrl}/api/v1/permissions/me`,
+      body: { permissions: [] },
+    })
+    await stubNetworkCall({
+      url: profileUrl,
+      body: {
+        ...managerProfile,
+        sections: {
+          ...managerProfile.sections,
+          S6: {
+            accessLevel: 'RW',
+            data: {
+              records: [
+                stubRiskRecord('risk-2', 'low', '2026-01-04'),
+                stubRiskRecord('risk-1', 'high', '2026-01-01'),
+              ],
+              currentLevel: 'low',
+              trend: 'down',
+            },
+          },
+        },
+      },
+    })
+
+    const profileRequest = interceptNetworkCall({ url: profileUrl, method: 'GET' })
+    await page.goto(`/employees/${employeeId}`)
+    await profileRequest.settled
+
+    const downArrow = page.getByTestId('risk-trend-down')
+    await expect(downArrow).toBeVisible()
+    await expect(downArrow).toHaveClass(/text-success/)
+    await expect(page.getByTestId('risk-trend-up')).toHaveCount(0)
+  })
+
+  test('hides trend arrow when trend is flat', async ({
+    page,
+    stubNetworkCall,
+    interceptNetworkCall,
+  }) => {
+    await setupAuthApi(page, { authenticated: true })
+    await stubNetworkCall({
+      url: `${apiBaseUrl}/api/v1/permissions/me`,
+      body: { permissions: [] },
+    })
+    await stubNetworkCall({
+      url: profileUrl,
+      body: {
+        ...managerProfile,
+        sections: {
+          ...managerProfile.sections,
+          S6: {
+            accessLevel: 'RW',
+            data: {
+              records: [
+                stubRiskRecord('risk-2', 'medium', '2026-01-04'),
+                stubRiskRecord('risk-1', 'medium', '2026-01-01'),
+              ],
+              currentLevel: 'medium',
+              trend: 'flat',
+            },
+          },
+        },
+      },
+    })
+
+    const profileRequest = interceptNetworkCall({ url: profileUrl, method: 'GET' })
+    await page.goto(`/employees/${employeeId}`)
+    await profileRequest.settled
+
+    await expect(page.getByTestId('risks-current-level')).toBeVisible()
+    await expect(page.getByTestId('risk-trend-up')).toHaveCount(0)
+    await expect(page.getByTestId('risk-trend-down')).toHaveCount(0)
+  })
+
+  test('hides trend arrow when trend is absent on first record', async ({
+    page,
+    stubNetworkCall,
+    interceptNetworkCall,
+  }) => {
+    await setupAuthApi(page, { authenticated: true })
+    await stubNetworkCall({
+      url: `${apiBaseUrl}/api/v1/permissions/me`,
+      body: { permissions: [] },
+    })
+    await stubNetworkCall({
+      url: profileUrl,
+      body: {
+        ...managerProfile,
+        sections: {
+          ...managerProfile.sections,
+          S6: {
+            accessLevel: 'RW',
+            data: {
+              records: [stubRiskRecord('risk-1', 'medium', '2026-01-01')],
+              currentLevel: 'medium',
+            },
+          },
+        },
+      },
+    })
+
+    const profileRequest = interceptNetworkCall({ url: profileUrl, method: 'GET' })
+    await page.goto(`/employees/${employeeId}`)
+    await profileRequest.settled
+
+    await expect(page.getByTestId('risks-current-level')).toBeVisible()
+    await expect(page.getByTestId('risk-trend-up')).toHaveCount(0)
+    await expect(page.getByTestId('risk-trend-down')).toHaveCount(0)
   })
 })

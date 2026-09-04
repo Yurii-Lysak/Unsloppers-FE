@@ -75,6 +75,7 @@ export interface RiskRecord {
 export interface RisksSection {
   records: RiskRecord[]
   currentLevel?: RiskLevel
+  trend?: 'up' | 'down' | 'flat'
 }
 
 export interface CreateRiskRecordPayload {

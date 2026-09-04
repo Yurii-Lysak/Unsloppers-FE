@@ -3,11 +3,13 @@ import { Button } from '@/components/Button/Button'
 import { Form } from '@/components/Form/Form'
 import { FormRootError } from '@/components/Form/components/FormRootError/FormRootError'
 import { Input } from '@/components/Input/Input'
+import { RiskBadge } from '@/components/RiskBadge/RiskBadge'
+import { riskLevelLabelKey } from '@/components/RiskBadge/risk-level-styles'
 import { Select } from '@/components/Select/Select'
 import { Textarea } from '@/components/Textarea/Textarea'
+import { TrendArrow } from '@/components/TrendArrow/TrendArrow'
 import type {
   ProfileSectionEnvelope,
-  RiskLevel,
   RiskRecord,
   RisksSection as RisksSectionData,
   SectionAccessLevel,
@@ -22,9 +24,6 @@ interface RisksSectionCardProps {
   accessLevel: Exclude<SectionAccessLevel, 'none'>
 }
 
-const riskLevelLabelKey = (level: RiskLevel): string =>
-  `employeeProfile.s6.levels.${level}`
-
 export const RisksSectionCard = ({
   employeeId,
   section,
@@ -36,17 +35,21 @@ export const RisksSectionCard = ({
     return null
   }
 
-  const { records, currentLevel } = section.data
+  const { records, currentLevel, trend } = section.data
   const canWrite = accessLevel === 'RW'
 
   return (
     <div className="space-y-4" data-testid="risks-section">
       {currentLevel && (
-        <p className="text-sm text-muted-foreground" data-testid="risks-current-level">
-          {t('employeeProfile.s6.currentLevel', {
-            level: t(riskLevelLabelKey(currentLevel)),
-          })}
-        </p>
+        <div
+          className="flex items-center gap-2"
+          data-testid="risks-current-level"
+        >
+          <RiskBadge level={currentLevel} />
+          {records.length >= 2 && (
+            <TrendArrow trend={trend} level={currentLevel} />
+          )}
+        </div>
       )}
 
       {records.length === 0 ? (
