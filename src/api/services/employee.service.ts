@@ -3,6 +3,7 @@ import type {
   EmployeeFieldUpdate,
   EmployeeListQuery,
   EmployeeListResponse,
+  EmployeeLookupOption,
   EmployeeSummary,
   FieldValue,
 } from '@/types/employees'
@@ -26,6 +27,10 @@ class EmployeeApiService {
 
   public getEmployee(employeeId: string): Promise<EmployeeSummary> {
     return apiClient.get<EmployeeSummary>(`/api/v1/employees/${employeeId}`)
+  }
+
+  public getEmployeeLookup(): Promise<EmployeeLookupOption[]> {
+    return apiClient.get<EmployeeLookupOption[]>('/api/v1/employees/lookup')
   }
 
   public getEmployeeFunctionalRoles(employeeId: string): Promise<FunctionalRole[]> {

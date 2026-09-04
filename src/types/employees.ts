@@ -58,6 +58,8 @@ export interface EmployeeListResponse {
   total: number
   page: number
   pageSize: number
+  /** Story 3.4 — true when the server dropped filters this viewer can't see (e.g. a shared saved view). */
+  filtersHidden?: boolean
 }
 
 export interface EmployeeListQuery {
@@ -71,6 +73,12 @@ export interface EmployeeListQuery {
 export interface EmployeeSummary {
   id: string
   displayName: string
+}
+
+/** Story 3.4 — lightweight id+name pair for pickers that need the full roster. */
+export interface EmployeeLookupOption {
+  employeeId: string
+  name: string
 }
 
 export const BUILTIN_FIELD_IDS = {
