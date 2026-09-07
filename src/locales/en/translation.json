@@ -88,6 +88,16 @@
       "actions": "Actions",
       "loadingPreview": "Loading audience preview…",
       "emptyPreview": "No recipients yet. Add filters or employees, then save."
+    },
+    "activate": {
+      "action": "Activate",
+      "activating": "Activating…",
+      "dialogTitle": "Activate this campaign?",
+      "dialogDescription": "This freezes the audience and sends an action item to every recipient. Activation cannot be undone or reverted to draft.",
+      "confirm": "Activate campaign",
+      "success": "Campaign activated.",
+      "invalidAssignees_one": "1 recipient is no longer active. Rebuild the audience and try again.",
+      "invalidAssignees_other": "{{count}} recipients are no longer active. Rebuild the audience and try again."
     }
   },
   "permissions": {
