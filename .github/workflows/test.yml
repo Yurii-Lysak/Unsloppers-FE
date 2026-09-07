@@ -1,0 +1,187 @@
+name: Test
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    # Weekly full-suite burn-in — catches flakiness that a PR's
+    # --only-changed scope would never touch.
+    - cron: '0 3 * * 1'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint-typecheck:
+    name: Lint & typecheck
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Run typecheck
+        run: npm run typecheck
+
+  e2e:
+    name: E2e (shard ${{ matrix.shard }}/2)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    if: github.event_name != 'schedule'
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run e2e shard
+        run: npm test -- --shard=${{ matrix.shard }}/2
+
+      - name: Upload junit report (shard ${{ matrix.shard }})
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: junit-shard-${{ matrix.shard }}
+          path: test-results/junit.xml
+          retention-days: 30
+
+      - name: Upload playwright report (shard ${{ matrix.shard }})
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-shard-${{ matrix.shard }}
+          path: playwright-report/
+          retention-days: 30
+
+  e2e-count-check:
+    name: E2e coverage reconciliation
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: github.event_name != 'schedule'
+    needs: e2e
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Discover total test count
+        id: discovered
+        run: |
+          COUNT=$(npx playwright test --list --reporter=json | node -e "let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>{const r=JSON.parse(d);let n=0;const walk=s=>{for(const sp of s.specs||[])n+=sp.tests?.length||1;for(const c of s.suites||[])walk(c);};for(const s of r.suites||[])walk(s);console.log(n);});")
+          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+
+      - name: Download shard junit reports
+        uses: actions/download-artifact@v4
+        with:
+          pattern: junit-shard-*
+          path: junit-reports
+          merge-multiple: false
+
+      - name: Reconcile discovered vs executed
+        env:
+          DISCOVERED_COUNT: ${{ steps.discovered.outputs.count }}
+        run: |
+          node -e "
+            const fs = require('fs');
+            const path = require('path');
+            const dirs = fs.readdirSync('junit-reports');
+            let executed = 0;
+            for (const dir of dirs) {
+              const file = path.join('junit-reports', dir, 'junit.xml');
+              if (!fs.existsSync(file)) continue;
+              const xml = fs.readFileSync(file, 'utf8');
+              const matches = xml.matchAll(/<testsuite\b[^>]*\btests=\"(\d+)\"/g);
+              for (const m of matches) executed += Number(m[1]);
+            }
+            const discovered = Number(process.env.DISCOVERED_COUNT);
+            console.log('discovered:', discovered, 'executed:', executed);
+            if (discovered === 0) {
+              console.error('Discovery reported zero tests — the discovery step itself is broken.');
+              process.exit(1);
+            }
+            if (executed < discovered) {
+              console.error('Executed fewer tests than discovered — a shard silently ran a subset.');
+              process.exit(1);
+            }
+          "
+
+  burn-in:
+    name: Burn-in
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      # PR: scope burn-in to changed spec files (10 iterations each) — the
+      # full suite is only 71 tests today, but --only-changed is what keeps
+      # this affordable as the suite grows. Weekly cron runs everything, since
+      # that is the only trigger that would ever exercise untouched files.
+      - name: Burn-in changed specs (PR)
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          git fetch origin "$BASE_REF" --depth=1
+          for i in $(seq 1 10); do
+            echo "Burn-in iteration $i/10 (changed specs only)"
+            npx playwright test --only-changed="origin/$BASE_REF" --repeat-each=1 || exit 1
+          done
+
+      - name: Burn-in full suite (weekly cron)
+        if: github.event_name == 'schedule'
+        run: |
+          for i in $(seq 1 10); do
+            echo "Burn-in iteration $i/10 (full suite)"
+            npx playwright test || exit 1
+          done
+
+      - name: Upload burn-in failure artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: burn-in-report
+          path: playwright-report/
+          retention-days: 30
