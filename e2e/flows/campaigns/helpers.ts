@@ -11,7 +11,10 @@ import {
 const campaignsListPath = /\/api\/v1\/campaigns$/
 const campaignDetailPath = /\/api\/v1\/campaigns\/[^/]+$/
 
-export const setupCampaignsFlow = async (page: Page) => {
+export const setupCampaignsFlow = async (
+  page: Page,
+  options?: { activateDelayMs?: number },
+) => {
   const campaigns: CampaignFixture[] = []
 
   await page.route('**/api/v1/auth/session', async route => {
@@ -78,6 +81,34 @@ export const setupCampaignsFlow = async (page: Page) => {
         status: 201,
         contentType: 'application/json',
         body: JSON.stringify(created),
+      })
+      return
+    }
+
+    if (method === 'POST' && /\/activate$/.test(url)) {
+      const segments = url.split('/')
+      const campaignId = segments[segments.length - 2] ?? ''
+      const campaign = campaigns.find(entry => entry.id === campaignId)
+      if (!campaign) {
+        await route.fulfill({ status: 404, body: JSON.stringify({ message: 'Not found' }) })
+        return
+      }
+      if (campaign.status !== 'draft') {
+        await route.fulfill({
+          status: 409,
+          body: JSON.stringify({ message: 'Only draft campaigns can be activated' }),
+        })
+        return
+      }
+      if (options?.activateDelayMs) {
+        await new Promise(resolve => setTimeout(resolve, options.activateDelayMs))
+      }
+      campaign.status = 'active'
+      campaign.updatedAt = new Date().toISOString()
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(campaign),
       })
       return
     }

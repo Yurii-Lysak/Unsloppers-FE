@@ -24,6 +24,7 @@ interface ConfirmationModalProps {
   cancelLabel: ReactNode
   onConfirm: () => void
   confirmVariant?: 'default' | 'destructive'
+  confirmDisabled?: boolean
   contentClassName?: string
 }
 
@@ -36,6 +37,7 @@ export const ConfirmationModal = ({
   cancelLabel,
   onConfirm,
   confirmVariant = 'default',
+  confirmDisabled = false,
   contentClassName,
 }: ConfirmationModalProps) => (
   <AlertDialog open={open} onOpenChange={onOpenChange}>
@@ -49,7 +51,14 @@ export const ConfirmationModal = ({
 
       <AlertDialogFooter className={confirmationModalFooterClassName}>
         <AlertDialogCancel>{cancelLabel}</AlertDialogCancel>
-        <AlertDialogAction variant={confirmVariant} onClick={onConfirm}>
+        <AlertDialogAction
+          variant={confirmVariant}
+          disabled={confirmDisabled}
+          onClick={event => {
+            event.preventDefault()
+            onConfirm()
+          }}
+        >
           {confirmLabel}
         </AlertDialogAction>
       </AlertDialogFooter>

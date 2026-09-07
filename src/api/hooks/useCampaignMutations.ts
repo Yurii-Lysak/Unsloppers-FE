@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import axios from 'axios'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { campaignQueryKey, campaignsListQueryKey, campaignAudiencePreviewQueryKey } from '@/api/hooks/useCampaigns'
@@ -66,6 +67,57 @@ export const useSaveCampaignAudience = () => {
     },
     onError: () => {
       toast.error(t('campaigns.saveFailed'))
+    },
+  })
+}
+
+export const useActivateCampaign = () => {
+  const { t } = useTranslation()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (campaignId: string) =>
+      campaignApiService.activateCampaign(campaignId),
+    onSuccess: async (_data, campaignId) => {
+      toast.success(t('campaigns.activate.success'))
+      await queryClient.invalidateQueries({ queryKey: campaignsListQueryKey })
+      await queryClient.invalidateQueries({
+        queryKey: campaignQueryKey(campaignId),
+      })
+      await queryClient.invalidateQueries({
+        queryKey: campaignAudiencePreviewQueryKey(campaignId),
+      })
+    },
+    onError: async (error, campaignId) => {
+      if (axios.isAxiosError(error)) {
+        const status = error.response?.status
+        const body = error.response?.data as
+          | { invalidAssigneeIds?: unknown }
+          | undefined
+        const invalidAssigneeIds = body?.invalidAssigneeIds
+
+        if (
+          status === 400 &&
+          Array.isArray(invalidAssigneeIds) &&
+          invalidAssigneeIds.length > 0
+        ) {
+          toast.error(
+            t('campaigns.activate.invalidAssignees', {
+              count: invalidAssigneeIds.length,
+            }),
+          )
+        } else {
+          toast.error(t('campaigns.saveFailed'))
+        }
+
+        if (status === 409 || status === 404) {
+          await queryClient.invalidateQueries({
+            queryKey: campaignQueryKey(campaignId),
+          })
+        }
+      } else {
+        toast.error(t('campaigns.saveFailed'))
+      }
     },
   })
 }

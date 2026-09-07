@@ -1,22 +1,20 @@
 import { ArrowLeft, Megaphone } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { AudienceBuilder } from '@/components/AudienceBuilder/AudienceBuilder'
 import { Button } from '@/components/Button/Button'
+import { ConfirmationModal } from '@/components/ConfirmationModal/ConfirmationModal'
 import { CampaignFormDialog } from '@/pages/CampaignsPage/components/CampaignFormDialog/CampaignFormDialog'
-import { useCampaignData } from '@/hooks/data/useCampaignsData'
-import { useCampaignAudienceSection } from './hooks/useCampaignAudienceSection'
-import { useState } from 'react'
+import { useCampaignDetailPage } from './hooks/useCampaignDetailPage'
 
 export const CampaignDetailPage = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { campaignId = '' } = useParams()
-  const { campaign, isCampaignLoading, isCampaignError } = useCampaignData(
-    campaignId,
-    Boolean(campaignId),
-  )
   const {
+    isRouteReady,
+    campaign,
+    isCampaignLoading,
+    isCampaignError,
     definition,
     setDefinition,
     preview,
@@ -25,11 +23,15 @@ export const CampaignDetailPage = () => {
     addCandidateOptions,
     saveAudience,
     isSavingAudience,
-  } = useCampaignAudienceSection(campaign)
-  const [editOpen, setEditOpen] = useState(false)
+    editOpen,
+    setEditOpen,
+    activateOpen,
+    setActivateOpen,
+    handleActivate,
+    isActivatingCampaign,
+  } = useCampaignDetailPage()
 
-  if (!campaignId) {
-    navigate('/campaigns')
+  if (!isRouteReady) {
     return null
   }
 
@@ -59,14 +61,24 @@ export const CampaignDetailPage = () => {
           </div>
         </div>
         {campaign?.status === 'draft' && (
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => setEditOpen(true)}
-            data-testid="campaign-detail-edit"
-          >
-            {t('campaigns.editCampaign')}
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setEditOpen(true)}
+              data-testid="campaign-detail-edit"
+            >
+              {t('campaigns.editCampaign')}
+            </Button>
+            <Button
+              type="button"
+              variant="default"
+              onClick={() => setActivateOpen(true)}
+              data-testid="campaign-detail-activate"
+            >
+              {t('campaigns.activate.action')}
+            </Button>
+          </div>
         )}
       </div>
 
@@ -115,6 +127,22 @@ export const CampaignDetailPage = () => {
         campaign={campaign}
         open={editOpen}
         onClose={() => setEditOpen(false)}
+      />
+
+      <ConfirmationModal
+        open={activateOpen}
+        onOpenChange={setActivateOpen}
+        title={t('campaigns.activate.dialogTitle')}
+        description={t('campaigns.activate.dialogDescription')}
+        confirmLabel={
+          isActivatingCampaign
+            ? t('campaigns.activate.activating')
+            : t('campaigns.activate.confirm')
+        }
+        cancelLabel={t('campaigns.cancel')}
+        confirmVariant="destructive"
+        confirmDisabled={isActivatingCampaign}
+        onConfirm={handleActivate}
       />
     </div>
   )

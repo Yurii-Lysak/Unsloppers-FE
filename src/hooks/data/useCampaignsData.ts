@@ -1,5 +1,10 @@
 import { useCampaign, useCampaignsList, useCampaignAudiencePreview } from '@/api/hooks/useCampaigns'
-import { useCreateCampaign, useUpdateCampaign, useSaveCampaignAudience } from '@/api/hooks/useCampaignMutations'
+import {
+  useCreateCampaign,
+  useUpdateCampaign,
+  useSaveCampaignAudience,
+  useActivateCampaign,
+} from '@/api/hooks/useCampaignMutations'
 import type { CreateCampaignInput, UpdateCampaignInput, CampaignAudienceDefinition } from '@/types/campaigns'
 
 export const useCampaignsListData = (enabled = true) => {
@@ -90,5 +95,18 @@ export const useSaveCampaignAudienceData = () => {
   return {
     saveCampaignAudience,
     isSavingCampaignAudience: saveAudienceMutation.isPending,
+  }
+}
+
+export const useActivateCampaignData = () => {
+  const activateCampaignMutation = useActivateCampaign()
+
+  const activateCampaign = async (campaignId: string) => {
+    await activateCampaignMutation.mutateAsync(campaignId)
+  }
+
+  return {
+    activateCampaign,
+    isActivatingCampaign: activateCampaignMutation.isPending,
   }
 }

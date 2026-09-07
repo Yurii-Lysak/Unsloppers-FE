@@ -40,6 +40,10 @@ class CampaignApiService {
       { params: { page, pageSize } },
     )
   }
+
+  public activateCampaign(campaignId: string): Promise<Campaign> {
+    return apiClient.post<Campaign>(`/api/v1/campaigns/${campaignId}/activate`)
+  }
 }
 
 export const campaignApiService = new CampaignApiService()
