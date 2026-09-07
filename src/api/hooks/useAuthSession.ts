@@ -1,10 +1,11 @@
 import { useQuery } from '@tanstack/react-query'
 import { authApiService } from '@/api/services/auth.service'
 import { isUnauthorizedError } from '@/api/errors'
+import { LIVE_REFRESH_INTERVAL_MS } from '@/api/polling'
 import type { Session } from '@/types/api'
 
 export const authSessionQueryKey = ['auth', 'session'] as const
-export const AUTH_SESSION_REFRESH_INTERVAL_MS = 60_000
+export const AUTH_SESSION_REFRESH_INTERVAL_MS = LIVE_REFRESH_INTERVAL_MS
 
 export const fetchAuthSession = async (): Promise<Session | null> => {
   try {

@@ -98,6 +98,18 @@
       "success": "Campaign activated.",
       "invalidAssignees_one": "1 recipient is no longer active. Rebuild the audience and try again.",
       "invalidAssignees_other": "{{count}} recipients are no longer active. Rebuild the audience and try again."
+    },
+    "completion": {
+      "title": "Completion",
+      "assignee": "Recipient",
+      "status": "Status",
+      "completed": "Completed",
+      "open": "Not completed",
+      "cancelled": "Cancelled",
+      "overdue": "Overdue — was due {{dueDate}}",
+      "empty": "No recipients were included when this campaign was activated.",
+      "loading": "Loading completion status…",
+      "loadFailed": "Could not load completion status."
     }
   },
   "permissions": {

@@ -42,3 +42,23 @@ export interface CreateCampaignInput {
 }
 
 export type UpdateCampaignInput = Partial<CreateCampaignInput>
+
+export type CampaignCompletionStatus = 'open' | 'completed' | 'cancelled'
+
+export interface CampaignCompletionAssignee {
+  id: string
+  displayName: string
+}
+
+export interface CampaignCompletionRecipientRow {
+  actionItemId: string
+  assignee: CampaignCompletionAssignee
+  status: CampaignCompletionStatus
+  dueDate: string
+  isOverdue: boolean
+  completedAt?: string
+}
+
+export interface CampaignCompletion {
+  recipients: CampaignCompletionRecipientRow[]
+}

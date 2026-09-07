@@ -30,6 +30,19 @@ export interface CampaignFixture {
   audience: CampaignAudienceFixture
 }
 
+export interface CampaignCompletionRecipientFixture {
+  actionItemId: string
+  assignee: { id: string; displayName: string }
+  status: 'open' | 'completed' | 'cancelled'
+  dueDate: string
+  isOverdue: boolean
+  completedAt?: string
+}
+
+export interface CampaignCompletionFixture {
+  recipients: CampaignCompletionRecipientFixture[]
+}
+
 export const emptyAudienceFixture = (): CampaignAudienceFixture => ({
   filters: [],
   addedEmployeeIds: [],

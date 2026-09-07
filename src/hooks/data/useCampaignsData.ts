@@ -1,4 +1,4 @@
-import { useCampaign, useCampaignsList, useCampaignAudiencePreview } from '@/api/hooks/useCampaigns'
+import { useCampaign, useCampaignsList, useCampaignAudiencePreview, useCampaignCompletion } from '@/api/hooks/useCampaigns'
 import {
   useCreateCampaign,
   useUpdateCampaign,
@@ -108,5 +108,22 @@ export const useActivateCampaignData = () => {
   return {
     activateCampaign,
     isActivatingCampaign: activateCampaignMutation.isPending,
+  }
+}
+
+export const useCampaignCompletionData = (
+  campaignId: string,
+  enabled = false,
+) => {
+  const {
+    data: completion,
+    isLoading: isCompletionLoading,
+    isError: isCompletionError,
+  } = useCampaignCompletion(campaignId, enabled)
+
+  return {
+    completion,
+    isCompletionLoading,
+    isCompletionError,
   }
 }
