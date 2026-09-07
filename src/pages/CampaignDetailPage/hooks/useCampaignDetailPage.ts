@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useActivateCampaignData, useCampaignData } from '@/hooks/data/useCampaignsData'
+import { useActivateCampaignData, useCampaignCompletionData, useCampaignData } from '@/hooks/data/useCampaignsData'
 import { useCampaignAudienceSection } from './useCampaignAudienceSection'
 
 export const useCampaignDetailPage = () => {
@@ -13,6 +13,12 @@ export const useCampaignDetailPage = () => {
   )
   const audienceSection = useCampaignAudienceSection(campaign)
   const { activateCampaign, isActivatingCampaign } = useActivateCampaignData()
+  const isActiveCampaign = campaign?.status === 'active'
+  const {
+    completion,
+    isCompletionLoading,
+    isCompletionError,
+  } = useCampaignCompletionData(campaignId, isActiveCampaign)
   const [editOpen, setEditOpen] = useState(false)
   const [activateOpen, setActivateOpen] = useState(false)
 
@@ -56,5 +62,8 @@ export const useCampaignDetailPage = () => {
     setActivateOpen: setActivateOpenSafe,
     handleActivate,
     isActivatingCampaign,
+    completion,
+    isCompletionLoading,
+    isCompletionError,
   }
 }

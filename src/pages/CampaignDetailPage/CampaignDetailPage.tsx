@@ -5,6 +5,7 @@ import { AudienceBuilder } from '@/components/AudienceBuilder/AudienceBuilder'
 import { Button } from '@/components/Button/Button'
 import { ConfirmationModal } from '@/components/ConfirmationModal/ConfirmationModal'
 import { CampaignFormDialog } from '@/pages/CampaignsPage/components/CampaignFormDialog/CampaignFormDialog'
+import { CampaignCompletionTable } from './components/CampaignCompletionTable/CampaignCompletionTable'
 import { useCampaignDetailPage } from './hooks/useCampaignDetailPage'
 
 export const CampaignDetailPage = () => {
@@ -29,6 +30,9 @@ export const CampaignDetailPage = () => {
     setActivateOpen,
     handleActivate,
     isActivatingCampaign,
+    completion,
+    isCompletionLoading,
+    isCompletionError,
   } = useCampaignDetailPage()
 
   if (!isRouteReady) {
@@ -118,6 +122,23 @@ export const CampaignDetailPage = () => {
                 onSave={saveAudience}
                 isSaving={isSavingAudience}
               />
+            </section>
+          )}
+
+          {campaign.status === 'active' && (
+            <section className="space-y-3 rounded-lg border border-border p-4">
+              <h2 className="text-lg font-semibold">{t('campaigns.completion.title')}</h2>
+              {isCompletionLoading && (
+                <p className="text-sm text-muted-foreground">
+                  {t('campaigns.completion.loading')}
+                </p>
+              )}
+              {isCompletionError && (
+                <p className="text-sm text-destructive">{t('campaigns.completion.loadFailed')}</p>
+              )}
+              {completion && !isCompletionLoading && (
+                <CampaignCompletionTable completion={completion} />
+              )}
             </section>
           )}
         </>

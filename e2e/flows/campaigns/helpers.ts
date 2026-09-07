@@ -6,16 +6,19 @@ import {
   mockSession,
   type CampaignFixture,
   validCampaignFormInput,
+  type CampaignCompletionFixture,
 } from './fixtures'
 
 const campaignsListPath = /\/api\/v1\/campaigns$/
 const campaignDetailPath = /\/api\/v1\/campaigns\/[^/]+$/
+const campaignCompletionPath = /\/api\/v1\/campaigns\/[^/]+\/completion$/
 
 export const setupCampaignsFlow = async (
   page: Page,
   options?: { activateDelayMs?: number },
 ) => {
   const campaigns: CampaignFixture[] = []
+  const completionByCampaignId = new Map<string, CampaignCompletionFixture>()
 
   await page.route('**/api/v1/auth/session', async route => {
     await route.fulfill({
@@ -51,6 +54,33 @@ export const setupCampaignsFlow = async (
         status: 200,
         contentType: 'application/json',
         body: JSON.stringify(campaigns),
+      })
+      return
+    }
+
+    if (method === 'GET' && campaignCompletionPath.test(url)) {
+      const segments = url.split('/')
+      const campaignId = segments[segments.length - 2] ?? ''
+      const campaign = campaigns.find(entry => entry.id === campaignId)
+      if (!campaign) {
+        await route.fulfill({ status: 404, body: JSON.stringify({ message: 'Not found' }) })
+        return
+      }
+      if (campaign.status !== 'active') {
+        await route.fulfill({
+          status: 409,
+          body: JSON.stringify({
+            message: 'Completion is only available for active campaigns',
+          }),
+        })
+        return
+      }
+      const completion =
+        completionByCampaignId.get(campaignId) ?? { recipients: [] }
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(completion),
       })
       return
     }
@@ -105,6 +135,9 @@ export const setupCampaignsFlow = async (
       }
       campaign.status = 'active'
       campaign.updatedAt = new Date().toISOString()
+      if (!completionByCampaignId.has(campaignId)) {
+        completionByCampaignId.set(campaignId, { recipients: [] })
+      }
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -135,7 +168,7 @@ export const setupCampaignsFlow = async (
     await route.fallback()
   })
 
-  return { campaigns }
+  return { campaigns, completionByCampaignId }
 }
 
 export { validCampaignFormInput }

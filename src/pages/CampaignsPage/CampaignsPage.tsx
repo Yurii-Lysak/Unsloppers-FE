@@ -54,26 +54,20 @@ export const CampaignsPage = () => {
           data-testid="campaigns-list"
         >
           {campaignsList?.map(campaign => {
-            // Only a draft campaign is editable (backend enforces this too —
-            // see 409 on PATCH once activated); a non-draft row's edit
-            // affordance is disabled rather than opening a dialog doomed to fail.
-            const isDraft = campaign.status === 'draft'
+            const isNavigable =
+              campaign.status === 'draft' || campaign.status === 'active'
             return (
               <li key={campaign.id}>
                 <button
                   type="button"
                   onClick={() =>
-                    isDraft
-                      ? navigate(`/campaigns/${campaign.id}`)
-                      : undefined
+                    isNavigable ? navigate(`/campaigns/${campaign.id}`) : undefined
                   }
-                  disabled={!isDraft}
-                  aria-disabled={!isDraft}
+                  disabled={!isNavigable}
+                  aria-disabled={!isNavigable}
                   className={cn(
                     'flex w-full items-center justify-between gap-4 p-4 text-left',
-                    isDraft
-                      ? 'hover:bg-accent'
-                      : 'cursor-not-allowed opacity-70',
+                    isNavigable ? 'hover:bg-accent' : 'cursor-not-allowed opacity-70',
                   )}
                   data-testid={`campaign-row-${campaign.id}`}
                 >
