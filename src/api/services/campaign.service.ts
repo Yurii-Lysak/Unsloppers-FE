@@ -3,6 +3,7 @@ import type {
   Campaign,
   CampaignAudienceDefinition,
   CampaignAudiencePreview,
+  CampaignCompletion,
   CreateCampaignInput,
   UpdateCampaignInput,
 } from '@/types/campaigns'
@@ -43,6 +44,12 @@ class CampaignApiService {
 
   public activateCampaign(campaignId: string): Promise<Campaign> {
     return apiClient.post<Campaign>(`/api/v1/campaigns/${campaignId}/activate`)
+  }
+
+  public getCampaignCompletion(campaignId: string): Promise<CampaignCompletion> {
+    return apiClient.get<CampaignCompletion>(
+      `/api/v1/campaigns/${campaignId}/completion`,
+    )
   }
 }
 

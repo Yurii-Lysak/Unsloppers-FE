@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import axios from 'axios'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
-import { campaignQueryKey, campaignsListQueryKey, campaignAudiencePreviewQueryKey } from '@/api/hooks/useCampaigns'
+import { campaignQueryKey, campaignsListQueryKey, campaignAudiencePreviewQueryKey, campaignCompletionQueryKey } from '@/api/hooks/useCampaigns'
 import { campaignApiService } from '@/api/services/campaign.service'
 import type { CreateCampaignInput, UpdateCampaignInput } from '@/types/campaigns'
 import type { CampaignAudienceDefinition } from '@/types/campaigns'
@@ -86,6 +86,9 @@ export const useActivateCampaign = () => {
       })
       await queryClient.invalidateQueries({
         queryKey: campaignAudiencePreviewQueryKey(campaignId),
+      })
+      await queryClient.invalidateQueries({
+        queryKey: campaignCompletionQueryKey(campaignId),
       })
     },
     onError: async (error, campaignId) => {
