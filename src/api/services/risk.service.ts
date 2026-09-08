@@ -4,6 +4,11 @@ import type {
   RiskRecord,
   RisksSection,
 } from '@/types/employee-profile'
+import type {
+  RiskDashboardAccessResponse,
+  RiskDashboardQuery,
+  RiskDashboardResponse,
+} from '@/types/risk-dashboard'
 
 class RiskApiService {
   public getRisks(employeeId: string): Promise<RisksSection> {
@@ -18,6 +23,18 @@ class RiskApiService {
       `/api/v1/employees/${employeeId}/risks`,
       payload,
     )
+  }
+
+  public getDashboardAccess(): Promise<RiskDashboardAccessResponse> {
+    return apiClient.get<RiskDashboardAccessResponse>(
+      '/api/v1/risks/dashboard/access',
+    )
+  }
+
+  public getDashboard(query: RiskDashboardQuery = {}): Promise<RiskDashboardResponse> {
+    return apiClient.get<RiskDashboardResponse>('/api/v1/risks/dashboard', {
+      params: query,
+    })
   }
 }
 

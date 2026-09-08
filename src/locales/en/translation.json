@@ -19,6 +19,7 @@
   "sidebar": {
     "home": "Home",
     "employees": "All Employees",
+    "risks": "Risks",
     "campaigns": "Campaigns",
     "admin": "Admin",
     "adminRoles": "Roles",
@@ -110,6 +111,28 @@
       "empty": "No recipients were included when this campaign was activated.",
       "loading": "Loading completion status…",
       "loadFailed": "Could not load completion status."
+    }
+  },
+  "riskDashboard": {
+    "title": "Risk Dashboard",
+    "loading": "Loading risk dashboard…",
+    "loadFailed": "Could not load risk dashboard.",
+    "empty": "No risk history recorded.",
+    "clearFilters": "Clear filters",
+    "count": "{{shown}} of {{total}} people",
+    "previousPage": "Previous",
+    "nextPage": "Next",
+    "pageIndicator": "Page {{page}} of {{totalPages}}",
+    "counters": {
+      "totalActive": "Active risk"
+    },
+    "table": {
+      "name": "Name",
+      "level": "Risk level",
+      "recordedAt": "Last recorded",
+      "manager": "Manager",
+      "peoplePartner": "People Partner",
+      "emptyCell": "—"
     }
   },
   "permissions": {
