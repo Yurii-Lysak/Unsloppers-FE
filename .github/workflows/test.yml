@@ -35,43 +35,6 @@ jobs:
       - name: Run typecheck
         run: npm run typecheck
 
-  # Smoke job: proves Playwright records and CI uploads failure videos/traces
-  # while the full e2e matrix stays disabled below. Remove once e2e is re-enabled.
-  e2e-failure-artifacts-smoke:
-    name: E2e failure artifacts smoke
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
-
-      - name: Run intentional-failure demo spec
-        run: npm test -- video-demo-fail
-        continue-on-error: true
-
-      - name: Verify failure video was recorded
-        run: find test-results -name 'video.webm' -print -quit | grep -q .
-
-      - name: Upload playwright failure artifacts
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-failure-smoke
-          path: |
-            playwright-report/
-            test-results/
-          retention-days: 30
-
   # e2e:
   #   name: E2e (shard ${{ matrix.shard }}/2)
   #   runs-on: ubuntu-latest
