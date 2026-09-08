@@ -12,9 +12,8 @@ export default defineConfig({
     },
   },
   server: {
-    // Match Playwright's default BASE_URL (127.0.0.1:4200) so webServer readiness
-    // checks succeed on Windows and in CI — `localhost` alone is not reachable there.
-    host: '127.0.0.1',
+    // Must match Playwright BASE_URL default (http://localhost:4200).
+    host: 'localhost',
     port: 4200,
   },
 })
