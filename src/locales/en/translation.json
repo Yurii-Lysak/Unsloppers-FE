@@ -157,7 +157,8 @@
     "cancel": "Cancel",
     "saveFailed": "Couldn't save. Try again.",
     "status": {
-      "open": "Open"
+      "open": "Open",
+      "pending_dm_review": "Pending DM review"
     },
     "create": {
       "success": "Resourcing request created."
@@ -165,6 +166,65 @@
     "list": {
       "headcount_one": "{{count}} headcount",
       "headcount_other": "{{count}} headcounts"
+    },
+    "assigned": {
+      "title": "Assigned to me",
+      "empty": "No routed resourcing requests right now.",
+      "loading": "Loading assigned requests…",
+      "loadFailed": "Could not load assigned requests."
+    },
+    "myRequests": {
+      "title": "My requests"
+    },
+    "detail": {
+      "back": "Back to Resourcing",
+      "loading": "Loading resourcing request…",
+      "loadFailed": "Could not load the resourcing request.",
+      "summary": "Request details",
+      "submit": "Submit for DM review",
+      "submitting": "Submitting…",
+      "proposals": {
+        "title": "Proposed candidates",
+        "empty": "No candidates attached yet.",
+        "internal": "Internal candidate",
+        "external": "External candidate",
+        "viewInPeopleForce": "View in PeopleForce",
+        "status": {
+          "proposed": "Proposed"
+        },
+        "create": {
+          "success": "Candidate attached.",
+          "error": "Could not attach the candidate. Try again."
+        }
+      },
+      "addCandidate": {
+        "title": "Attach a candidate"
+      },
+      "addInternal": {
+        "candidate": "Employee in your unit",
+        "selectPlaceholder": "Choose a candidate",
+        "noCandidates": "No employees found in your managed department.",
+        "submit": "Attach internal candidate",
+        "validation": {
+          "candidateRequired": "Choose a candidate."
+        }
+      },
+      "addExternal": {
+        "url": "PeopleForce link",
+        "urlPlaceholder": "https://app.peopleforce.io/candidates/...",
+        "id": "PeopleForce candidate ID (optional)",
+        "submit": "Attach external candidate",
+        "validation": {
+          "urlRequired": "Enter a PeopleForce link.",
+          "urlTooLong": "Link must be at most 2,000 characters.",
+          "urlInvalid": "Enter a valid URL, including https://.",
+          "idTooLong": "Candidate ID must be at most 128 characters."
+        }
+      },
+      "submitToast": {
+        "success": "Submitted for DM review.",
+        "error": "Could not submit for DM review. Try again."
+      }
     },
     "form": {
       "vacancyDetails": "Vacancy details",

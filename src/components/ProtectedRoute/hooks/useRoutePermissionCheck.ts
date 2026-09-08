@@ -1,10 +1,9 @@
 import { useLocation } from 'react-router-dom'
 import { usePermissionsData } from '@/hooks/data/usePermissionsData'
 import {
-  getRequiredPermission,
-  hasPermissionKey,
+  getRequiredPermissions,
+  hasAnyPermissionKey,
 } from '@/router/route-permissions'
-import type { PermissionKey } from '@/types/permissions'
 
 export const useRoutePermissionCheck = () => {
   const location = useLocation()
@@ -16,21 +15,18 @@ export const useRoutePermissionCheck = () => {
     refetchPermissions,
   } = usePermissionsData()
 
-  const requiredPermission = getRequiredPermission(location.pathname)
-
-  const hasPermission = (permission: PermissionKey) =>
-    isPermissionsSuccess &&
-    permissionsData !== undefined &&
-    hasPermissionKey(permissionsData.permissions, permission)
+  const requiredPermissions = getRequiredPermissions(location.pathname)
 
   const isAuthorized =
-    requiredPermission === undefined ||
-    (isPermissionsSuccess && hasPermission(requiredPermission))
+    requiredPermissions === undefined ||
+    (isPermissionsSuccess &&
+      permissionsData !== undefined &&
+      hasAnyPermissionKey(permissionsData.permissions, requiredPermissions))
 
   return {
-    requiredPermission,
-    isPermissionsLoading: requiredPermission !== undefined && isPermissionsLoading,
-    isPermissionsError: requiredPermission !== undefined && isPermissionsError,
+    requiredPermissions,
+    isPermissionsLoading: requiredPermissions !== undefined && isPermissionsLoading,
+    isPermissionsError: requiredPermissions !== undefined && isPermissionsError,
     isAuthorized,
     refetchPermissions,
   }

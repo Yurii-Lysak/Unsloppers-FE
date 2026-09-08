@@ -27,6 +27,22 @@ export const useCreateSharedLink = (employeeId: string) => {
   })
 }
 
+/**
+ * Story 6.2 (AD-11) — not bound to a single subject employee: the resourcing
+ * detail page orchestrates one shared-link create call per internal
+ * proposal, sequentially, each naming a different candidate as subject.
+ */
+export const useCreateSharedLinkForCandidate = () =>
+  useMutation({
+    mutationFn: ({
+      employeeId,
+      body,
+    }: {
+      employeeId: string
+      body: CreateSharedLinkRequest
+    }) => sharedLinkApiService.createSharedLink(employeeId, body),
+  })
+
 export const useSharedLinkProfile = (token: string) =>
   useQuery({
     queryKey: sharedLinkProfileQueryKey(token),
