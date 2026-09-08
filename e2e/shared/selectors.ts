@@ -15,6 +15,7 @@ export const testIds = {
   app: {
     container: 'app-container',
     homeTitle: 'home-title',
+    dashboardTitle: 'dashboard-title',
   },
   employeeList: {
     table: 'directory-table',

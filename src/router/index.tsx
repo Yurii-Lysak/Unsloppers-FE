@@ -1,7 +1,7 @@
 import { Navigate } from 'react-router-dom'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { AppLayout } from '@/components/AppLayout/AppLayout'
-import { HomePage } from '@/pages/HomePage/HomePage'
+import { DashboardPage } from '@/pages/DashboardPage/DashboardPage'
 import { ErrorPage } from '@/pages/ErrorPage/ErrorPage'
 import { LoginPage } from '@/pages/LoginPage/LoginPage'
 import { AllEmployeesPage } from '@/pages/AllEmployeesPage/AllEmployeesPage'
@@ -40,7 +40,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <HomePage />,
+        element: <DashboardPage />,
       },
       {
         path: 'employees',
