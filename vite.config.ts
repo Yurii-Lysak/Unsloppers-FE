@@ -12,6 +12,7 @@ export default defineConfig({
     },
   },
   server: {
+    // Must match Playwright BASE_URL default (http://localhost:4200).
     host: 'localhost',
     port: 4200,
   },
