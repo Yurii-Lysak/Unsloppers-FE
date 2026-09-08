@@ -325,6 +325,7 @@
       "timeline": "Career timeline",
       "leaves": "Leaves and absences",
       "projects": "Projects",
+      "mentorship": "Mentorship",
       "customFields": "Custom fields",
       "generic": "Section {{id}}"
     },
@@ -379,6 +380,22 @@
       "validation": {
         "contentRequired": "Note content is required.",
         "contentTooLong": "Note content must be at most 10,000 characters."
+      }
+    },
+    "s13": {
+      "statusLabel": "Mentor status",
+      "openToMentoring": "Open to mentoring",
+      "mentor": "Your mentor",
+      "mentees": "Your mentees",
+      "noMentees": "No active mentees.",
+      "status": {
+        "mentor": "Mentor",
+        "openToMentoring": "Open to mentoring",
+        "none": "Not mentoring"
+      },
+      "update": {
+        "success": "Mentorship preference saved.",
+        "error": "Could not save mentorship preference. Try again."
       }
     },
     "s8": {
