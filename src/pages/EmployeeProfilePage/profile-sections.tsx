@@ -83,6 +83,7 @@ export const PROFILE_SECTION_RENDERERS: Partial<Record<SectionId, SectionRendere
     ),
     S8: ({ employeeId, section, accessLevel }) => (
       <FeedbackSectionCard
+        key={employeeId}
         employeeId={employeeId}
         section={section as ProfileSectionEnvelope<FeedbackSectionData>}
         accessLevel={accessLevel}

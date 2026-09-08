@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 import {
   defaultComparePeriods,
   type PeriodRange,
@@ -6,20 +6,11 @@ import {
 
 export type FeedbackViewMode = 'list' | 'compare'
 
-const emptyPeriod = (): PeriodRange => ({ start: '', end: '' })
-
-export const useFeedbackViewMode = (employeeId: string) => {
+export const useFeedbackViewMode = () => {
   const [viewMode, setViewMode] = useState<FeedbackViewMode>('list')
-  const [periodA, setPeriodA] = useState<PeriodRange>(emptyPeriod)
-  const [periodB, setPeriodB] = useState<PeriodRange>(emptyPeriod)
+  const [periodA, setPeriodA] = useState<PeriodRange>({ start: '', end: '' })
+  const [periodB, setPeriodB] = useState<PeriodRange>({ start: '', end: '' })
   const [compareInitialized, setCompareInitialized] = useState(false)
-
-  useEffect(() => {
-    setViewMode('list')
-    setPeriodA(emptyPeriod())
-    setPeriodB(emptyPeriod())
-    setCompareInitialized(false)
-  }, [employeeId])
 
   const enterCompareMode = useCallback(() => {
     if (!compareInitialized) {

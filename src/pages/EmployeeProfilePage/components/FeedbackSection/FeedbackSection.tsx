@@ -43,7 +43,7 @@ export const FeedbackSectionCard = ({
     setPeriodB,
     enterCompareMode,
     enterListMode,
-  } = useFeedbackViewMode(employeeId)
+  } = useFeedbackViewMode()
 
   if (!isSectionData<FeedbackSectionData>(section)) {
     return null
