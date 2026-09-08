@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import type {
   CustomFieldsSection as CustomFieldsSectionData,
   EmployeeProfile,
+  FeedbackSection as FeedbackSectionData,
   LeavesSection,
   ManagementNotesSection as ManagementNotesSectionData,
   ProfileSectionEnvelope,
@@ -12,6 +13,7 @@ import type {
   TimelineSection,
 } from '@/types/employee-profile'
 import { CustomFieldsSectionCard } from './components/CustomFieldsSection/CustomFieldsSection'
+import { FeedbackSectionCard } from './components/FeedbackSection/FeedbackSection'
 import { ManagementNotesSectionCard } from './components/ManagementNotesSection/ManagementNotesSection'
 import { RisksSectionCard } from './components/RisksSection/RisksSection'
 
@@ -38,6 +40,7 @@ export const PROFILE_SECTION_TITLE_KEYS: Partial<Record<SectionId, string>> = {
   S1: 'employeeProfile.sections.identity',
   S6: 'employeeProfile.sections.risks',
   S7: 'employeeProfile.sections.managementNotes',
+  S8: 'employeeProfile.sections.feedback',
   S9: 'employeeProfile.sections.timeline',
   S10: 'employeeProfile.sections.leaves',
   S11: 'employeeProfile.sections.projects',
@@ -75,6 +78,13 @@ export const PROFILE_SECTION_RENDERERS: Partial<Record<SectionId, SectionRendere
       <ManagementNotesSectionCard
         employeeId={employeeId}
         section={section as ProfileSectionEnvelope<ManagementNotesSectionData>}
+        accessLevel={accessLevel}
+      />
+    ),
+    S8: ({ employeeId, section, accessLevel }) => (
+      <FeedbackSectionCard
+        employeeId={employeeId}
+        section={section as ProfileSectionEnvelope<FeedbackSectionData>}
         accessLevel={accessLevel}
       />
     ),

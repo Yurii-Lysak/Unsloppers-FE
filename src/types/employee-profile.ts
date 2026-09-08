@@ -97,6 +97,43 @@ export interface UpdateManagementNotePayload {
   visibleForPm?: boolean
 }
 
+export interface FeedbackRecordAuthor {
+  id: string
+  displayName: string
+}
+
+export interface FeedbackRecordRead {
+  id: string
+  recordedAt: string
+  context: string
+  body: string
+  author: FeedbackRecordAuthor
+  createdAt: string
+  updatedAt: string
+}
+
+export interface FeedbackRecord extends FeedbackRecordRead {
+  sharedWithEmployee: boolean
+}
+
+export interface FeedbackSection {
+  records: FeedbackRecordRead[] | FeedbackRecord[]
+}
+
+export interface CreateFeedbackRecordPayload {
+  recordedAt: string
+  context: string
+  body: string
+  sharedWithEmployee?: boolean
+}
+
+export interface UpdateFeedbackRecordPayload {
+  recordedAt?: string
+  context?: string
+  body?: string
+  sharedWithEmployee?: boolean
+}
+
 export interface IdentityRelation {
   id: string
   displayName: string
