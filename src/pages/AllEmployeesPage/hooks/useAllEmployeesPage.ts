@@ -261,7 +261,11 @@ export const useAllEmployeesPage = () => {
   const { saveEmployeeField, isSavingField } = useUpdateEmployeeFieldData(query)
 
   const allFields = employeesList?.fields ?? []
-  const visibleColumnIds = selectedColumnIds(allFields.map(field => field.id))
+  const entitledFieldIds = allFields.map(field => field.id)
+  const requestedColumnIds = selectedColumnIds(entitledFieldIds)
+  const sanitizedColumnIds = requestedColumnIds.filter(id => entitledFieldIds.includes(id))
+  const visibleColumnIds =
+    sanitizedColumnIds.length > 0 ? sanitizedColumnIds : entitledFieldIds
   const displayData = employeesList
     ? buildDirectoryDisplayData(employeesList, visibleColumnIds)
     : undefined
