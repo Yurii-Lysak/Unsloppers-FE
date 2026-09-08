@@ -155,6 +155,12 @@
       "saveSuccess": "Changes saved.",
       "saveFailed": "Couldn't save. Try again."
     },
+    "export": {
+      "label": "Export",
+      "exporting": "Exporting…",
+      "success": "Export downloaded.",
+      "failed": "Couldn't export. Try again."
+    },
     "savedViews": {
       "allTab": "All",
       "saveView": "Save view",

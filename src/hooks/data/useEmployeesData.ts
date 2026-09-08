@@ -1,4 +1,5 @@
 import { useEmployeeList } from '@/api/hooks/useEmployeeList'
+import { useExportEmployeesList } from '@/api/hooks/useExportEmployeesList'
 import {
   useEmployeeFunctionalRoles,
   useSetEmployeeFunctionalRoles,
@@ -6,7 +7,7 @@ import {
 import { useEmployeeLookup } from '@/api/hooks/useEmployeeLookup'
 import { useEmployeeProfile } from '@/api/hooks/useEmployeeProfile'
 import { useUpdateEmployeeField } from '@/api/hooks/useUpdateEmployeeField'
-import type { EmployeeListQuery, FieldValue } from '@/types/employees'
+import type { EmployeeListExportQuery, EmployeeListQuery, FieldValue } from '@/types/employees'
 
 export const useEmployeesListData = (query: EmployeeListQuery) => {
   const {
@@ -89,5 +90,18 @@ export const useUpdateEmployeeFieldData = (query: EmployeeListQuery) => {
   return {
     saveEmployeeField,
     isSavingField: updateFieldMutation.isPending,
+  }
+}
+
+export const useExportEmployeesListData = () => {
+  const exportMutation = useExportEmployeesList()
+
+  const exportEmployeesList = async (query: EmployeeListExportQuery) => {
+    await exportMutation.mutateAsync(query)
+  }
+
+  return {
+    exportEmployeesList,
+    isExporting: exportMutation.isPending,
   }
 }

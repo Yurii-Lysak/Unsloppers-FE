@@ -1,6 +1,7 @@
 import { apiClient } from '@/api/client'
 import type {
   EmployeeFieldUpdate,
+  EmployeeListExportQuery,
   EmployeeListQuery,
   EmployeeListResponse,
   EmployeeLookupOption,
@@ -23,6 +24,38 @@ class EmployeeApiService {
     }
 
     return apiClient.get<EmployeeListResponse>('/api/v1/employees', { params })
+  }
+
+  public async exportEmployeesList(query: EmployeeListExportQuery): Promise<void> {
+    const params: Record<string, string | undefined> = {
+      sort: query.sort,
+      order: query.order,
+      columns: JSON.stringify(query.columns),
+    }
+
+    if (query.filters && query.filters.length > 0) {
+      params.filters = JSON.stringify(query.filters)
+    }
+
+    const response = await apiClient.raw.get<Blob>('/api/v1/employees/export', {
+      params,
+      responseType: 'blob',
+    })
+
+    const disposition = response.headers['content-disposition']
+    const fallback = `employees-export-${new Date().toISOString().slice(0, 10)}.xlsx`
+    const filenameMatch =
+      typeof disposition === 'string'
+        ? disposition.match(/filename="([^"]+)"/)
+        : null
+    const filename = filenameMatch?.[1] ?? fallback
+
+    const url = URL.createObjectURL(response.data)
+    const anchor = document.createElement('a')
+    anchor.href = url
+    anchor.download = filename
+    anchor.click()
+    URL.revokeObjectURL(url)
   }
 
   public getEmployee(employeeId: string): Promise<EmployeeSummary> {

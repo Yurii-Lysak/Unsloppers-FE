@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
-import { Users } from 'lucide-react'
+import { FileDown, Users } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { Button } from '@/components/Button/Button'
 import { ConfirmationModal } from '@/components/ConfirmationModal/ConfirmationModal'
 import { useSavedViewsData } from '@/hooks/data/useSavedViewsData'
+import { useExportEmployeesListData } from '@/hooks/data/useEmployeesData'
 import { EmployeeTable } from './components/EmployeeTable/EmployeeTable'
 import { ColumnPicker } from './components/ColumnPicker/ColumnPicker'
 import { SaveViewDialog } from './components/SaveViewDialog/SaveViewDialog'
@@ -45,6 +46,20 @@ export const AllEmployeesPage = () => {
     saveEmployeeField,
     isSavingField,
   } = useAllEmployeesPage()
+
+  const { exportEmployeesList, isExporting } = useExportEmployeesListData()
+
+  const handleExport = async () => {
+    if (visibleColumnIds.length === 0) {
+      return
+    }
+    await exportEmployeesList({
+      sort: query.sort,
+      order: query.order,
+      filters: query.filters,
+      columns: visibleColumnIds,
+    })
+  }
 
   const {
     savedViews,
@@ -133,6 +148,20 @@ export const AllEmployeesPage = () => {
               onChange={setVisibleColumnIds}
             />
           )}
+          <Button
+            type="button"
+            variant="outline"
+            onClick={handleExport}
+            disabled={
+              isEmployeesLoading ||
+              isExporting ||
+              visibleColumnIds.length === 0
+            }
+            data-testid="directory-export"
+          >
+            <FileDown className="size-4" />
+            {isExporting ? t('directory.export.exporting') : t('directory.export.label')}
+          </Button>
         </div>
         <div className="flex items-center gap-2">
           <Button

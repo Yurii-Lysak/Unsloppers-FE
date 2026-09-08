@@ -70,6 +70,13 @@ export interface EmployeeListQuery {
   filters?: EmployeeFieldFilter[]
 }
 
+export interface EmployeeListExportQuery {
+  sort?: string
+  order?: SortOrder
+  filters?: EmployeeFieldFilter[]
+  columns: string[]
+}
+
 export interface EmployeeSummary {
   id: string
   displayName: string
