@@ -23,6 +23,10 @@ export const usePermissionsData = () => {
     isPermissionsSuccess &&
     permissionsData.permissions.includes(PERMISSION_KEYS.CREATE_RESOURCING_REQUESTS)
 
+  const canAssignEndMentorships =
+    isPermissionsSuccess &&
+    permissionsData.permissions.includes(PERMISSION_KEYS.ASSIGN_END_MENTORSHIPS)
+
   return {
     permissionsData,
     isPermissionsLoading,
@@ -32,6 +36,7 @@ export const usePermissionsData = () => {
     canManageFunctionalRoles,
     canCreateFormCampaigns,
     canCreateResourcingRequests,
+    canAssignEndMentorships,
   }
 }
 
