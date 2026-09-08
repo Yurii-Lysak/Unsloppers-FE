@@ -1,12 +1,14 @@
 import {
   useAssignableMentees,
+  useActiveMentorshipPairs,
   useWillingMentors,
 } from '@/api/hooks/useMentorship'
-import { usePatchOpenToMentoring, useCreateMentorshipPair } from '@/api/hooks/useMentorshipMutations'
+import { usePatchOpenToMentoring, useCreateMentorshipPair, useEndMentorshipPair } from '@/api/hooks/useMentorshipMutations'
 import type { PatchOpenToMentoringPayload } from '@/types/employee-profile'
-import type { CreateMentorshipPairInput } from '@/types/mentorship'
+import type { CreateMentorshipPairInput, EndMentorshipPairInput } from '@/types/mentorship'
 
 export {
+  activeMentorshipPairsQueryKey,
   assignableMenteesQueryKey,
   willingMentorsQueryKey,
 } from '@/api/hooks/useMentorship'
@@ -37,30 +39,56 @@ export const useMentorshipHubData = (enabled = true) => {
     isError: isMenteesError,
   } = useAssignableMentees(enabled)
 
+  const {
+    data: activePairsData,
+    isLoading: isActivePairsLoading,
+    isError: isActivePairsError,
+  } = useActiveMentorshipPairs(enabled)
+
   return {
     willingMentors: willingMentorsData?.mentors ?? [],
     assignableMentees: assignableMenteesData?.mentees ?? [],
+    activePairs: activePairsData?.pairs ?? [],
     isMentorsLoading,
     isMenteesLoading,
+    isActivePairsLoading,
     isMentorsError,
     isMenteesError,
+    isActivePairsError,
   }
 }
 
 export const useMentorshipHubMutations = () => {
   const createPairMutation = useCreateMentorshipPair()
+  const endPairMutation = useEndMentorshipPair()
 
   const createPair = async (input: CreateMentorshipPairInput) => {
     await createPairMutation.mutateAsync(input)
+  }
+
+  const endPair = async (input: {
+    pairId: string
+    mentorId: string
+    menteeId: string
+    input: EndMentorshipPairInput
+  }) => {
+    await endPairMutation.mutateAsync(input)
   }
 
   const resetMutationState = () => {
     createPairMutation.reset()
   }
 
+  const resetEndMutationState = () => {
+    endPairMutation.reset()
+  }
+
   return {
     createPair,
+    endPair,
     isAssigningPair: createPairMutation.isPending,
+    isEndingPair: endPairMutation.isPending,
     resetMutationState,
+    resetEndMutationState,
   }
 }

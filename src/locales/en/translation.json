@@ -194,14 +194,20 @@
   },
   "mentorshipHub": {
     "title": "Mentorship",
+    "activePairsTitle": "Active pairs",
+    "willingMentorsTitle": "Open to mentoring",
     "assignAction": "Assign mentee",
+    "endAction": "End pair",
     "emptyMentors": "No employees are currently open to mentoring.",
-    "loadingMentors": "Loading willing mentors…",
+    "emptyActivePairs": "No active mentorship pairs within your access scope.",
+    "loadingMentors": "Loading mentorship hub…",
     "loadMentorsFailed": "Could not load willing mentors.",
     "loadingMentees": "Loading assignable mentees…",
     "loadMenteesFailed": "Could not load assignable mentees.",
+    "loadActivePairsFailed": "Could not load active pairs.",
     "noAssignableMentees": "No mentees are available within your access scope.",
     "mentorColumn": "Mentor",
+    "menteeColumn": "Mentee",
     "actionsColumn": "Actions",
     "dialogTitle": "Assign mentee",
     "dialogDescription": "Choose a mentee within your access scope for {{mentorName}}.",
@@ -213,6 +219,19 @@
     "assign": {
       "success": "Mentorship pair created.",
       "error": "Could not create the mentorship pair. Try again."
+    },
+    "end": {
+      "dialogTitle": "End mentorship pair",
+      "dialogDescription": "Provide closing feedback for the pair between {{mentorName}} and {{menteeName}}.",
+      "feedbackLabel": "Closing feedback",
+      "feedbackPlaceholder": "Closing feedback required to end this pair.",
+      "confirm": "End pair",
+      "saving": "Ending…",
+      "success": "Mentorship pair ended.",
+      "error": "Could not end the mentorship pair. Try again.",
+      "validation": {
+        "feedbackRequired": "Closing feedback is required."
+      }
     },
     "validation": {
       "menteeRequired": "Select a mentee."
@@ -493,6 +512,15 @@
       "mentor": "Your mentor",
       "mentees": "Your mentees",
       "noMentees": "No active mentees.",
+      "endPair": "End pair",
+      "thisEmployee": "This employee",
+      "pairHistory": "Mentorship history",
+      "closureFeedback": "Closing feedback",
+      "historyDates": "{{start}} – {{end}}",
+      "historyRole": {
+        "mentor": "Mentored",
+        "mentee": "Mentee of"
+      },
       "status": {
         "mentor": "Mentor",
         "openToMentoring": "Open to mentoring",

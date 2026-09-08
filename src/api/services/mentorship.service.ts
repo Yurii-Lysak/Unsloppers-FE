@@ -4,9 +4,12 @@ import type {
   PatchOpenToMentoringPayload,
 } from '@/types/employee-profile'
 import type {
+  ActiveMentorshipPairsResponse,
   AssignableMenteesResponse,
   CreateMentorshipPairInput,
   CreatedMentorshipPair,
+  EndedMentorshipPair,
+  EndMentorshipPairInput,
   WillingMentorsResponse,
 } from '@/types/mentorship'
 
@@ -33,6 +36,22 @@ class MentorshipApiService {
 
   public createPair(input: CreateMentorshipPairInput): Promise<CreatedMentorshipPair> {
     return apiClient.post<CreatedMentorshipPair>('/api/v1/mentorship/pairs', input)
+  }
+
+  public getActivePairs(): Promise<ActiveMentorshipPairsResponse> {
+    return apiClient.get<ActiveMentorshipPairsResponse>(
+      '/api/v1/mentorship/pairs?status=active',
+    )
+  }
+
+  public endPair(
+    pairId: string,
+    input: EndMentorshipPairInput,
+  ): Promise<EndedMentorshipPair> {
+    return apiClient.patch<EndedMentorshipPair>(
+      `/api/v1/mentorship/pairs/${pairId}/end`,
+      input,
+    )
   }
 }
 

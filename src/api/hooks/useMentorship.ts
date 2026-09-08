@@ -3,6 +3,7 @@ import { mentorshipApiService } from '@/api/services/mentorship.service'
 
 export const willingMentorsQueryKey = ['mentorship', 'willing-mentors'] as const
 export const assignableMenteesQueryKey = ['mentorship', 'assignable-mentees'] as const
+export const activeMentorshipPairsQueryKey = ['mentorship', 'active-pairs'] as const
 
 export const useWillingMentors = (enabled = true) =>
   useQuery({
@@ -15,5 +16,12 @@ export const useAssignableMentees = (enabled = true) =>
   useQuery({
     queryKey: assignableMenteesQueryKey,
     queryFn: mentorshipApiService.getAssignableMentees,
+    enabled,
+  })
+
+export const useActiveMentorshipPairs = (enabled = true) =>
+  useQuery({
+    queryKey: activeMentorshipPairsQueryKey,
+    queryFn: mentorshipApiService.getActivePairs,
     enabled,
   })

@@ -29,3 +29,30 @@ export interface CreatedMentorshipPair {
   startedAt: string
   mentorStatus: 'mentor' | 'openToMentoring' | 'none'
 }
+
+export interface ActiveMentorshipPair {
+  id: string
+  mentorId: string
+  mentorDisplayName: string
+  menteeId: string
+  menteeDisplayName: string
+  startedAt: string
+}
+
+export interface ActiveMentorshipPairsResponse {
+  pairs: ActiveMentorshipPair[]
+}
+
+export interface EndMentorshipPairInput {
+  closureFeedback: string
+}
+
+export interface EndedMentorshipPair {
+  id: string
+  mentorId: string
+  menteeId: string
+  startedAt: string
+  endedAt: string
+  closureFeedback: string
+  mentorStatus: 'mentor' | 'openToMentoring' | 'none'
+}
