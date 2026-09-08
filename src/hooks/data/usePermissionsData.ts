@@ -19,6 +19,10 @@ export const usePermissionsData = () => {
     isPermissionsSuccess &&
     permissionsData.permissions.includes(PERMISSION_KEYS.CREATE_FORM_CAMPAIGNS)
 
+  const canCreateResourcingRequests =
+    isPermissionsSuccess &&
+    permissionsData.permissions.includes(PERMISSION_KEYS.CREATE_RESOURCING_REQUESTS)
+
   return {
     permissionsData,
     isPermissionsLoading,
@@ -27,6 +31,7 @@ export const usePermissionsData = () => {
     refetchPermissions,
     canManageFunctionalRoles,
     canCreateFormCampaigns,
+    canCreateResourcingRequests,
   }
 }
 

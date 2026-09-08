@@ -52,6 +52,7 @@
     "employees": "All Employees",
     "risks": "Risks",
     "campaigns": "Campaigns",
+    "resourcing": "Resourcing",
     "admin": "Admin",
     "adminRoles": "Roles",
     "adminRolesHint": "Admin → Roles",
@@ -142,6 +143,52 @@
       "empty": "No recipients were included when this campaign was activated.",
       "loading": "Loading completion status…",
       "loadFailed": "Could not load completion status."
+    }
+  },
+  "resourcing": {
+    "title": "Resourcing",
+    "newRequest": "New request",
+    "empty": "No resourcing requests yet.",
+    "loading": "Loading resourcing requests…",
+    "loadFailed": "Could not load resourcing requests.",
+    "save": "Save",
+    "saving": "Saving…",
+    "cancel": "Cancel",
+    "saveFailed": "Couldn't save. Try again.",
+    "status": {
+      "open": "Open"
+    },
+    "create": {
+      "success": "Resourcing request created."
+    },
+    "list": {
+      "headcount_one": "{{count}} headcount",
+      "headcount_other": "{{count}} headcounts"
+    },
+    "form": {
+      "vacancyDetails": "Vacancy details",
+      "expectedCompBand": "Expected compensation band",
+      "duration": "Duration",
+      "workload": "Workload",
+      "headcount": "Headcount",
+      "department": "Department",
+      "projectId": "Project ID (optional)",
+      "projectIdPlaceholder": "Leave blank for an unattached request",
+      "validation": {
+        "vacancyDetailsRequired": "Enter vacancy details.",
+        "vacancyDetailsTooLong": "Vacancy details must be at most 5,000 characters.",
+        "expectedCompBandRequired": "Enter the expected compensation band.",
+        "expectedCompBandTooLong": "Compensation band must be at most 200 characters.",
+        "durationRequired": "Enter a duration.",
+        "durationTooLong": "Duration must be at most 200 characters.",
+        "workloadRequired": "Enter a workload.",
+        "workloadTooLong": "Workload must be at most 200 characters.",
+        "headcountMin": "Headcount must be at least 1.",
+        "headcountMax": "Headcount must be at most 99.",
+        "departmentRequired": "Enter a department.",
+        "departmentTooLong": "Department must be at most 200 characters.",
+        "projectIdTooLong": "Project ID must be at most 128 characters."
+      }
     }
   },
   "riskDashboard": {
@@ -356,6 +403,7 @@
       "timeline": "Career timeline",
       "leaves": "Leaves and absences",
       "projects": "Projects",
+      "mentorship": "Mentorship",
       "customFields": "Custom fields",
       "generic": "Section {{id}}"
     },
@@ -410,6 +458,22 @@
       "validation": {
         "contentRequired": "Note content is required.",
         "contentTooLong": "Note content must be at most 10,000 characters."
+      }
+    },
+    "s13": {
+      "statusLabel": "Mentor status",
+      "openToMentoring": "Open to mentoring",
+      "mentor": "Your mentor",
+      "mentees": "Your mentees",
+      "noMentees": "No active mentees.",
+      "status": {
+        "mentor": "Mentor",
+        "openToMentoring": "Open to mentoring",
+        "none": "Not mentoring"
+      },
+      "update": {
+        "success": "Mentorship preference saved.",
+        "error": "Could not save mentorship preference. Try again."
       }
     },
     "s8": {

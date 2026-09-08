@@ -4,7 +4,7 @@ import { useRiskDashboardNavAccess } from '@/hooks/data/useRiskDashboardData'
 
 export const useSideMenu = () => {
   const { toggleSidebar, isMobileSidebarOpen, closeMobileSidebar } = useLayout()
-  const { canManageFunctionalRoles, canCreateFormCampaigns } = usePermissionsData()
+  const { canManageFunctionalRoles, canCreateFormCampaigns, canCreateResourcingRequests } = usePermissionsData()
   const { showRiskDashboard } = useRiskDashboardNavAccess()
 
   return {
@@ -13,6 +13,7 @@ export const useSideMenu = () => {
     closeMobileSidebar,
     showAdminRoles: canManageFunctionalRoles,
     showCampaigns: canCreateFormCampaigns,
+    showResourcing: canCreateResourcingRequests,
     showRiskDashboard,
   }
 }
