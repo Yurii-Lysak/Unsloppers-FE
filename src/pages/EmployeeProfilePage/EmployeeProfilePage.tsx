@@ -147,6 +147,8 @@ const ProfileSections = ({
           section={profile.sections[sectionId]!}
           title={sectionTitle(t, sectionId)}
           unavailableLabel={t('employeeProfile.unavailableSection')}
+          subjectDisplayName={profile.displayName}
+          audienceRole={profile.audience.role}
         />
       ))}
     </div>
@@ -170,12 +172,16 @@ const ProfileSectionCard = ({
   section,
   title,
   unavailableLabel,
+  subjectDisplayName,
+  audienceRole,
 }: {
   employeeId: string
   sectionId: SectionId
   section: NonNullable<EmployeeProfile['sections'][SectionId]>
   title: string
   unavailableLabel: string
+  subjectDisplayName: string
+  audienceRole: EmployeeProfile['audience']['role']
 }) => {
   const { t } = useTranslation()
   const renderer = PROFILE_SECTION_RENDERERS[sectionId]
@@ -193,6 +199,8 @@ const ProfileSectionCard = ({
           employeeId,
           section,
           accessLevel: section.accessLevel,
+          subjectDisplayName,
+          audienceRole,
           t,
         })
       ) : (

@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import type {
+  AccessRole,
   CustomFieldsSection as CustomFieldsSectionData,
   EmployeeProfile,
   FeedbackSection as FeedbackSectionData,
@@ -61,6 +62,8 @@ type SectionRenderer = (props: {
   employeeId: string
   section: ProfileSectionEnvelope<unknown>
   accessLevel: Exclude<SectionAccessLevel, 'none'>
+  subjectDisplayName: string
+  audienceRole: AccessRole
   t: (key: string) => string
 }) => ReactNode
 
@@ -81,12 +84,14 @@ export const PROFILE_SECTION_RENDERERS: Partial<Record<SectionId, SectionRendere
         accessLevel={accessLevel}
       />
     ),
-    S8: ({ employeeId, section, accessLevel }) => (
+    S8: ({ employeeId, section, accessLevel, subjectDisplayName, audienceRole }) => (
       <FeedbackSectionCard
         key={employeeId}
         employeeId={employeeId}
         section={section as ProfileSectionEnvelope<FeedbackSectionData>}
         accessLevel={accessLevel}
+        subjectDisplayName={subjectDisplayName}
+        audienceRole={audienceRole}
       />
     ),
     S9: ({ section, t }) => {
