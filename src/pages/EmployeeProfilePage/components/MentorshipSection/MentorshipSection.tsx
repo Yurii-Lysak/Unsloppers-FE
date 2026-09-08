@@ -72,6 +72,8 @@ export const MentorshipSectionCard = ({
       menteeId: employeeId,
       menteeDisplayName: t('employeeProfile.s13.thisEmployee'),
       startedAt: '',
+      endedAt: null,
+      status: 'active',
     }
   }
 
@@ -89,6 +91,8 @@ export const MentorshipSectionCard = ({
       menteeId: mentee.id,
       menteeDisplayName: mentee.displayName,
       startedAt: '',
+      endedAt: null,
+      status: 'active',
     }
   }
 

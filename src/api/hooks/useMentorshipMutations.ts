@@ -2,7 +2,6 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import {
-  activeMentorshipPairsQueryKey,
   assignableMenteesQueryKey,
   willingMentorsQueryKey,
 } from '@/api/hooks/useMentorship'
@@ -42,6 +41,7 @@ export const useCreateMentorshipPair = () => {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: willingMentorsQueryKey }),
         queryClient.invalidateQueries({ queryKey: assignableMenteesQueryKey }),
+        queryClient.invalidateQueries({ queryKey: ['mentorship', 'pairs'] }),
         queryClient.invalidateQueries({
           queryKey: employeeProfileQueryKey(variables.mentorId),
         }),
@@ -75,7 +75,7 @@ export const useEndMentorshipPair = () => {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: willingMentorsQueryKey }),
         queryClient.invalidateQueries({ queryKey: assignableMenteesQueryKey }),
-        queryClient.invalidateQueries({ queryKey: activeMentorshipPairsQueryKey }),
+        queryClient.invalidateQueries({ queryKey: ['mentorship', 'pairs'] }),
         queryClient.invalidateQueries({
           queryKey: employeeProfileQueryKey(variables.mentorId),
         }),

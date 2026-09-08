@@ -1,21 +1,23 @@
 import { useState } from 'react'
 import { useMentorshipHubData } from '@/hooks/data/useMentorshipData'
 import { usePermissionsData } from '@/hooks/data/usePermissionsData'
-import type { ActiveMentorshipPair, WillingMentor } from '@/types/mentorship'
+import type { ActiveMentorshipPair, MentorshipPairListFilter, WillingMentor } from '@/types/mentorship'
 
 export const useMentorshipHubPage = () => {
   const { canAssignEndMentorships } = usePermissionsData()
+  const [pairStatusFilter, setPairStatusFilter] =
+    useState<MentorshipPairListFilter>('all')
   const {
     willingMentors,
     assignableMentees,
-    activePairs,
+    pairs,
     isMentorsLoading,
     isMenteesLoading,
-    isActivePairsLoading,
+    isPairsLoading,
     isMentorsError,
     isMenteesError,
-    isActivePairsError,
-  } = useMentorshipHubData(canAssignEndMentorships)
+    isPairsError,
+  } = useMentorshipHubData(pairStatusFilter, canAssignEndMentorships)
 
   const [assignDialogOpen, setAssignDialogOpen] = useState(false)
   const [selectedMentor, setSelectedMentor] = useState<WillingMentor | null>(
@@ -49,13 +51,15 @@ export const useMentorshipHubPage = () => {
   return {
     willingMentors,
     assignableMentees,
-    activePairs,
+    pairs,
+    pairStatusFilter,
+    setPairStatusFilter,
     isMentorsLoading,
     isMenteesLoading,
-    isActivePairsLoading,
+    isPairsLoading,
     isMentorsError,
     isMenteesError,
-    isActivePairsError,
+    isPairsError,
     assignDialogOpen,
     selectedMentor,
     openAssignDialog,
