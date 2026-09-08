@@ -23,6 +23,10 @@ export const usePermissionsData = () => {
     isPermissionsSuccess &&
     permissionsData.permissions.includes(PERMISSION_KEYS.CREATE_RESOURCING_REQUESTS)
 
+  const canFulfilResourcingRequests =
+    isPermissionsSuccess &&
+    permissionsData.permissions.includes(PERMISSION_KEYS.FULFIL_RESOURCING_REQUESTS)
+
   return {
     permissionsData,
     isPermissionsLoading,
@@ -32,6 +36,7 @@ export const usePermissionsData = () => {
     canManageFunctionalRoles,
     canCreateFormCampaigns,
     canCreateResourcingRequests,
+    canFulfilResourcingRequests,
   }
 }
 
