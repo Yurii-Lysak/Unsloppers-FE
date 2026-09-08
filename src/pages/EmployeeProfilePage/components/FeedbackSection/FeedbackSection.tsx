@@ -13,11 +13,14 @@ import type {
   SectionAccessLevel,
 } from '@/types/employee-profile'
 import { isSectionData } from '../../profile-sections'
+import { FeedbackCompareView } from './components/FeedbackCompareView'
+import { FeedbackViewModeToggle } from './components/FeedbackViewModeToggle'
 import {
   isWritableFeedback,
   useAddFeedbackForm,
   useFeedbackItem,
 } from './hooks/useFeedbackSection'
+import { useFeedbackViewMode } from './hooks/useFeedbackViewMode'
 import { todayCalendarDate } from './schemas/feedback-form.schema'
 
 interface FeedbackSectionCardProps {
@@ -32,6 +35,15 @@ export const FeedbackSectionCard = ({
   accessLevel,
 }: FeedbackSectionCardProps) => {
   const { t } = useTranslation()
+  const {
+    viewMode,
+    periodA,
+    periodB,
+    setPeriodA,
+    setPeriodB,
+    enterCompareMode,
+    enterListMode,
+  } = useFeedbackViewMode()
 
   if (!isSectionData<FeedbackSectionData>(section)) {
     return null
@@ -42,24 +54,42 @@ export const FeedbackSectionCard = ({
 
   return (
     <div className="space-y-4" data-testid="feedback-section">
-      {records.length === 0 ? (
-        <p className="text-sm text-muted-foreground">
-          {t('employeeProfile.s8.empty')}
-        </p>
-      ) : (
-        <ul className="space-y-3">
-          {records.map(record => (
-            <FeedbackRecordItem
-              key={record.id}
-              employeeId={employeeId}
-              record={record}
-              canWrite={canWrite}
-            />
-          ))}
-        </ul>
-      )}
+      <FeedbackViewModeToggle
+        viewMode={viewMode}
+        onSelectList={enterListMode}
+        onSelectCompare={enterCompareMode}
+      />
 
-      {canWrite && <AddFeedbackForm employeeId={employeeId} />}
+      {viewMode === 'compare' ? (
+        <FeedbackCompareView
+          records={records}
+          periodA={periodA}
+          periodB={periodB}
+          onPeriodAChange={setPeriodA}
+          onPeriodBChange={setPeriodB}
+        />
+      ) : (
+        <>
+          {records.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              {t('employeeProfile.s8.empty')}
+            </p>
+          ) : (
+            <ul className="space-y-3">
+              {records.map(record => (
+                <FeedbackRecordItem
+                  key={record.id}
+                  employeeId={employeeId}
+                  record={record}
+                  canWrite={canWrite}
+                />
+              ))}
+            </ul>
+          )}
+
+          {canWrite && <AddFeedbackForm employeeId={employeeId} />}
+        </>
+      )}
     </div>
   )
 }
