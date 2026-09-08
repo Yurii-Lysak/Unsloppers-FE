@@ -92,6 +92,8 @@ const SharedLinkProfileSections = ({ profile }: { profile: EmployeeProfile }) =>
                 employeeId: profile.employeeId,
                 section,
                 accessLevel: section.accessLevel,
+                subjectDisplayName: profile.displayName,
+                audienceRole: profile.audience.role,
                 t,
               })
             ) : (

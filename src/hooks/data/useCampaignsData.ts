@@ -1,4 +1,12 @@
-import { useCampaign, useCampaignsList, useCampaignAudiencePreview, useCampaignCompletion } from '@/api/hooks/useCampaigns'
+import {
+  campaignsListQueryKey,
+  useCampaign,
+  useCampaignsList,
+  useCampaignAudiencePreview,
+  useCampaignCompletion,
+} from '@/api/hooks/useCampaigns'
+
+export { campaignsListQueryKey }
 import {
   useCreateCampaign,
   useUpdateCampaign,
