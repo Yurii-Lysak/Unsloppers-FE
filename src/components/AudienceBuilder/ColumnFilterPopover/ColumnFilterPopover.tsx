@@ -11,7 +11,7 @@ import {
 import { Checkbox } from '@/components/Checkbox/Checkbox'
 import { Input } from '@/components/Input/Input'
 import { Select } from '@/components/Select/Select'
-import { defaultFilterOperatorForType } from '@/components/AudienceBuilder/filter-utils'
+import { defaultFilterOperatorForType, formatFieldOptionLabel } from '@/components/AudienceBuilder/filter-utils'
 import type { EmployeeFieldFilter, FieldSpec, FilterOperator } from '@/types/employees'
 
 interface ColumnFilterPopoverProps {
@@ -105,9 +105,9 @@ export const ColumnFilterPopover = ({
     () =>
       (field.options ?? []).map(option => ({
         value: option,
-        label: option,
+        label: formatFieldOptionLabel(field.id, option, t),
       })),
-    [field.options],
+    [field.id, field.options, t],
   )
 
   const syncFromActiveFilter = () => {

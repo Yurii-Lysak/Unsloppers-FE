@@ -117,7 +117,7 @@ export const EmployeeTable = ({
                       className="font-medium text-primary hover:underline"
                       data-testid={`directory-employee-link-${row.employeeId}`}
                     >
-                      {formatCellValue(row.cells[field.id], t)}
+                      {formatCellValue(row.cells[field.id], t, field.id)}
                     </Link>
                   </TableCell>
                 ) : (
@@ -126,7 +126,7 @@ export const EmployeeTable = ({
                       field={field}
                       value={row.cells[field.id] ?? null}
                       writable={isWritable(row, field.id)}
-                      displayValue={formatCellValue(row.cells[field.id], t)}
+                      displayValue={formatCellValue(row.cells[field.id], t, field.id)}
                       onSave={value => onSaveField(row.employeeId, field.id, value)}
                       isSavingExternal={isSavingField}
                     />

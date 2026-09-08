@@ -357,6 +357,13 @@
       "contains": "Contains",
       "in": "In"
     },
+    "fields": {
+      "mentor_status": {
+        "mentor": "Mentor",
+        "openToMentoring": "Open to mentoring",
+        "none": "No status"
+      }
+    },
     "inlineEdit": {
       "save": "Save",
       "saveSuccess": "Changes saved.",
