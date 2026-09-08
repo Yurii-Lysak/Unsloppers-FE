@@ -37,7 +37,11 @@ export interface ActiveMentorshipPair {
   menteeId: string
   menteeDisplayName: string
   startedAt: string
+  endedAt: string | null
+  status: 'active' | 'ended'
 }
+
+export type MentorshipPairListFilter = 'active' | 'ended' | 'all'
 
 export interface ActiveMentorshipPairsResponse {
   pairs: ActiveMentorshipPair[]

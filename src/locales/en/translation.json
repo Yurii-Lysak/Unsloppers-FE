@@ -254,21 +254,43 @@
   },
   "mentorshipHub": {
     "title": "Mentorship",
+    "allPairsTitle": "All pairs",
     "activePairsTitle": "Active pairs",
     "willingMentorsTitle": "Open to mentoring",
     "assignAction": "Assign mentee",
     "endAction": "End pair",
     "emptyMentors": "No employees are currently open to mentoring.",
+    "emptyPairs": "No mentorship pairs within your access scope.",
+    "emptyPairsFiltered": {
+      "active": "No active mentorship pairs match this filter within your access scope.",
+      "ended": "No ended mentorship pairs match this filter within your access scope."
+    },
+    "loadingPairs": "Loading mentorship pairs…",
     "emptyActivePairs": "No active mentorship pairs within your access scope.",
     "loadingMentors": "Loading mentorship hub…",
     "loadMentorsFailed": "Could not load willing mentors.",
     "loadingMentees": "Loading assignable mentees…",
     "loadMenteesFailed": "Could not load assignable mentees.",
+    "loadPairsFailed": "Could not load mentorship pairs.",
     "loadActivePairsFailed": "Could not load active pairs.",
     "noAssignableMentees": "No mentees are available within your access scope.",
     "mentorColumn": "Mentor",
     "menteeColumn": "Mentee",
+    "startDateColumn": "Start date",
+    "endDateColumn": "End date",
+    "statusColumn": "Status",
     "actionsColumn": "Actions",
+    "statusFilterLabel": "Filter pairs by status",
+    "statusFilter": {
+      "all": "All",
+      "active": "Active",
+      "ended": "Ended"
+    },
+    "pairStatus": {
+      "active": "Active",
+      "ended": "Ended"
+    },
+    "noAction": "—",
     "dialogTitle": "Assign mentee",
     "dialogDescription": "Choose a mentee within your access scope for {{mentorName}}.",
     "menteeLabel": "Mentee",

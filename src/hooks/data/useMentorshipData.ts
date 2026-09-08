@@ -1,13 +1,14 @@
 import {
   useAssignableMentees,
-  useActiveMentorshipPairs,
+  useMentorshipPairs,
   useWillingMentors,
 } from '@/api/hooks/useMentorship'
 import { usePatchOpenToMentoring, useCreateMentorshipPair, useEndMentorshipPair } from '@/api/hooks/useMentorshipMutations'
 import type { PatchOpenToMentoringPayload } from '@/types/employee-profile'
-import type { CreateMentorshipPairInput, EndMentorshipPairInput } from '@/types/mentorship'
+import type { CreateMentorshipPairInput, EndMentorshipPairInput, MentorshipPairListFilter } from '@/types/mentorship'
 
 export {
+  mentorshipPairsQueryKey,
   activeMentorshipPairsQueryKey,
   assignableMenteesQueryKey,
   willingMentorsQueryKey,
@@ -26,7 +27,10 @@ export const useMentorshipData = (employeeId: string) => {
   }
 }
 
-export const useMentorshipHubData = (enabled = true) => {
+export const useMentorshipHubData = (
+  pairStatus: MentorshipPairListFilter = 'all',
+  enabled = true,
+) => {
   const {
     data: willingMentorsData,
     isLoading: isMentorsLoading,
@@ -40,21 +44,21 @@ export const useMentorshipHubData = (enabled = true) => {
   } = useAssignableMentees(enabled)
 
   const {
-    data: activePairsData,
-    isLoading: isActivePairsLoading,
-    isError: isActivePairsError,
-  } = useActiveMentorshipPairs(enabled)
+    data: pairsData,
+    isLoading: isPairsLoading,
+    isError: isPairsError,
+  } = useMentorshipPairs(pairStatus, enabled)
 
   return {
     willingMentors: willingMentorsData?.mentors ?? [],
     assignableMentees: assignableMenteesData?.mentees ?? [],
-    activePairs: activePairsData?.pairs ?? [],
+    pairs: pairsData?.pairs ?? [],
     isMentorsLoading,
     isMenteesLoading,
-    isActivePairsLoading,
+    isPairsLoading,
     isMentorsError,
     isMenteesError,
-    isActivePairsError,
+    isPairsError,
   }
 }
 

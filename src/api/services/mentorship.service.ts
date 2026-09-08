@@ -10,6 +10,7 @@ import type {
   CreatedMentorshipPair,
   EndedMentorshipPair,
   EndMentorshipPairInput,
+  MentorshipPairListFilter,
   WillingMentorsResponse,
 } from '@/types/mentorship'
 
@@ -38,9 +39,11 @@ class MentorshipApiService {
     return apiClient.post<CreatedMentorshipPair>('/api/v1/mentorship/pairs', input)
   }
 
-  public getActivePairs(): Promise<ActiveMentorshipPairsResponse> {
+  public getPairs(
+    status: MentorshipPairListFilter = 'all',
+  ): Promise<ActiveMentorshipPairsResponse> {
     return apiClient.get<ActiveMentorshipPairsResponse>(
-      '/api/v1/mentorship/pairs?status=active',
+      `/api/v1/mentorship/pairs?status=${status}`,
     )
   }
 
