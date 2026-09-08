@@ -39,7 +39,7 @@ export const EmployeeCardList = ({ data }: EmployeeCardListProps) => {
                   <div key={field.id} className="flex items-start justify-between gap-4 text-sm">
                     <dt className="text-muted-foreground">{field.name}</dt>
                     <dd className="text-right text-foreground">
-                      {formatCellValue(row.cells[field.id], t)}
+                      {formatCellValue(row.cells[field.id], t, field.id)}
                     </dd>
                   </div>
                 ))}
