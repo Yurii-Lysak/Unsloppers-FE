@@ -6,6 +6,37 @@
     "title": "Home",
     "description": "Welcome to the starter. Replace this page with your own content."
   },
+  "dashboard": {
+    "title": "Dashboard",
+    "loading": "Loading dashboard…",
+    "loadFailed": "Could not load dashboard.",
+    "accessDenied": "You do not have access to a role dashboard.",
+    "unavailable": "Temporarily unavailable",
+    "counters": {
+      "headcount": "Subordinates",
+      "activeRisk": "Active risk"
+    },
+    "table": {
+      "title": "Your people",
+      "name": "Name",
+      "risk": "Risk",
+      "leave": "Leave",
+      "project": "Project",
+      "emptyCell": "—",
+      "empty": "No people in your dashboard scope."
+    },
+    "actionItems": {
+      "title": "Your action items",
+      "empty": "No open action items.",
+      "assignee": "For {{name}}"
+    },
+    "quickNav": {
+      "title": "Quick navigation",
+      "employees": "All Employees",
+      "risks": "Risk Dashboard",
+      "campaigns": "Campaigns"
+    }
+  },
   "error": {
     "title": "Application Error",
     "description": "An unexpected error occurred.",
