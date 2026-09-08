@@ -6,6 +6,7 @@ import type {
   FeedbackSection as FeedbackSectionData,
   LeavesSection,
   ManagementNotesSection as ManagementNotesSectionData,
+  MentorshipSection as MentorshipSectionData,
   ProfileSectionEnvelope,
   ProjectsSection,
   RisksSection as RisksSectionData,
@@ -16,6 +17,7 @@ import type {
 import { CustomFieldsSectionCard } from './components/CustomFieldsSection/CustomFieldsSection'
 import { FeedbackSectionCard } from './components/FeedbackSection/FeedbackSection'
 import { ManagementNotesSectionCard } from './components/ManagementNotesSection/ManagementNotesSection'
+import { MentorshipSectionCard } from './components/MentorshipSection/MentorshipSection'
 import { RisksSectionCard } from './components/RisksSection/RisksSection'
 
 export const PROFILE_SECTION_ORDER: SectionId[] = [
@@ -45,6 +47,7 @@ export const PROFILE_SECTION_TITLE_KEYS: Partial<Record<SectionId, string>> = {
   S9: 'employeeProfile.sections.timeline',
   S10: 'employeeProfile.sections.leaves',
   S11: 'employeeProfile.sections.projects',
+  S13: 'employeeProfile.sections.mentorship',
   S16: 'employeeProfile.sections.customFields',
 }
 
@@ -149,6 +152,14 @@ export const PROFILE_SECTION_RENDERERS: Partial<Record<SectionId, SectionRendere
     S16: ({ section }) => (
       <CustomFieldsSectionCard
         section={section as ProfileSectionEnvelope<CustomFieldsSectionData>}
+      />
+    ),
+    S13: ({ employeeId, section, accessLevel, audienceRole }) => (
+      <MentorshipSectionCard
+        employeeId={employeeId}
+        section={section as ProfileSectionEnvelope<MentorshipSectionData>}
+        accessLevel={accessLevel}
+        audienceRole={audienceRole}
       />
     ),
   }

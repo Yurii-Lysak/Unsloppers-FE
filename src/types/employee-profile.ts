@@ -146,6 +146,19 @@ export interface IdentitySection {
   mentor?: IdentityRelation
 }
 
+export type MentorStatus = 'mentor' | 'openToMentoring' | 'none'
+
+export interface MentorshipSection {
+  openToMentoring: boolean
+  mentorStatus: MentorStatus
+  mentor?: IdentityRelation | null
+  mentees: IdentityRelation[]
+}
+
+export interface PatchOpenToMentoringPayload {
+  openToMentoring: boolean
+}
+
 export interface LeavePeriod {
   type?: string | null
   startDate: string
