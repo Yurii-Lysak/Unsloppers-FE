@@ -9,6 +9,7 @@ import { CampaignsPage } from '@/pages/CampaignsPage/CampaignsPage'
 import { CampaignDetailPage } from '@/pages/CampaignDetailPage/CampaignDetailPage'
 import { ResourcingPage } from '@/pages/Resourcing/ResourcingPage'
 import { ResourcingDetailPage } from '@/pages/ResourcingDetailPage/ResourcingDetailPage'
+import { MentorshipHubPage } from '@/pages/MentorshipHub/MentorshipHubPage'
 import { RiskDashboardPage } from '@/pages/RiskDashboardPage/RiskDashboardPage'
 import { AdminRolesPage } from '@/pages/AdminRolesPage/AdminRolesPage'
 import { EmployeeProfilePage } from '@/pages/EmployeeProfilePage/EmployeeProfilePage'
@@ -77,6 +78,10 @@ const router = createBrowserRouter([
       {
         path: 'resourcing/:requestId',
         element: <ResourcingDetailPage />,
+      },
+      {
+        path: 'mentorship',
+        element: <MentorshipHubPage />,
       },
       {
         path: 'shared-links/:token',

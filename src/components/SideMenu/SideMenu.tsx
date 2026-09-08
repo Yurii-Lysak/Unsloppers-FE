@@ -1,4 +1,4 @@
-import { ClipboardList, Home, Megaphone, Shield, TriangleAlert, Users } from 'lucide-react'
+import { ClipboardList, Handshake, Home, Megaphone, Shield, TriangleAlert, Users } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { SideMenuItem } from './components/SideMenuItem/SideMenuItem'
 import { SideMenuToggle } from './components/SideMenuToggle/SideMenuToggle'
@@ -19,6 +19,7 @@ export const SideMenu = ({ collapsible = true, expanded }: SideMenuProps) => {
     showAdminRoles,
     showCampaigns,
     showResourcing,
+    showMentorshipHub,
     showRiskDashboard,
   } = useSideMenu()
   const showLabels = expanded || isMobileSidebarOpen
@@ -91,6 +92,17 @@ export const SideMenu = ({ collapsible = true, expanded }: SideMenuProps) => {
               expanded={showLabels}
               onNavigate={closeMobileSidebar}
               data-testid="sidebar-resourcing"
+            />
+          )}
+          {showMentorshipHub && (
+            <SideMenuItem
+              icon={Handshake}
+              label={t('sidebar.mentorship')}
+              path="/mentorship"
+              hint={t('sidebar.mentorship')}
+              expanded={showLabels}
+              onNavigate={closeMobileSidebar}
+              data-testid="sidebar-mentorship"
             />
           )}
           {showAdminRoles && (

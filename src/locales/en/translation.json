@@ -53,6 +53,7 @@
     "risks": "Risks",
     "campaigns": "Campaigns",
     "resourcing": "Resourcing",
+    "mentorship": "Mentorship",
     "admin": "Admin",
     "adminRoles": "Roles",
     "adminRolesHint": "Admin → Roles",
@@ -249,6 +250,32 @@
         "departmentTooLong": "Department must be at most 200 characters.",
         "projectIdTooLong": "Project ID must be at most 128 characters."
       }
+    }
+  },
+  "mentorshipHub": {
+    "title": "Mentorship",
+    "assignAction": "Assign mentee",
+    "emptyMentors": "No employees are currently open to mentoring.",
+    "loadingMentors": "Loading willing mentors…",
+    "loadMentorsFailed": "Could not load willing mentors.",
+    "loadingMentees": "Loading assignable mentees…",
+    "loadMenteesFailed": "Could not load assignable mentees.",
+    "noAssignableMentees": "No mentees are available within your access scope.",
+    "mentorColumn": "Mentor",
+    "actionsColumn": "Actions",
+    "dialogTitle": "Assign mentee",
+    "dialogDescription": "Choose a mentee within your access scope for {{mentorName}}.",
+    "menteeLabel": "Mentee",
+    "menteePlaceholder": "Select a mentee",
+    "save": "Assign pair",
+    "saving": "Assigning…",
+    "cancel": "Cancel",
+    "assign": {
+      "success": "Mentorship pair created.",
+      "error": "Could not create the mentorship pair. Try again."
+    },
+    "validation": {
+      "menteeRequired": "Select a mentee."
     }
   },
   "riskDashboard": {

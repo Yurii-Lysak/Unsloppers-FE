@@ -9,6 +9,7 @@ export const useSideMenu = () => {
     canCreateFormCampaigns,
     canCreateResourcingRequests,
     canFulfilResourcingRequests,
+    canAssignEndMentorships,
   } = usePermissionsData()
   const { showRiskDashboard } = useRiskDashboardNavAccess()
 
@@ -19,6 +20,7 @@ export const useSideMenu = () => {
     showAdminRoles: canManageFunctionalRoles,
     showCampaigns: canCreateFormCampaigns,
     showResourcing: canCreateResourcingRequests || canFulfilResourcingRequests,
+    showMentorshipHub: canAssignEndMentorships,
     showRiskDashboard,
   }
 }
