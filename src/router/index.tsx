@@ -6,6 +6,7 @@ import { ErrorPage } from '@/pages/ErrorPage/ErrorPage'
 import { LoginPage } from '@/pages/LoginPage/LoginPage'
 import { AllEmployeesPage } from '@/pages/AllEmployeesPage/AllEmployeesPage'
 import { CampaignsStubPage } from '@/pages/CampaignsStubPage/CampaignsStubPage'
+import { RiskDashboardPage } from '@/pages/RiskDashboardPage/RiskDashboardPage'
 import { AdminRolesPage } from '@/pages/AdminRolesPage/AdminRolesPage'
 import { EmployeeProfilePage } from '@/pages/EmployeeProfilePage/EmployeeProfilePage'
 import { SharedLinkViewPage } from '@/pages/SharedLinkViewPage/SharedLinkViewPage'
@@ -41,6 +42,10 @@ const router = createBrowserRouter([
       {
         path: 'employees',
         element: <AllEmployeesPage />,
+      },
+      {
+        path: 'risks',
+        element: <RiskDashboardPage />,
       },
       {
         path: 'employees/:employeeId',

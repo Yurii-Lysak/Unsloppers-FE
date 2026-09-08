@@ -1,4 +1,4 @@
-import { Home, Megaphone, Shield, Users } from 'lucide-react'
+import { Home, Megaphone, Shield, TriangleAlert, Users } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { SideMenuItem } from './components/SideMenuItem/SideMenuItem'
 import { SideMenuToggle } from './components/SideMenuToggle/SideMenuToggle'
@@ -18,6 +18,7 @@ export const SideMenu = ({ collapsible = true, expanded }: SideMenuProps) => {
     closeMobileSidebar,
     showAdminRoles,
     showCampaigns,
+    showRiskDashboard,
   } = useSideMenu()
   const showLabels = expanded || isMobileSidebarOpen
 
@@ -58,6 +59,17 @@ export const SideMenu = ({ collapsible = true, expanded }: SideMenuProps) => {
             onNavigate={closeMobileSidebar}
             data-testid="sidebar-employees"
           />
+          {showRiskDashboard && (
+            <SideMenuItem
+              icon={TriangleAlert}
+              label={t('sidebar.risks')}
+              path="/risks"
+              hint={t('sidebar.risks')}
+              expanded={showLabels}
+              onNavigate={closeMobileSidebar}
+              data-testid="sidebar-risks"
+            />
+          )}
           {showCampaigns && (
             <SideMenuItem
               icon={Megaphone}
