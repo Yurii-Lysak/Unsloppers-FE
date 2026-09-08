@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/Button/Button'
 import { Form } from '@/components/Form/Form'
@@ -6,6 +7,7 @@ import { Input } from '@/components/Input/Input'
 import { Switch } from '@/components/Switch/Switch'
 import { Textarea } from '@/components/Textarea/Textarea'
 import type {
+  AccessRole,
   FeedbackRecord,
   FeedbackRecordRead,
   FeedbackSection as FeedbackSectionData,
@@ -15,6 +17,7 @@ import type {
 import { isSectionData } from '../../profile-sections'
 import { FeedbackCompareView } from './components/FeedbackCompareView'
 import { FeedbackViewModeToggle } from './components/FeedbackViewModeToggle'
+import { RequestFeedbackDialog } from './components/RequestFeedbackDialog'
 import {
   isWritableFeedback,
   useAddFeedbackForm,
@@ -22,19 +25,25 @@ import {
 } from './hooks/useFeedbackSection'
 import { useFeedbackViewMode } from './hooks/useFeedbackViewMode'
 import { todayCalendarDate } from './schemas/feedback-form.schema'
+import { canRequestFeedbackFromProfile } from './utils/request-feedback-access'
 
 interface FeedbackSectionCardProps {
   employeeId: string
   section: ProfileSectionEnvelope<FeedbackSectionData>
   accessLevel: Exclude<SectionAccessLevel, 'none'>
+  subjectDisplayName: string
+  audienceRole: AccessRole
 }
 
 export const FeedbackSectionCard = ({
   employeeId,
   section,
   accessLevel,
+  subjectDisplayName,
+  audienceRole,
 }: FeedbackSectionCardProps) => {
   const { t } = useTranslation()
+  const [requestDialogOpen, setRequestDialogOpen] = useState(false)
   const {
     viewMode,
     periodA,
@@ -51,14 +60,29 @@ export const FeedbackSectionCard = ({
 
   const { records } = section.data
   const canWrite = accessLevel === 'RW'
+  const showRequestFeedback =
+    viewMode === 'list' && canRequestFeedbackFromProfile(accessLevel, audienceRole)
 
   return (
     <div className="space-y-4" data-testid="feedback-section">
-      <FeedbackViewModeToggle
-        viewMode={viewMode}
-        onSelectList={enterListMode}
-        onSelectCompare={enterCompareMode}
-      />
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <FeedbackViewModeToggle
+          viewMode={viewMode}
+          onSelectList={enterListMode}
+          onSelectCompare={enterCompareMode}
+        />
+        {showRequestFeedback && (
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => setRequestDialogOpen(true)}
+            data-testid="feedback-request-action"
+          >
+            {t('employeeProfile.s8.requestFeedback.action')}
+          </Button>
+        )}
+      </div>
 
       {viewMode === 'compare' ? (
         <FeedbackCompareView
@@ -89,6 +113,15 @@ export const FeedbackSectionCard = ({
 
           {canWrite && <AddFeedbackForm employeeId={employeeId} />}
         </>
+      )}
+
+      {requestDialogOpen && (
+        <RequestFeedbackDialog
+          open={requestDialogOpen}
+          onClose={() => setRequestDialogOpen(false)}
+          subjectEmployeeId={employeeId}
+          subjectDisplayName={subjectDisplayName}
+        />
       )}
     </div>
   )

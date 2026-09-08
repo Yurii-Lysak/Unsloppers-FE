@@ -392,6 +392,27 @@
         "contextTooLong": "Context must be at most 500 characters.",
         "bodyRequired": "Feedback body is required.",
         "bodyTooLong": "Feedback body must be at most 10,000 characters."
+      },
+      "requestFeedback": {
+        "action": "Request feedback…",
+        "title": "Request feedback",
+        "cancel": "Cancel",
+        "submit": "Create campaign",
+        "submitting": "Creating…",
+        "success": "Feedback request campaign created.",
+        "error": "Could not create feedback request. Try again.",
+        "colleaguesLabel": "Colleagues to request feedback from",
+        "colleaguesLoading": "Loading colleagues…",
+        "colleaguesLoadFailed": "Could not load colleagues. Try again.",
+        "colleaguesEmpty": "No colleagues available to select.",
+        "defaults": {
+          "title": "Feedback request: {{name}}",
+          "description": "Request feedback about {{name}} from selected colleagues.",
+          "purpose": "Collect feedback about {{name}} via the linked external form."
+        },
+        "validation": {
+          "colleaguesRequired": "Select at least one colleague."
+        }
       }
     },
     "feedback": {
