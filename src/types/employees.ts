@@ -29,6 +29,7 @@ export interface FieldSpec {
   source: FieldSource
   sortable: boolean
   filterable: boolean
+  editable?: boolean
   visibility?: 'management' | 'employee' | 'colleague'
   options?: string[]
 }
@@ -42,6 +43,13 @@ export interface EmployeeFieldFilter {
 export interface EmployeeRow {
   employeeId: string
   cells: Record<string, FieldValue>
+  writableFieldIds?: string[]
+}
+
+export interface EmployeeFieldUpdate {
+  employeeId: string
+  fieldId: string
+  value: FieldValue
 }
 
 export interface EmployeeListResponse {
@@ -50,6 +58,8 @@ export interface EmployeeListResponse {
   total: number
   page: number
   pageSize: number
+  /** Story 3.4 — true when the server dropped filters this viewer can't see (e.g. a shared saved view). */
+  filtersHidden?: boolean
 }
 
 export interface EmployeeListQuery {
@@ -60,9 +70,22 @@ export interface EmployeeListQuery {
   filters?: EmployeeFieldFilter[]
 }
 
+export interface EmployeeListExportQuery {
+  sort?: string
+  order?: SortOrder
+  filters?: EmployeeFieldFilter[]
+  columns: string[]
+}
+
 export interface EmployeeSummary {
   id: string
   displayName: string
+}
+
+/** Story 3.4 — lightweight id+name pair for pickers that need the full roster. */
+export interface EmployeeLookupOption {
+  employeeId: string
+  name: string
 }
 
 export const BUILTIN_FIELD_IDS = {
@@ -72,4 +95,6 @@ export const BUILTIN_FIELD_IDS = {
   department: 'department',
   employment_type: 'employment_type',
   years_with_company: 'years_with_company',
+  current_leave_dates: 'current_leave_dates',
+  project_names: 'project_names',
 } as const

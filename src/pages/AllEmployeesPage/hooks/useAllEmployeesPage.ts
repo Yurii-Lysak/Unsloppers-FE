@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { useEmployeesListData } from '@/hooks/data/useEmployeesData'
+import { useEmployeesListData, useUpdateEmployeeFieldData } from '@/hooks/data/useEmployeesData'
 import type {
   EmployeeFieldFilter,
   EmployeeListQuery,
@@ -8,6 +8,7 @@ import type {
   FilterOperator,
   SortOrder,
 } from '@/types/employees'
+import type { CreateSavedViewInput, SavedView } from '@/types/saved-views'
 
 const DEFAULT_PAGE = 1
 const DEFAULT_PAGE_SIZE = 50
@@ -89,6 +90,9 @@ export const buildDirectoryDisplayData = (
   fields: listData.fields.filter(field => selectedColumnIds.includes(field.id)),
   rows: listData.rows.map(row => ({
     employeeId: row.employeeId,
+    writableFieldIds: row.writableFieldIds?.filter(fieldId =>
+      selectedColumnIds.includes(fieldId),
+    ),
     cells: Object.fromEntries(
       selectedColumnIds
         .filter(fieldId => fieldId in row.cells)
@@ -118,6 +122,8 @@ export const useAllEmployeesPage = () => {
       filters,
     }
   }, [searchParams])
+
+  const activeViewId = searchParams.get('view')
 
   const updateParams = useCallback(
     (updates: Record<string, string | undefined>) => {
@@ -206,6 +212,44 @@ export const useAllEmployeesPage = () => {
     [updateParams],
   )
 
+  const selectAllTab = useCallback(() => {
+    updateParams({
+      view: undefined,
+      filters: undefined,
+      columns: undefined,
+      sort: undefined,
+      order: undefined,
+      page: '1',
+    })
+  }, [updateParams])
+
+  const applySavedView = useCallback(
+    (view: SavedView) => {
+      updateParams({
+        view: view.id,
+        filters:
+          view.filters.length > 0 ? JSON.stringify(view.filters) : undefined,
+        columns:
+          view.columnIds.length > 0 ? JSON.stringify(view.columnIds) : undefined,
+        sort: view.sort,
+        order: view.order,
+        page: '1',
+      })
+    },
+    [updateParams],
+  )
+
+  const getCurrentViewConfig = useCallback(
+    (columnIds: string[]): CreateSavedViewInput => ({
+      name: '',
+      filters: parseFilters(searchParams.get('filters')),
+      columnIds,
+      sort: searchParams.get('sort') ?? undefined,
+      order: parseSortOrder(searchParams.get('order')),
+    }),
+    [searchParams],
+  )
+
   const selectedColumnIds = useCallback(
     (allFieldIds: string[]) =>
       parseColumnIds(searchParams.get('columns'), allFieldIds),
@@ -214,9 +258,14 @@ export const useAllEmployeesPage = () => {
 
   const { employeesList, isEmployeesLoading, isEmployeesError } =
     useEmployeesListData(query)
+  const { saveEmployeeField, isSavingField } = useUpdateEmployeeFieldData(query)
 
   const allFields = employeesList?.fields ?? []
-  const visibleColumnIds = selectedColumnIds(allFields.map(field => field.id))
+  const entitledFieldIds = allFields.map(field => field.id)
+  const requestedColumnIds = selectedColumnIds(entitledFieldIds)
+  const sanitizedColumnIds = requestedColumnIds.filter(id => entitledFieldIds.includes(id))
+  const visibleColumnIds =
+    sanitizedColumnIds.length > 0 ? sanitizedColumnIds : entitledFieldIds
   const displayData = employeesList
     ? buildDirectoryDisplayData(employeesList, visibleColumnIds)
     : undefined
@@ -232,6 +281,7 @@ export const useAllEmployeesPage = () => {
 
   return {
     query,
+    activeViewId,
     setPage,
     toggleSort,
     upsertFilter,
@@ -239,6 +289,9 @@ export const useAllEmployeesPage = () => {
     clearAllFilters,
     activeFilterForField,
     setVisibleColumnIds,
+    selectAllTab,
+    applySavedView,
+    getCurrentViewConfig,
     employeesList,
     isEmployeesLoading,
     isEmployeesError,
@@ -250,39 +303,8 @@ export const useAllEmployeesPage = () => {
     totalPages,
     allFields,
     visibleColumnIds,
+    saveEmployeeField,
+    isSavingField,
   }
 }
 
-export const defaultFilterOperatorForType = (
-  type: string,
-): FilterOperator => {
-  if (type === 'number') {
-    return 'eq'
-  }
-  if (type === 'boolean') {
-    return 'eq'
-  }
-  if (type === 'multi_select') {
-    return 'in'
-  }
-  if (type === 'select') {
-    return 'eq'
-  }
-  return 'contains'
-}
-
-export const formatCellValue = (
-  value: unknown,
-  t: (key: string) => string,
-): string => {
-  if (value === null || value === undefined) {
-    return t('directory.cellEmpty')
-  }
-  if (Array.isArray(value)) {
-    return value.join(', ')
-  }
-  if (typeof value === 'boolean') {
-    return value ? t('directory.boolean.true') : t('directory.boolean.false')
-  }
-  return String(value)
-}

@@ -29,7 +29,89 @@
     "expand": "Expand sidebar"
   },
   "campaigns": {
-    "comingSoon": "Campaigns (coming soon)"
+    "title": "Campaigns",
+    "newCampaign": "New campaign",
+    "createCampaign": "Create campaign",
+    "editCampaign": "Edit campaign",
+    "empty": "No campaigns yet.",
+    "loading": "Loading campaigns…",
+    "loadFailed": "Could not load campaigns.",
+    "save": "Save",
+    "saving": "Saving…",
+    "cancel": "Cancel",
+    "saveFailed": "Couldn't save. Try again.",
+    "status": {
+      "draft": "Draft",
+      "active": "Active"
+    },
+    "create": {
+      "success": "Campaign created.",
+      "error": "Could not create the campaign. Try again."
+    },
+    "update": {
+      "success": "Campaign updated.",
+      "error": "Could not update the campaign. Try again."
+    },
+    "form": {
+      "title": "Title",
+      "description": "Short description",
+      "purpose": "Purpose",
+      "link": "Link to the external form",
+      "linkPlaceholder": "https://forms.office.com/...",
+      "dueDate": "Due date",
+      "validation": {
+        "titleRequired": "Enter a title.",
+        "titleTooLong": "Title must be at most 200 characters.",
+        "descriptionRequired": "Enter a short description.",
+        "descriptionTooLong": "Description must be at most 500 characters.",
+        "purposeRequired": "Enter a purpose.",
+        "purposeTooLong": "Purpose must be at most 2,000 characters.",
+        "linkRequired": "Enter a link to the external form.",
+        "linkTooLong": "Link must be at most 2,048 characters.",
+        "linkInvalid": "Enter a valid URL, including https://.",
+        "dueDateRequired": "Choose a due date.",
+        "dueDateInvalid": "Due date must be a valid calendar date."
+      }
+    },
+    "detail": {
+      "back": "Back to campaigns",
+      "loading": "Loading campaign…",
+      "summary": "Campaign details"
+    },
+    "audience": {
+      "title": "Audience",
+      "save": "Save audience",
+      "saveSuccess": "Audience saved.",
+      "count": "{{count}} recipients in preview",
+      "addEmployee": "Add employee",
+      "selectEmployee": "Select an employee",
+      "remove": "Remove",
+      "actions": "Actions",
+      "loadingPreview": "Loading audience preview…",
+      "emptyPreview": "No recipients yet. Add filters or employees, then save."
+    },
+    "activate": {
+      "action": "Activate",
+      "activating": "Activating…",
+      "dialogTitle": "Activate this campaign?",
+      "dialogDescription": "This freezes the audience and sends an action item to every recipient. Activation cannot be undone or reverted to draft.",
+      "confirm": "Activate campaign",
+      "success": "Campaign activated.",
+      "invalidAssignees_one": "1 recipient is no longer active. Rebuild the audience and try again.",
+      "invalidAssignees_other": "{{count}} recipients are no longer active. Rebuild the audience and try again."
+    },
+    "completion": {
+      "title": "Completion",
+      "assignee": "Recipient",
+      "status": "Status",
+      "completed": "Completed",
+      "open": "Not completed",
+      "cancelled": "Cancelled",
+      "overdue": "Overdue — was due {{dueDate}}",
+      "empty": "No recipients were included when this campaign was activated.",
+      "loading": "Loading completion status…",
+      "loadFailed": "Could not load completion status."
+    }
   },
   "riskDashboard": {
     "title": "Risk Dashboard",
@@ -90,6 +172,47 @@
       "lte": "Less than or equal",
       "contains": "Contains",
       "in": "In"
+    },
+    "inlineEdit": {
+      "save": "Save",
+      "saveSuccess": "Changes saved.",
+      "saveFailed": "Couldn't save. Try again."
+    },
+    "export": {
+      "label": "Export",
+      "exporting": "Exporting…",
+      "success": "Export downloaded.",
+      "failed": "Couldn't export. Try again."
+    },
+    "savedViews": {
+      "allTab": "All",
+      "saveView": "Save view",
+      "save": "Save",
+      "saving": "Saving…",
+      "cancel": "Cancel",
+      "share": "Share",
+      "sharing": "Sharing…",
+      "delete": "Delete",
+      "sharedBy": "{{name}}",
+      "saveDialogTitle": "Save current view",
+      "saveDialogDescription": "Save the current filters, columns, and sort order as a named tab.",
+      "viewName": "View name",
+      "viewNamePlaceholder": "e.g. Needs a conversation",
+      "shareDialogTitle": "Share view",
+      "shareDialogDescription": "Choose managers who should see \"{{name}}\" as a tab in their directory.",
+      "noRecipients": "No employees available to share with.",
+      "loadingRecipients": "Loading employees…",
+      "deleteDialogTitle": "Delete saved view?",
+      "deleteDialogDescription": "\"{{name}}\" will be removed for you and anyone you shared it with.",
+      "createSuccess": "View saved.",
+      "createFailed": "Couldn't save the view. Try again.",
+      "updateSuccess": "View updated.",
+      "updateFailed": "Couldn't update the view. Try again.",
+      "deleteSuccess": "View deleted.",
+      "deleteFailed": "Couldn't delete the view. Try again.",
+      "shareSuccess": "View shared.",
+      "shareFailed": "Couldn't share the view. Try again.",
+      "filtersHiddenNotice": "This view includes a filter on a field you can't see, so it was skipped. You're seeing your own entitled results."
     }
   },
   "adminRoles": {
@@ -198,6 +321,7 @@
       "identity": "Identity",
       "risks": "Risks",
       "managementNotes": "Management notes",
+      "feedback": "Feedback",
       "timeline": "Career timeline",
       "leaves": "Leaves and absences",
       "projects": "Projects",
@@ -255,6 +379,83 @@
       "validation": {
         "contentRequired": "Note content is required.",
         "contentTooLong": "Note content must be at most 10,000 characters."
+      }
+    },
+    "s8": {
+      "empty": "No feedback recorded.",
+      "addRecord": "Add feedback",
+      "recordedAt": "Date",
+      "context": "Context",
+      "toggleSharedWithEmployee": "Shared with employee",
+      "deleteRecord": "Delete",
+      "confirmDelete": "Delete this feedback record?",
+      "saveFailed": "Could not save feedback. Try again.",
+      "viewMode": {
+        "groupLabel": "Feedback view mode",
+        "list": "List",
+        "compare": "Compare"
+      },
+      "compare": {
+        "periodA": "Period A",
+        "periodB": "Period B",
+        "startDate": "Start date",
+        "endDate": "End date",
+        "periodLabel": "{{start}} – {{end}}",
+        "emptyPeriod": "No feedback in this period.",
+        "quarters": {
+          "q1": "Q1",
+          "q2": "Q2",
+          "q3": "Q3",
+          "q4": "Q4"
+        },
+        "validation": {
+          "required": "Start and end dates are required.",
+          "invalidRange": "Start date must be on or before end date."
+        }
+      },
+      "validation": {
+        "recordedAtRequired": "Date is required.",
+        "recordedAtInvalid": "Enter a valid date (YYYY-MM-DD).",
+        "recordedAtFuture": "Date cannot be in the future.",
+        "contextRequired": "Context is required.",
+        "contextTooLong": "Context must be at most 500 characters.",
+        "bodyRequired": "Feedback body is required.",
+        "bodyTooLong": "Feedback body must be at most 10,000 characters."
+      },
+      "requestFeedback": {
+        "action": "Request feedback…",
+        "title": "Request feedback",
+        "cancel": "Cancel",
+        "submit": "Create campaign",
+        "submitting": "Creating…",
+        "success": "Feedback request campaign created.",
+        "error": "Could not create feedback request. Try again.",
+        "colleaguesLabel": "Colleagues to request feedback from",
+        "colleaguesLoading": "Loading colleagues…",
+        "colleaguesLoadFailed": "Could not load colleagues. Try again.",
+        "colleaguesEmpty": "No colleagues available to select.",
+        "defaults": {
+          "title": "Feedback request: {{name}}",
+          "description": "Request feedback about {{name}} from selected colleagues.",
+          "purpose": "Collect feedback about {{name}} via the linked external form."
+        },
+        "validation": {
+          "colleaguesRequired": "Select at least one colleague."
+        }
+      }
+    },
+    "feedback": {
+      "create": {
+        "success": "Feedback recorded.",
+        "error": "Could not record feedback."
+      },
+      "update": {
+        "success": "Feedback updated.",
+        "error": "Could not update feedback."
+      },
+      "delete": {
+        "success": "Feedback deleted.",
+        "error": "Could not delete feedback."
       }
     },
     "customFields": {

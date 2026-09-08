@@ -5,7 +5,8 @@ import { HomePage } from '@/pages/HomePage/HomePage'
 import { ErrorPage } from '@/pages/ErrorPage/ErrorPage'
 import { LoginPage } from '@/pages/LoginPage/LoginPage'
 import { AllEmployeesPage } from '@/pages/AllEmployeesPage/AllEmployeesPage'
-import { CampaignsStubPage } from '@/pages/CampaignsStubPage/CampaignsStubPage'
+import { CampaignsPage } from '@/pages/CampaignsPage/CampaignsPage'
+import { CampaignDetailPage } from '@/pages/CampaignDetailPage/CampaignDetailPage'
 import { RiskDashboardPage } from '@/pages/RiskDashboardPage/RiskDashboardPage'
 import { AdminRolesPage } from '@/pages/AdminRolesPage/AdminRolesPage'
 import { EmployeeProfilePage } from '@/pages/EmployeeProfilePage/EmployeeProfilePage'
@@ -61,7 +62,11 @@ const router = createBrowserRouter([
       },
       {
         path: 'campaigns',
-        element: <CampaignsStubPage />,
+        element: <CampaignsPage />,
+      },
+      {
+        path: 'campaigns/:campaignId',
+        element: <CampaignDetailPage />,
       },
       {
         path: 'shared-links/:token',

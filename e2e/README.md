@@ -16,7 +16,7 @@ Node 22 is required (`../backend/.nvmrc` pins the same version): Vite 8 declares
 skipped at install time and the dev server refuses to boot.
 
 `BASE_URL` overrides where the suite points, defaulting to
-`http://127.0.0.1:4200`. `VITE_API_BASE_URL` points the `api` fixture at the
+`http://localhost:4200`. `VITE_API_BASE_URL` points the `api` fixture at the
 backend, defaulting to `http://localhost:3001`.
 
 ## What lives where

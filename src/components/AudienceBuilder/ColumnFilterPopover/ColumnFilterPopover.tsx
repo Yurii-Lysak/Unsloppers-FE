@@ -11,8 +11,8 @@ import {
 import { Checkbox } from '@/components/Checkbox/Checkbox'
 import { Input } from '@/components/Input/Input'
 import { Select } from '@/components/Select/Select'
+import { defaultFilterOperatorForType } from '@/components/AudienceBuilder/filter-utils'
 import type { EmployeeFieldFilter, FieldSpec, FilterOperator } from '@/types/employees'
-import { defaultFilterOperatorForType } from '../../hooks/useAllEmployeesPage'
 
 interface ColumnFilterPopoverProps {
   field: FieldSpec
