@@ -78,7 +78,6 @@ const FeedbackRecordItem = ({
     form,
     onSubmit,
     isMutating,
-    sharedWithEmployee,
     toggleSharedWithEmployee,
     handleDelete,
   } = useFeedbackItem(employeeId, record)
@@ -100,7 +99,7 @@ const FeedbackRecordItem = ({
           <Textarea name="body" className="min-h-20" />
           {isWritableFeedback(record) && (
             <Switch
-              checked={sharedWithEmployee}
+              checked={record.sharedWithEmployee}
               disabled={isMutating}
               label={t('employeeProfile.s8.toggleSharedWithEmployee')}
               onCheckedChange={checked => {

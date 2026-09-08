@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useFeedbackData } from '@/hooks/data/useFeedbackData'
@@ -28,9 +28,6 @@ export const useFeedbackItem = (
   const { t } = useTranslation()
   const { updateFeedback, deleteFeedback, isMutatingFeedback } =
     useFeedbackData(employeeId)
-  const [sharedWithEmployee, setSharedWithEmployee] = useState(
-    isWritableFeedback(record) ? record.sharedWithEmployee : false,
-  )
   const { schema } = useMemo(() => createEditFeedbackFormSchema(t), [t])
   const defaultValues = useMemo<EditFeedbackFormValues>(
     () => ({
@@ -50,12 +47,6 @@ export const useFeedbackItem = (
     form.reset(defaultValues)
   }, [defaultValues, form, record.id])
 
-  useEffect(() => {
-    if (isWritableFeedback(record)) {
-      setSharedWithEmployee(record.sharedWithEmployee)
-    }
-  }, [record])
-
   const isMutating = isMutatingFeedback || form.formState.isSubmitting
 
   const onSubmit = async (values: EditFeedbackFormValues) => {
@@ -70,12 +61,9 @@ export const useFeedbackItem = (
   }
 
   const toggleSharedWithEmployee = async (checked: boolean) => {
-    const previous = sharedWithEmployee
-    setSharedWithEmployee(checked)
     try {
       await updateFeedback(record.id, { sharedWithEmployee: checked })
     } catch {
-      setSharedWithEmployee(previous)
       form.setError('root', { message: t('employeeProfile.s8.saveFailed') })
     }
   }
@@ -97,7 +85,6 @@ export const useFeedbackItem = (
     form,
     onSubmit,
     isMutating,
-    sharedWithEmployee,
     toggleSharedWithEmployee,
     handleDelete,
   }
