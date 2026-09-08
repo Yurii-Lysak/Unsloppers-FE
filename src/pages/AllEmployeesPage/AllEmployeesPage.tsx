@@ -7,6 +7,7 @@ import { ConfirmationModal } from '@/components/ConfirmationModal/ConfirmationMo
 import { useSavedViewsData } from '@/hooks/data/useSavedViewsData'
 import { useExportEmployeesListData } from '@/hooks/data/useEmployeesData'
 import { EmployeeTable } from './components/EmployeeTable/EmployeeTable'
+import { EmployeeCardList } from './components/EmployeeCardList/EmployeeCardList'
 import { ColumnPicker } from './components/ColumnPicker/ColumnPicker'
 import { SaveViewDialog } from './components/SaveViewDialog/SaveViewDialog'
 import { ShareViewDialog } from './components/ShareViewDialog/ShareViewDialog'
@@ -197,17 +198,22 @@ export const AllEmployeesPage = () => {
       )}
 
       {displayData && (
-        <EmployeeTable
-          data={displayData}
-          sort={query.sort}
-          order={query.order}
-          onToggleSort={toggleSort}
-          onApplyFilter={upsertFilter}
-          onClearFilter={clearFilter}
-          activeFilterForField={activeFilterForField}
-          onSaveField={saveEmployeeField}
-          isSavingField={isSavingField}
-        />
+        <>
+          <div className="hidden md:block">
+            <EmployeeTable
+              data={displayData}
+              sort={query.sort}
+              order={query.order}
+              onToggleSort={toggleSort}
+              onApplyFilter={upsertFilter}
+              onClearFilter={clearFilter}
+              activeFilterForField={activeFilterForField}
+              onSaveField={saveEmployeeField}
+              isSavingField={isSavingField}
+            />
+          </div>
+          <EmployeeCardList data={displayData} />
+        </>
       )}
 
       <SaveViewDialog
