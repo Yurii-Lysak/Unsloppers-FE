@@ -137,6 +137,7 @@ export interface UpdateFeedbackRecordPayload {
 export interface IdentityRelation {
   id: string
   displayName: string
+  pairId?: string
 }
 
 export interface IdentitySection {
@@ -153,6 +154,16 @@ export interface MentorshipSection {
   mentorStatus: MentorStatus
   mentor?: IdentityRelation | null
   mentees: IdentityRelation[]
+  pairHistory: MentorshipPairHistory[]
+}
+
+export interface MentorshipPairHistory {
+  id: string
+  role: 'mentor' | 'mentee'
+  counterpart: IdentityRelation
+  startedAt: string
+  endedAt: string
+  closureFeedback?: string | null
 }
 
 export interface PatchOpenToMentoringPayload {
