@@ -292,6 +292,7 @@
       "identity": "Identity",
       "risks": "Risks",
       "managementNotes": "Management notes",
+      "feedback": "Feedback",
       "timeline": "Career timeline",
       "leaves": "Leaves and absences",
       "projects": "Projects",
@@ -349,6 +350,39 @@
       "validation": {
         "contentRequired": "Note content is required.",
         "contentTooLong": "Note content must be at most 10,000 characters."
+      }
+    },
+    "s8": {
+      "empty": "No feedback recorded.",
+      "addRecord": "Add feedback",
+      "recordedAt": "Date",
+      "context": "Context",
+      "toggleSharedWithEmployee": "Shared with employee",
+      "deleteRecord": "Delete",
+      "confirmDelete": "Delete this feedback record?",
+      "saveFailed": "Could not save feedback. Try again.",
+      "validation": {
+        "recordedAtRequired": "Date is required.",
+        "recordedAtInvalid": "Enter a valid date (YYYY-MM-DD).",
+        "recordedAtFuture": "Date cannot be in the future.",
+        "contextRequired": "Context is required.",
+        "contextTooLong": "Context must be at most 500 characters.",
+        "bodyRequired": "Feedback body is required.",
+        "bodyTooLong": "Feedback body must be at most 10,000 characters."
+      }
+    },
+    "feedback": {
+      "create": {
+        "success": "Feedback recorded.",
+        "error": "Could not record feedback."
+      },
+      "update": {
+        "success": "Feedback updated.",
+        "error": "Could not update feedback."
+      },
+      "delete": {
+        "success": "Feedback deleted.",
+        "error": "Could not delete feedback."
       }
     },
     "customFields": {
