@@ -105,6 +105,29 @@ export const AllEmployeesPage = () => {
     toast.info(t('directory.savedViews.filtersHiddenNotice'))
   }, [employeesList?.filtersHidden, activeViewId, query.filters, t])
 
+  const lastUnavailableNoticeKeyRef = useRef<string | null>(null)
+  useEffect(() => {
+    const unavailable = employeesList?.fieldsUnavailable
+    if (!unavailable || unavailable.length === 0) {
+      return
+    }
+    const noticeKey = `${activeViewId ?? 'all'}:${unavailable.join(',')}`
+    if (lastUnavailableNoticeKeyRef.current === noticeKey) {
+      return
+    }
+    lastUnavailableNoticeKeyRef.current = noticeKey
+    const fieldLabels = unavailable.map(fieldId => {
+      const field = allFields.find(entry => entry.id === fieldId)
+      if (field) {
+        return field.name
+      }
+      const key = `directory.fields.${fieldId}`
+      const translated = t(key)
+      return translated === key ? fieldId : translated
+    })
+    toast.info(t('directory.fieldsUnavailableNotice', { fields: fieldLabels.join(', ') }))
+  }, [employeesList?.fieldsUnavailable, activeViewId, allFields, t])
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between gap-4 border-b border-border pb-4">

@@ -13,6 +13,9 @@ export const defaultFilterOperatorForType = (type: string): FilterOperator => {
   if (type === 'select') {
     return 'eq'
   }
+  if (type === 'date') {
+    return 'eq'
+  }
   return 'contains'
 }
 
@@ -24,6 +27,18 @@ export const formatFieldOptionLabel = (
   const key = `directory.fields.${fieldId}.${option}`
   const translated = t(key)
   return translated === key ? option : translated
+}
+
+export const formatCellDisplay = (
+  value: unknown,
+  fieldId: string,
+  fieldsUnavailable: string[] | undefined,
+  t: (key: string) => string,
+): string => {
+  if (fieldsUnavailable?.includes(fieldId)) {
+    return t('directory.cellUnavailable')
+  }
+  return formatCellValue(value, t, fieldId)
 }
 
 export const formatCellValue = (

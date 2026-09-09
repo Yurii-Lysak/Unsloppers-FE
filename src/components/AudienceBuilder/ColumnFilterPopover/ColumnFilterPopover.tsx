@@ -11,8 +11,14 @@ import {
 import { Checkbox } from '@/components/Checkbox/Checkbox'
 import { Input } from '@/components/Input/Input'
 import { Select } from '@/components/Select/Select'
+import { buildColumnFilterPayload } from '@/components/AudienceBuilder/column-filter-apply'
 import { defaultFilterOperatorForType, formatFieldOptionLabel } from '@/components/AudienceBuilder/filter-utils'
-import type { EmployeeFieldFilter, FieldSpec, FilterOperator } from '@/types/employees'
+import {
+  BUILTIN_FIELD_IDS,
+  type EmployeeFieldFilter,
+  type FieldSpec,
+  type FilterOperator,
+} from '@/types/employees'
 
 interface ColumnFilterPopoverProps {
   field: FieldSpec
@@ -35,7 +41,7 @@ const operatorsForField = (field: FieldSpec): FilterOperator[] => {
     return ['eq', 'neq', 'in']
   }
   if (field.type === 'date') {
-    return ['eq', 'neq', 'gt', 'gte', 'lt', 'lte']
+    return ['eq', 'neq', 'gt', 'gte', 'lt', 'lte', 'between', 'is_empty']
   }
   return ['eq', 'neq', 'contains']
 }
@@ -48,6 +54,15 @@ const valueToString = (value: EmployeeFieldFilter['value'] | undefined): string 
     return value.join(', ')
   }
   return String(value)
+}
+
+const betweenValueToDates = (
+  value: EmployeeFieldFilter['value'] | undefined,
+): { from: string; to: string } => {
+  if (Array.isArray(value) && value.length === 2) {
+    return { from: String(value[0] ?? ''), to: String(value[1] ?? '') }
+  }
+  return { from: '', to: '' }
 }
 
 const valueToSelectedOptions = (
@@ -77,6 +92,12 @@ export const ColumnFilterPopover = ({
   const [selectedOptions, setSelectedOptions] = useState<string[]>(
     valueToSelectedOptions(activeFilter?.value),
   )
+  const [betweenFrom, setBetweenFrom] = useState(
+    () => betweenValueToDates(activeFilter?.value).from,
+  )
+  const [betweenTo, setBetweenTo] = useState(
+    () => betweenValueToDates(activeFilter?.value).to,
+  )
 
   const operators = operatorsForField(field)
   const hasOptions = (field.options?.length ?? 0) > 0
@@ -88,9 +109,12 @@ export const ColumnFilterPopover = ({
     () =>
       operators.map(entry => ({
         value: entry,
-        label: t(`directory.operators.${entry}`),
+        label:
+          field.id === BUILTIN_FIELD_IDS.last_assessment_date && entry === 'is_empty'
+            ? t('directory.operators.never_assessed')
+            : t(`directory.operators.${entry}`),
       })),
-    [operators, t],
+    [field.id, operators, t],
   )
 
   const booleanOptions = useMemo(
@@ -114,6 +138,9 @@ export const ColumnFilterPopover = ({
     setOperator(activeFilter?.operator ?? defaultFilterOperatorForType(field.type))
     setValue(valueToString(activeFilter?.value))
     setSelectedOptions(valueToSelectedOptions(activeFilter?.value))
+    const betweenDates = betweenValueToDates(activeFilter?.value)
+    setBetweenFrom(betweenDates.from)
+    setBetweenTo(betweenDates.to)
   }
 
   const handleOpenChange = (nextOpen: boolean) => {
@@ -132,34 +159,21 @@ export const ColumnFilterPopover = ({
   }
 
   const apply = () => {
-    let parsedValue: EmployeeFieldFilter['value'] = value
-
-    if (usesMultiOptionPicker) {
-      if (selectedOptions.length === 0) {
-        return
-      }
-      parsedValue = selectedOptions
-    } else if (usesOptionPicker) {
-      if (!value) {
-        return
-      }
-      parsedValue = value
-    } else if (field.type === 'number') {
-      parsedValue = Number(value)
-      if (Number.isNaN(parsedValue)) {
-        return
-      }
-    } else if (field.type === 'boolean') {
-      parsedValue = value === 'true'
-    } else if (!value) {
-      return
-    }
-
-    onApply({
+    const payload = buildColumnFilterPayload({
       fieldId: field.id,
       operator,
-      value: parsedValue,
+      value,
+      selectedOptions,
+      betweenFrom,
+      betweenTo,
+      usesMultiOptionPicker,
+      usesOptionPicker,
+      fieldType: field.type,
     })
+    if (!payload) {
+      return
+    }
+    onApply(payload)
     setOpen(false)
   }
 
@@ -196,7 +210,24 @@ export const ColumnFilterPopover = ({
         </div>
 
         <div className="mt-3">
-          {field.type === 'boolean' ? (
+          {operator === 'is_empty' ? null : operator === 'between' ? (
+            <div className="space-y-3">
+              <Input
+                id={`filter-between-from-${field.id}`}
+                label={t('directory.filterBetweenFrom')}
+                value={betweenFrom}
+                onChange={event => setBetweenFrom(event.target.value)}
+                type="date"
+              />
+              <Input
+                id={`filter-between-to-${field.id}`}
+                label={t('directory.filterBetweenTo')}
+                value={betweenTo}
+                onChange={event => setBetweenTo(event.target.value)}
+                type="date"
+              />
+            </div>
+          ) : field.type === 'boolean' ? (
             <Select
               id={`filter-value-${field.id}`}
               label={t('directory.filterValue')}

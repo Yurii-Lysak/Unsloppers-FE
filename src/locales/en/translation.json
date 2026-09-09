@@ -433,6 +433,10 @@
     "nextPage": "Next",
     "pageIndicator": "Page {{page}} of {{totalPages}}",
     "cellEmpty": "—",
+    "cellUnavailable": "Temporarily unavailable",
+    "fieldsUnavailableNotice": "Some columns are temporarily unavailable: {{fields}}",
+    "filterBetweenFrom": "From",
+    "filterBetweenTo": "To",
     "selectOption": "Select…",
     "boolean": {
       "true": "Yes",
@@ -446,9 +450,14 @@
       "lt": "Less than",
       "lte": "Less than or equal",
       "contains": "Contains",
-      "in": "In"
+      "in": "In",
+      "between": "Between",
+      "is_empty": "Is empty",
+      "never_assessed": "Never assessed"
     },
     "fields": {
+      "last_assessment_date": "Last assessment date",
+      "has_open_idp": "Has open IDP",
       "mentor_status": {
         "mentor": "Mentor",
         "openToMentoring": "Open to mentoring",
