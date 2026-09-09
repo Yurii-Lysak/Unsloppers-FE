@@ -78,6 +78,25 @@ export interface RisksSection {
   trend?: 'up' | 'down' | 'flat'
 }
 
+export type RequestHistoryStatus = 'proposed' | 'approved' | 'rejected'
+
+export interface RequestHistoryEntry {
+  id: string
+  requestId: string
+  status: RequestHistoryStatus
+  decisionReason?: string | null
+  proposedAt: string
+  decidedAt?: string | null
+  vacancyDetails: string
+  department: string
+  requestStatus?: 'open' | 'pending_dm_review'
+  projectName?: string | null
+}
+
+export interface RequestHistorySection {
+  entries: RequestHistoryEntry[]
+}
+
 export interface CreateRiskRecordPayload {
   level: RiskLevel
   description: string

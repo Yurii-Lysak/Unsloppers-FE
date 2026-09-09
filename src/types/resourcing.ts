@@ -51,6 +51,7 @@ export interface ResourcingProposal {
    * when no live link exists or the candidate is external.
    */
   sharedLinkToken?: string | null
+  decidedAt?: string | null
   createdAt: string
 }
 

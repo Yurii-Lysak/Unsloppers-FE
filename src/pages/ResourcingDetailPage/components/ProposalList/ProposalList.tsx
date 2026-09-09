@@ -133,6 +133,14 @@ export const ProposalList = ({
             </div>
           </div>
 
+          {proposal.decidedAt ? (
+            <p className="text-sm text-muted-foreground">
+              {t('resourcing.detail.decide.decidedAt', {
+                date: new Date(proposal.decidedAt).toLocaleDateString(),
+              })}
+            </p>
+          ) : null}
+
           {proposal.status === 'rejected' && proposal.decisionReason && (
             <p
               className="text-sm text-muted-foreground"

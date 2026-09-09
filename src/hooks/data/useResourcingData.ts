@@ -145,8 +145,13 @@ export const useResourcingFulfilData = (requestId: string, enabled = true) => {
   const decideProposal = async (
     proposalId: string,
     input: DecideResourcingProposalInput,
+    candidateEmployeeId?: string | null,
   ) => {
-    await decideMutation.mutateAsync({ proposalId, input })
+    await decideMutation.mutateAsync({
+      proposalId,
+      input,
+      candidateEmployeeId,
+    })
   }
 
   return {
