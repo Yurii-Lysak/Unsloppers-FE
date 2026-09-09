@@ -83,7 +83,7 @@ test.describe('Authentication', () => {
     await expect(page.getByRole('heading', { name: 'We couldn’t verify your session' })).toBeVisible()
     authApi.restoreSession()
     await page.getByRole('button', { name: 'Try again' }).click()
-    await expect(page.getByTestId('home-title')).toBeVisible()
+    await expect(page.getByTestId('dashboard-title')).toBeVisible()
   })
 
   test('renders the unavailable state on a session network failure', async ({ page }) => {
@@ -104,9 +104,9 @@ test.describe('Authentication', () => {
     await page.getByRole('button', { name: 'Sign in' }).click()
 
     await expect(page).toHaveURL('/')
-    await expect(page.getByTestId('home-title')).toBeVisible()
+    await expect(page.getByTestId('dashboard-title')).toBeVisible()
     await page.reload()
-    await expect(page.getByTestId('home-title')).toBeVisible()
+    await expect(page.getByTestId('dashboard-title')).toBeVisible()
     expect(
       await page.evaluate(() => ({
         local: { ...localStorage },
@@ -121,7 +121,7 @@ test.describe('Authentication', () => {
   test('redirects to login when a restored session expires', async ({ page }) => {
     const authApi = await setupAuthApi(page, { authenticated: true })
     await page.goto('/')
-    await expect(page.getByTestId('home-title')).toBeVisible()
+    await expect(page.getByTestId('dashboard-title')).toBeVisible()
 
     authApi.expireSession()
     await page.reload()
@@ -136,7 +136,7 @@ test.describe('Authentication', () => {
     await page.clock.install()
     const authApi = await setupAuthApi(page, { authenticated: true })
     await page.goto('/')
-    await expect(page.getByTestId('home-title')).toBeVisible()
+    await expect(page.getByTestId('dashboard-title')).toBeVisible()
     const initialRequests = authApi.getSessionRequestCount()
 
     authApi.expireSession()
@@ -198,6 +198,6 @@ test.describe('Authentication', () => {
 
     await expect(page).toHaveURL('/')
     await expect(page.getByRole('alert')).toHaveText('Sign-out failed. Try again.')
-    await expect(page.getByTestId('home-title')).toBeVisible()
+    await expect(page.getByTestId('dashboard-title')).toBeVisible()
   })
 })

@@ -5,6 +5,30 @@ import { authenticatedUser, validCredentials } from './fixtures'
 
 const apiBaseUrl = testEnv.api.baseUrl
 
+const minimalDashboardConfig = {
+  variant: 'dm',
+  grouping: 'project',
+  blocks: ['counters'],
+  counters: [
+    {
+      id: 'headcount',
+      providerId: 'audience',
+      labelKey: 'dashboard.counters.headcount',
+    },
+  ],
+  quickNav: [],
+  resolvedBy: 'functional-role',
+}
+
+const minimalDashboardSummary = {
+  variant: 'dm',
+  grouping: 'project',
+  counters: {
+    headcount: { status: 'available', value: 0 },
+  },
+  groups: [],
+}
+
 interface SetupAuthApiOptions {
   authenticated?: boolean
   userId?: string
@@ -123,6 +147,22 @@ export const setupAuthApi = async (
       body: JSON.stringify({
         userId: options.userId ?? authenticatedUser.userId,
       }),
+    })
+  })
+
+  await page.route(`${apiBaseUrl}/api/v1/dashboards/config**`, async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(minimalDashboardConfig),
+    })
+  })
+
+  await page.route(`${apiBaseUrl}/api/v1/dashboards/summary**`, async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(minimalDashboardSummary),
     })
   })
 

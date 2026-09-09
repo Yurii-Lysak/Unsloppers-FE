@@ -47,7 +47,7 @@ test('uses real backend bootstrap and browser cookies for the core auth flow', a
   expect(await page.evaluate(() => document.cookie)).not.toContain('session=')
 
   await page.reload()
-  await expect(page.getByTestId('home-title')).toBeVisible()
+  await expect(page.getByTestId('dashboard-title')).toBeVisible()
   await page.getByRole('button', { name: 'Sign out' }).click()
 
   await expect(page).toHaveURL('/login')

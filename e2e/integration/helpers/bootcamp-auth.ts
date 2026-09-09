@@ -50,5 +50,5 @@ export const loginBootcampUser = async (
   ).toBeTruthy()
 
   await expect(page).toHaveURL('/')
-  await expect(page.getByTestId('home-title')).toBeVisible()
+  await expect(page.getByTestId('dashboard-title')).toBeVisible()
 }
