@@ -26,11 +26,13 @@ export const ROUTE_PERMISSION_RULES: RoutePermissionRule[] = [
   },
   {
     // Story 6.2 — DM/PM create/list holders and UM fulfil-only holders both
-    // reach the list; the page itself scopes what each sees.
+    // reach the list; the page itself scopes what each sees. Story 6.3 adds
+    // the reviewing-DM-only approve_reject_candidates holders.
     pattern: '/resourcing',
     permissions: [
       PERMISSION_KEYS.CREATE_RESOURCING_REQUESTS,
       PERMISSION_KEYS.FULFIL_RESOURCING_REQUESTS,
+      PERMISSION_KEYS.APPROVE_REJECT_CANDIDATES,
     ],
   },
   {
@@ -38,6 +40,7 @@ export const ROUTE_PERMISSION_RULES: RoutePermissionRule[] = [
     permissions: [
       PERMISSION_KEYS.CREATE_RESOURCING_REQUESTS,
       PERMISSION_KEYS.FULFIL_RESOURCING_REQUESTS,
+      PERMISSION_KEYS.APPROVE_REJECT_CANDIDATES,
     ],
   },
 ]

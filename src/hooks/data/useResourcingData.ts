@@ -1,16 +1,22 @@
 import {
   useResourcingAssignedRequestsList,
+  useResourcingPendingReviewRequestsList,
   useResourcingRequestDetail,
   useResourcingRequestsList,
 } from '@/api/hooks/useResourcing'
 import {
   useCreateResourcingProposal,
   useCreateResourcingRequest,
+  useDecideResourcingProposal,
   useSubmitResourcingRequest,
 } from '@/api/hooks/useResourcingMutations'
 import { useCreateSharedLinkForCandidate } from '@/api/hooks/useSharedLinks'
 import type { SectionId } from '@/types/employee-profile'
-import type { CreateResourcingProposalInput, CreateResourcingRequestInput } from '@/types/resourcing'
+import type {
+  CreateResourcingProposalInput,
+  CreateResourcingRequestInput,
+  DecideResourcingProposalInput,
+} from '@/types/resourcing'
 
 export { resourcingListQueryKey } from '@/api/hooks/useResourcing'
 
@@ -20,6 +26,13 @@ export { resourcingListQueryKey } from '@/api/hooks/useResourcing'
  * Never S2/S3/S7/S8.
  */
 const INTERNAL_CANDIDATE_SHARED_LINK_SECTIONS: SectionId[] = ['S1', 'S4', 'S11', 'S12', 'S5']
+
+/**
+ * Story 6.3 fix (6.2 shipped defect) — the DTO's hard max, so the
+ * auto-generated link plausibly survives to review time (the closest
+ * available stand-in for "until the request is decided").
+ */
+const INTERNAL_CANDIDATE_SHARED_LINK_EXPIRY_HOURS = 168
 
 export const useResourcingListData = (enabled = true) => {
   const {
@@ -46,6 +59,20 @@ export const useResourcingAssignedListData = (enabled = true) => {
     assignedList,
     isAssignedLoading,
     isAssignedError,
+  }
+}
+
+export const useResourcingPendingReviewListData = (enabled = true) => {
+  const {
+    data: pendingReviewList,
+    isLoading: isPendingReviewLoading,
+    isError: isPendingReviewError,
+  } = useResourcingPendingReviewRequestsList(enabled)
+
+  return {
+    pendingReviewList,
+    isPendingReviewLoading,
+    isPendingReviewError,
   }
 }
 
@@ -105,11 +132,21 @@ export const useResourcingFulfilData = (requestId: string, enabled = true) => {
         body: {
           recipientEmployeeId: reviewingDmId,
           sections: INTERNAL_CANDIDATE_SHARED_LINK_SECTIONS,
+          expiresInHours: INTERNAL_CANDIDATE_SHARED_LINK_EXPIRY_HOURS,
         },
       })
     }
 
     return submitted
+  }
+
+  const decideMutation = useDecideResourcingProposal(requestId)
+
+  const decideProposal = async (
+    proposalId: string,
+    input: DecideResourcingProposalInput,
+  ) => {
+    await decideMutation.mutateAsync({ proposalId, input })
   }
 
   return {
@@ -121,5 +158,7 @@ export const useResourcingFulfilData = (requestId: string, enabled = true) => {
     resetProposalMutationState: createProposalMutation.reset,
     submitRequest,
     isSubmitting: submitMutation.isPending || createSharedLinkMutation.isPending,
+    decideProposal,
+    isDeciding: decideMutation.isPending,
   }
 }

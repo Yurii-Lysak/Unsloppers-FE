@@ -2,6 +2,7 @@ import { apiClient } from '@/api/client'
 import type {
   CreateResourcingProposalInput,
   CreateResourcingRequestInput,
+  DecideResourcingProposalInput,
   ResourcingProposal,
   ResourcingRequest,
   ResourcingRequestDetail,
@@ -17,6 +18,9 @@ class ResourcingApiService {
 
   public getAssignedRequestsList = (): Promise<ResourcingRequest[]> =>
     apiClient.get<ResourcingRequest[]>('/api/v1/resourcing/requests/assigned')
+
+  public getPendingReviewRequestsList = (): Promise<ResourcingRequest[]> =>
+    apiClient.get<ResourcingRequest[]>('/api/v1/resourcing/requests/pending-review')
 
   public getRequestDetail(requestId: string): Promise<ResourcingRequestDetail> {
     return apiClient.get<ResourcingRequestDetail>(
@@ -37,6 +41,17 @@ class ResourcingApiService {
   public submitRequest(requestId: string): Promise<ResourcingRequestDetail> {
     return apiClient.post<ResourcingRequestDetail>(
       `/api/v1/resourcing/requests/${requestId}/submit`,
+    )
+  }
+
+  public decideProposal(
+    requestId: string,
+    proposalId: string,
+    input: DecideResourcingProposalInput,
+  ): Promise<ResourcingProposal> {
+    return apiClient.post<ResourcingProposal>(
+      `/api/v1/resourcing/requests/${requestId}/proposals/${proposalId}/decide`,
+      input,
     )
   }
 }
