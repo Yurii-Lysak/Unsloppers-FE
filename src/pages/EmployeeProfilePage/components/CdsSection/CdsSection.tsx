@@ -17,7 +17,9 @@ import type {
 } from '@/types/employee-profile'
 import { isSectionData } from '../../profile-sections'
 import {
+  useAddCdsAssessmentForm,
   useAddIdpRecordForm,
+  useCdsAssessmentConclusionEdit,
   useCompleteIdpRecord,
   useIdpRecordItem,
 } from './hooks/useCdsSection'
@@ -45,7 +47,7 @@ export const CdsSectionCard = ({
   const { matrixLink, assessments, idpRecords } = section.data
   const assessmentEntries = Array.isArray(assessments) ? assessments : []
   const idpEntries = Array.isArray(idpRecords) ? idpRecords : []
-  const canWriteIdp = accessLevel === 'RW' || canMaintainCdsRecords
+  const canWriteCds = accessLevel === 'RW' || canMaintainCdsRecords
   const canCompleteIdp = audienceRole === 'Self'
 
   return (
@@ -87,14 +89,14 @@ export const CdsSectionCard = ({
                 key={record.id}
                 employeeId={employeeId}
                 record={record}
-                canWrite={canWriteIdp}
+                canWrite={canWriteCds}
                 canComplete={canCompleteIdp}
               />
             ))}
           </ul>
         )}
 
-        {canWriteIdp && <AddIdpRecordForm employeeId={employeeId} />}
+        {canWriteCds && <AddIdpRecordForm employeeId={employeeId} />}
       </div>
 
       <div className="space-y-4">
@@ -109,10 +111,17 @@ export const CdsSectionCard = ({
         ) : (
           <ul className="space-y-3">
             {assessmentEntries.map(entry => (
-              <CdsAssessmentEntryItem key={entry.id} entry={entry} />
+              <CdsAssessmentEntryItem
+                key={entry.id}
+                employeeId={employeeId}
+                entry={entry}
+                canWrite={canWriteCds}
+              />
             ))}
           </ul>
         )}
+
+        {canWriteCds && <AddCdsAssessmentForm employeeId={employeeId} />}
       </div>
     </div>
   )
@@ -286,8 +295,57 @@ const AddIdpRecordForm = ({ employeeId }: { employeeId: string }) => {
   )
 }
 
-const CdsAssessmentEntryItem = ({ entry }: { entry: CdsAssessmentEntry }) => {
+const AddCdsAssessmentForm = ({ employeeId }: { employeeId: string }) => {
   const { t } = useTranslation()
+  const { form, onSubmit, isCreatingAssessment } = useAddCdsAssessmentForm(employeeId)
+
+  return (
+    <Form
+      form={form}
+      onSubmit={onSubmit}
+      className="space-y-2 border-t border-border pt-4"
+    >
+      <h3 className="text-sm font-medium text-foreground">
+        {t('employeeProfile.s12.addAssessment.heading')}
+      </h3>
+      <Input
+        name="date"
+        type="date"
+        label={t('employeeProfile.s12.addAssessment.dateLabel')}
+      />
+      <Input
+        name="assessor"
+        label={t('employeeProfile.s12.addAssessment.assessorLabel')}
+      />
+      <Input
+        name="resultLink"
+        label={t('employeeProfile.s12.addAssessment.resultLinkLabel')}
+      />
+      <Textarea
+        name="conclusion"
+        label={t('employeeProfile.s12.addAssessment.conclusionLabel')}
+        className="min-h-20"
+      />
+      <FormRootError />
+      <Button type="submit" size="sm" disabled={isCreatingAssessment}>
+        {t('employeeProfile.s12.addAssessment.submit')}
+      </Button>
+    </Form>
+  )
+}
+
+const CdsAssessmentEntryItem = ({
+  employeeId,
+  entry,
+  canWrite,
+}: {
+  employeeId: string
+  entry: CdsAssessmentEntry
+  canWrite: boolean
+}) => {
+  const { t } = useTranslation()
+  const { form, onSubmit, isUpdatingAssessmentConclusion } =
+    useCdsAssessmentConclusionEdit(employeeId, entry)
 
   return (
     <li
@@ -310,7 +368,25 @@ const CdsAssessmentEntryItem = ({ entry }: { entry: CdsAssessmentEntry }) => {
       <p className="mt-2 text-muted-foreground">
         {t('employeeProfile.s12.assessor', { name: entry.assessor })}
       </p>
-      <p className="mt-2 text-foreground">{entry.conclusion}</p>
+      {canWrite ? (
+        <Form form={form} onSubmit={onSubmit} className="mt-2 space-y-2">
+          <Textarea
+            name="conclusion"
+            label={t('employeeProfile.s12.editConclusion.label')}
+            className="min-h-20"
+          />
+          <FormRootError />
+          <Button
+            type="submit"
+            size="sm"
+            disabled={isUpdatingAssessmentConclusion || !form.formState.isDirty}
+          >
+            {t('employeeProfile.save')}
+          </Button>
+        </Form>
+      ) : (
+        <p className="mt-2 text-foreground">{entry.conclusion}</p>
+      )}
     </li>
   )
 }

@@ -132,6 +132,17 @@ export interface UpdateIdpRecordPayload {
   fileUrl?: string
 }
 
+export interface CreateCdsAssessmentPayload {
+  date: string
+  assessor: string
+  resultLink: string
+  conclusion: string
+}
+
+export interface UpdateCdsAssessmentConclusionPayload {
+  conclusion: string
+}
+
 export interface CreateRiskRecordPayload {
   level: RiskLevel
   description: string
