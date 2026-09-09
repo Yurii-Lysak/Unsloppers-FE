@@ -15,7 +15,8 @@ export const useEmployeeList = (query: EmployeeListQuery) =>
         axios.isAxiosError(error) &&
         (error.response?.status === 401 ||
           error.response?.status === 403 ||
-          error.response?.status === 400)
+          error.response?.status === 400 ||
+          error.response?.status === 503)
       ) {
         return false
       }

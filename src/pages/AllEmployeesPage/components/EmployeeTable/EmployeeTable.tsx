@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/table'
 import { BUILTIN_FIELD_IDS, type EmployeeListResponse, type FieldValue } from '@/types/employees'
 import { ColumnFilterPopover } from '@/components/AudienceBuilder/ColumnFilterPopover/ColumnFilterPopover'
-import { formatCellValue } from '@/components/AudienceBuilder/filter-utils'
+import { formatCellDisplay } from '@/components/AudienceBuilder/filter-utils'
 import { EditableCell } from '../EditableCell/EditableCell'
 
 interface EmployeeTableProps {
@@ -117,7 +117,12 @@ export const EmployeeTable = ({
                       className="font-medium text-primary hover:underline"
                       data-testid={`directory-employee-link-${row.employeeId}`}
                     >
-                      {formatCellValue(row.cells[field.id], t, field.id)}
+                      {formatCellDisplay(
+                        row.cells[field.id],
+                        field.id,
+                        data.fieldsUnavailable,
+                        t,
+                      )}
                     </Link>
                   </TableCell>
                 ) : (
@@ -126,7 +131,12 @@ export const EmployeeTable = ({
                       field={field}
                       value={row.cells[field.id] ?? null}
                       writable={isWritable(row, field.id)}
-                      displayValue={formatCellValue(row.cells[field.id], t, field.id)}
+                      displayValue={formatCellDisplay(
+                        row.cells[field.id],
+                        field.id,
+                        data.fieldsUnavailable,
+                        t,
+                      )}
                       onSave={value => onSaveField(row.employeeId, field.id, value)}
                       isSavingExternal={isSavingField}
                     />

@@ -1,7 +1,10 @@
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { BUILTIN_FIELD_IDS, type EmployeeListResponse } from '@/types/employees'
-import { formatCellValue } from '@/components/AudienceBuilder/filter-utils'
+import {
+  formatCellDisplay,
+  formatCellValue,
+} from '@/components/AudienceBuilder/filter-utils'
 
 interface EmployeeCardListProps {
   data: EmployeeListResponse
@@ -39,7 +42,12 @@ export const EmployeeCardList = ({ data }: EmployeeCardListProps) => {
                   <div key={field.id} className="flex items-start justify-between gap-4 text-sm">
                     <dt className="text-muted-foreground">{field.name}</dt>
                     <dd className="text-right text-foreground">
-                      {formatCellValue(row.cells[field.id], t, field.id)}
+                      {formatCellDisplay(
+                        row.cells[field.id],
+                        field.id,
+                        data.fieldsUnavailable,
+                        t,
+                      )}
                     </dd>
                   </div>
                 ))}

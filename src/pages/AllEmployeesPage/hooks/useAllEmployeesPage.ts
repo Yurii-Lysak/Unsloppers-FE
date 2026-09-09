@@ -5,60 +5,14 @@ import type {
   EmployeeFieldFilter,
   EmployeeListQuery,
   EmployeeListResponse,
-  FilterOperator,
   SortOrder,
 } from '@/types/employees'
 import type { CreateSavedViewInput, SavedView } from '@/types/saved-views'
+import { parseDirectoryFilters } from '../utils/directory-query-parsing'
 
 const DEFAULT_PAGE = 1
 const DEFAULT_PAGE_SIZE = 50
 export const MAX_PAGE_SIZE = 100
-
-const FILTER_OPERATORS: FilterOperator[] = [
-  'eq',
-  'neq',
-  'gt',
-  'gte',
-  'lt',
-  'lte',
-  'contains',
-  'in',
-]
-
-const isFilterOperator = (value: unknown): value is FilterOperator =>
-  typeof value === 'string' && FILTER_OPERATORS.includes(value as FilterOperator)
-
-const isEmployeeFieldFilter = (value: unknown): value is EmployeeFieldFilter => {
-  if (!value || typeof value !== 'object') {
-    return false
-  }
-  const candidate = value as Record<string, unknown>
-  return (
-    typeof candidate.fieldId === 'string' &&
-    isFilterOperator(candidate.operator) &&
-    (typeof candidate.value === 'string' ||
-      typeof candidate.value === 'number' ||
-      typeof candidate.value === 'boolean' ||
-      candidate.value === null ||
-      (Array.isArray(candidate.value) &&
-        candidate.value.every(entry => typeof entry === 'string')))
-  )
-}
-
-const parseFilters = (raw: string | null): EmployeeFieldFilter[] => {
-  if (!raw) {
-    return []
-  }
-  try {
-    const parsed: unknown = JSON.parse(raw)
-    if (!Array.isArray(parsed)) {
-      return []
-    }
-    return parsed.filter(isEmployeeFieldFilter)
-  } catch {
-    return []
-  }
-}
 
 const parseColumnIds = (raw: string | null, fallback: string[]): string[] => {
   if (!raw) {
@@ -109,7 +63,7 @@ export const useAllEmployeesPage = () => {
     const pageSize = Number(searchParams.get('pageSize') ?? DEFAULT_PAGE_SIZE)
     const sort = searchParams.get('sort') ?? undefined
     const order = parseSortOrder(searchParams.get('order'))
-    const filters = parseFilters(searchParams.get('filters'))
+    const filters = parseDirectoryFilters(searchParams.get('filters'))
 
     return {
       page: Number.isFinite(page) && page > 0 ? page : DEFAULT_PAGE,
@@ -168,7 +122,7 @@ export const useAllEmployeesPage = () => {
 
   const upsertFilter = useCallback(
     (filter: EmployeeFieldFilter) => {
-      const filters = parseFilters(searchParams.get('filters')).filter(
+      const filters = parseDirectoryFilters(searchParams.get('filters')).filter(
         entry => entry.fieldId !== filter.fieldId,
       )
       filters.push(filter)
@@ -182,7 +136,7 @@ export const useAllEmployeesPage = () => {
 
   const clearFilter = useCallback(
     (fieldId: string) => {
-      const filters = parseFilters(searchParams.get('filters')).filter(
+      const filters = parseDirectoryFilters(searchParams.get('filters')).filter(
         entry => entry.fieldId !== fieldId,
       )
       updateParams({
@@ -199,7 +153,9 @@ export const useAllEmployeesPage = () => {
 
   const activeFilterForField = useCallback(
     (fieldId: string) =>
-      parseFilters(searchParams.get('filters')).find(entry => entry.fieldId === fieldId),
+      parseDirectoryFilters(searchParams.get('filters')).find(
+        entry => entry.fieldId === fieldId,
+      ),
     [searchParams],
   )
 
@@ -242,7 +198,7 @@ export const useAllEmployeesPage = () => {
   const getCurrentViewConfig = useCallback(
     (columnIds: string[]): CreateSavedViewInput => ({
       name: '',
-      filters: parseFilters(searchParams.get('filters')),
+      filters: parseDirectoryFilters(searchParams.get('filters')),
       columnIds,
       sort: searchParams.get('sort') ?? undefined,
       order: parseSortOrder(searchParams.get('order')),
