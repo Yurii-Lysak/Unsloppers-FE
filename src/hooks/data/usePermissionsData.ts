@@ -27,6 +27,10 @@ export const usePermissionsData = () => {
     isPermissionsSuccess &&
     permissionsData.permissions.includes(PERMISSION_KEYS.FULFIL_RESOURCING_REQUESTS)
 
+  const canApproveRejectCandidates =
+    isPermissionsSuccess &&
+    permissionsData.permissions.includes(PERMISSION_KEYS.APPROVE_REJECT_CANDIDATES)
+
   const canAssignEndMentorships =
     isPermissionsSuccess &&
     permissionsData.permissions.includes(PERMISSION_KEYS.ASSIGN_END_MENTORSHIPS)
@@ -41,6 +45,7 @@ export const usePermissionsData = () => {
     canCreateFormCampaigns,
     canCreateResourcingRequests,
     canFulfilResourcingRequests,
+    canApproveRejectCandidates,
     canAssignEndMentorships,
   }
 }

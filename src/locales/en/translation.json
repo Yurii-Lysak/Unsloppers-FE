@@ -208,6 +208,12 @@
       "loading": "Loading assigned requests…",
       "loadFailed": "Could not load assigned requests."
     },
+    "pendingReview": {
+      "title": "Pending my review",
+      "empty": "No resourcing requests are waiting for your decision.",
+      "loading": "Loading requests pending review…",
+      "loadFailed": "Could not load requests pending review."
+    },
     "myRequests": {
       "title": "My requests"
     },
@@ -216,6 +222,7 @@
       "loading": "Loading resourcing request…",
       "loadFailed": "Could not load the resourcing request.",
       "summary": "Request details",
+      "approvedHeadcount": "{{approved}} of {{headcount}} approved",
       "submit": "Submit for DM review",
       "submitting": "Submitting…",
       "proposals": {
@@ -224,12 +231,38 @@
         "internal": "Internal candidate",
         "external": "External candidate",
         "viewInPeopleForce": "View in PeopleForce",
+        "reviewProfile": "Review candidate profile",
+        "profileLinkUnavailable": "Shared profile link is not available.",
+        "externalLinkUnavailable": "PeopleForce link is not available.",
         "status": {
-          "proposed": "Proposed"
+          "proposed": "Proposed",
+          "approved": "Approved",
+          "rejected": "Rejected"
         },
         "create": {
           "success": "Candidate attached.",
           "error": "Could not attach the candidate. Try again."
+        }
+      },
+      "decide": {
+        "approve": "Approve",
+        "success": "Decision recorded.",
+        "error": "Could not record the decision. Try again.",
+        "headcountFull": "Headcount is already fully approved. Reverse an approval to free a slot.",
+        "reasonLabel": "Reason",
+        "reasonPlaceholder": "Explain the decision…",
+        "reasonShown": "Reason: {{reason}}",
+        "reject": {
+          "action": "Reject",
+          "title": "Reject this candidate?",
+          "description": "A reason is required to reject a proposed candidate.",
+          "confirm": "Reject candidate"
+        },
+        "reverse": {
+          "action": "Reverse to rejected",
+          "title": "Reverse this approval?",
+          "description": "A reason is required to reverse an approved candidate — this frees the headcount slot.",
+          "confirm": "Reverse approval"
         }
       },
       "addCandidate": {

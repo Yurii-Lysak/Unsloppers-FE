@@ -3,6 +3,10 @@ import { resourcingApiService } from '@/api/services/resourcing.service'
 
 export const resourcingListQueryKey = ['resourcing', 'list'] as const
 export const resourcingAssignedListQueryKey = ['resourcing', 'assigned'] as const
+export const resourcingPendingReviewListQueryKey = [
+  'resourcing',
+  'pending-review',
+] as const
 export const resourcingDetailQueryKey = (requestId: string) =>
   ['resourcing', 'detail', requestId] as const
 
@@ -17,6 +21,13 @@ export const useResourcingAssignedRequestsList = (enabled = true) =>
   useQuery({
     queryKey: resourcingAssignedListQueryKey,
     queryFn: resourcingApiService.getAssignedRequestsList,
+    enabled,
+  })
+
+export const useResourcingPendingReviewRequestsList = (enabled = true) =>
+  useQuery({
+    queryKey: resourcingPendingReviewListQueryKey,
+    queryFn: resourcingApiService.getPendingReviewRequestsList,
     enabled,
   })
 

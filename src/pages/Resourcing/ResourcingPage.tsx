@@ -53,12 +53,16 @@ export const ResourcingPage = () => {
   const {
     canCreateResourcingRequests,
     canFulfilResourcingRequests,
+    canApproveRejectCandidates,
     requestsList,
     isRequestsLoading,
     isRequestsError,
     assignedList,
     isAssignedLoading,
     isAssignedError,
+    pendingReviewList,
+    isPendingReviewLoading,
+    isPendingReviewError,
     dialogOpen,
     openCreate,
     closeDialog,
@@ -67,6 +71,7 @@ export const ResourcingPage = () => {
 
   const hasRequests = Boolean(requestsList && requestsList.length > 0)
   const hasAssigned = Boolean(assignedList && assignedList.length > 0)
+  const hasPendingReview = Boolean(pendingReviewList && pendingReviewList.length > 0)
 
   return (
     <div className="space-y-8">
@@ -83,6 +88,33 @@ export const ResourcingPage = () => {
           </Button>
         )}
       </div>
+
+      {canApproveRejectCandidates && (
+        <section className="space-y-3">
+          <h2 className="text-lg font-semibold text-foreground">
+            {t('resourcing.pendingReview.title')}
+          </h2>
+
+          {isPendingReviewLoading && (
+            <p className="text-muted-foreground">{t('resourcing.pendingReview.loading')}</p>
+          )}
+          {isPendingReviewError && (
+            <p className="text-destructive">{t('resourcing.pendingReview.loadFailed')}</p>
+          )}
+          {!isPendingReviewLoading && !isPendingReviewError && !hasPendingReview && (
+            <p className="text-muted-foreground" data-testid="resourcing-pending-review-empty">
+              {t('resourcing.pendingReview.empty')}
+            </p>
+          )}
+          {hasPendingReview && (
+            <ResourcingRequestList
+              requests={pendingReviewList!}
+              testIdPrefix="resourcing-pending-review"
+              onOpen={openRequest}
+            />
+          )}
+        </section>
+      )}
 
       {canFulfilResourcingRequests && (
         <section className="space-y-3">

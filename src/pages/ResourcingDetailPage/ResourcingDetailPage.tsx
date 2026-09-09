@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/Button/Button'
 import { AddExternalCandidateForm } from './components/AddExternalCandidateForm/AddExternalCandidateForm'
 import { AddInternalCandidateForm } from './components/AddInternalCandidateForm/AddInternalCandidateForm'
+import { DecisionReasonDialog } from './components/DecisionReasonDialog/DecisionReasonDialog'
 import { ProposalList } from './components/ProposalList/ProposalList'
 import { useResourcingDetailPage } from './hooks/useResourcingDetailPage'
 
@@ -15,11 +16,18 @@ export const ResourcingDetailPage = () => {
     isDetailError,
     isOpen,
     canSubmit,
+    isReviewingDm,
     addInternalCandidate,
     addExternalCandidate,
     isCreatingProposal,
     handleSubmit,
     isSubmitting,
+    handleApprove,
+    isDeciding,
+    decisionTargetProposal,
+    openReasonDialog,
+    closeReasonDialog,
+    confirmRejectOrReverse,
     goBack,
   } = useResourcingDetailPage()
 
@@ -75,7 +83,14 @@ export const ResourcingDetailPage = () => {
               </div>
               <div>
                 <dt className="text-muted-foreground">{t('resourcing.form.headcount')}</dt>
-                <dd>{requestDetail.headcount}</dd>
+                <dd>
+                  {isReviewingDm
+                    ? t('resourcing.detail.approvedHeadcount', {
+                        approved: requestDetail.approvedCount,
+                        headcount: requestDetail.headcount,
+                      })
+                    : requestDetail.headcount}
+                </dd>
               </div>
               {requestDetail.expectedCompBand && (
                 <div>
@@ -90,7 +105,15 @@ export const ResourcingDetailPage = () => {
 
           <section className="space-y-3 rounded-lg border border-border p-4">
             <h2 className="text-lg font-semibold">{t('resourcing.detail.proposals.title')}</h2>
-            <ProposalList proposals={requestDetail.proposals} />
+            <ProposalList
+              proposals={requestDetail.proposals}
+              isReviewingDm={isReviewingDm}
+              approvedCount={requestDetail.approvedCount}
+              headcount={requestDetail.headcount}
+              onApprove={proposalId => void handleApprove(proposalId)}
+              onOpenReasonDialog={openReasonDialog}
+              isDeciding={isDeciding}
+            />
           </section>
 
           {isOpen && (
@@ -124,6 +147,15 @@ export const ResourcingDetailPage = () => {
           )}
         </>
       )}
+
+      <DecisionReasonDialog
+        key={decisionTargetProposal?.id ?? 'none'}
+        open={decisionTargetProposal !== null}
+        mode={decisionTargetProposal?.status === 'approved' ? 'reverse' : 'reject'}
+        onClose={closeReasonDialog}
+        onConfirm={confirmRejectOrReverse}
+        isSubmitting={isDeciding}
+      />
     </div>
   )
 }

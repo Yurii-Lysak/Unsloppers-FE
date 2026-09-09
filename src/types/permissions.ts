@@ -6,6 +6,7 @@ export const PERMISSION_KEYS = {
   CREATE_FORM_CAMPAIGNS: 'create_form_campaigns',
   CREATE_RESOURCING_REQUESTS: 'create_resourcing_requests',
   FULFIL_RESOURCING_REQUESTS: 'fulfil_resourcing_requests',
+  APPROVE_REJECT_CANDIDATES: 'approve_reject_candidates',
   MANAGE_FUNCTIONAL_ROLES: 'manage_functional_roles',
   ASSIGN_END_MENTORSHIPS: 'assign_end_mentorships',
 } as const
