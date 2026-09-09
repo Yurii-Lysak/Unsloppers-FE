@@ -12,9 +12,18 @@
     "loadFailed": "Could not load dashboard.",
     "accessDenied": "You do not have access to a role dashboard.",
     "unavailable": "Temporarily unavailable",
+    "staleData": "not fresh",
     "counters": {
       "headcount": "Subordinates",
-      "activeRisk": "Active risk"
+      "activeRisk": "Active risk",
+      "needAttention": "Need attention",
+      "medium": "Medium risk",
+      "high": "High risk",
+      "leaver": "Leaver risk",
+      "openActionItems": "Open action items",
+      "overdueActionItems": "Overdue action items",
+      "openResourcingRequests": "Open resourcing requests",
+      "openCampaigns": "Open campaigns"
     },
     "table": {
       "title": "Your people",
@@ -25,6 +34,11 @@
       "emptyCell": "—",
       "empty": "No people in your dashboard scope."
     },
+    "pagination": {
+      "summary": "Page {{page}} of {{totalPages}} ({{totalRows}} people)",
+      "previous": "Previous",
+      "next": "Next"
+    },
     "actionItems": {
       "title": "Your action items",
       "empty": "No open action items.",
@@ -33,7 +47,10 @@
     "quickNav": {
       "title": "Quick navigation",
       "employees": "All Employees",
+      "savedViews": "Saved views",
+      "resourcing": "Resourcing",
       "risks": "Risk Dashboard",
+      "mentorship": "Mentorship Hub",
       "campaigns": "Campaigns"
     }
   },

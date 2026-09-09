@@ -12,6 +12,9 @@ export const DashboardPage = () => {
     config,
     summary,
     actionItems,
+    page,
+    totalPages,
+    setPage,
   } = useDashboardPage()
 
   if (configForbidden) {
@@ -46,6 +49,9 @@ export const DashboardPage = () => {
         config={config}
         summary={summary}
         actionItems={actionItems}
+        page={page}
+        totalPages={totalPages}
+        onPageChange={setPage}
       />
     </div>
   )

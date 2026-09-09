@@ -1,9 +1,13 @@
 import { useQuery } from '@tanstack/react-query'
-import { dashboardApiService } from '@/api/services/dashboard.service'
+import {
+  dashboardApiService,
+  type DashboardSummaryQuery,
+} from '@/api/services/dashboard.service'
 
 export const dashboardConfigQueryKey = ['dashboards', 'config'] as const
 
-export const dashboardSummaryQueryKey = ['dashboards', 'summary'] as const
+export const dashboardSummaryQueryKey = (query: DashboardSummaryQuery = {}) =>
+  ['dashboards', 'summary', query] as const
 
 export const authoredActionItemsQueryKey = ['me', 'authored-action-items'] as const
 
@@ -15,10 +19,13 @@ export const useDashboardConfig = (enabled = true) =>
     retry: false,
   })
 
-export const useDashboardSummary = (enabled = true) =>
+export const useDashboardSummary = (
+  enabled = true,
+  query: DashboardSummaryQuery = {},
+) =>
   useQuery({
-    queryKey: dashboardSummaryQueryKey,
-    queryFn: () => dashboardApiService.getSummary(),
+    queryKey: dashboardSummaryQueryKey(query),
+    queryFn: () => dashboardApiService.getSummary(query),
     enabled,
     retry: false,
   })

@@ -1,24 +1,24 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import type { DashboardQuickNavLink } from '@/types/dashboard'
 
-const QUICK_NAV_LINKS = [
-  { labelKey: 'dashboard.quickNav.employees', path: '/employees' },
-  { labelKey: 'dashboard.quickNav.risks', path: '/risks' },
-  { labelKey: 'dashboard.quickNav.campaigns', path: '/campaigns' },
-] as const
+interface QuickNavLinksProps {
+  links: DashboardQuickNavLink[]
+}
 
-export const QuickNavLinks = () => {
+export const QuickNavLinks = ({ links }: QuickNavLinksProps) => {
   const { t } = useTranslation()
 
   return (
     <nav className="flex flex-wrap gap-3" data-testid="dashboard-quick-nav">
-      {QUICK_NAV_LINKS.map(link => (
+      {links.map(link => (
         <Link
-          key={link.path}
+          key={`${link.labelKey}-${link.path}`}
           to={link.path}
           className="text-sm font-medium text-primary hover:underline"
+          data-testid={`dashboard-quick-nav-${link.labelKey.split('.').pop()}`}
         >
-          {t(link.labelKey)}
+          {t(link.labelKey as never)}
         </Link>
       ))}
     </nav>

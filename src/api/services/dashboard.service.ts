@@ -5,13 +5,20 @@ import type {
   DashboardSummaryResponse,
 } from '@/types/dashboard'
 
+export interface DashboardSummaryQuery {
+  page?: number
+  pageSize?: number
+}
+
 class DashboardApiService {
   public getConfig(): Promise<DashboardConfigResponse> {
     return apiClient.get<DashboardConfigResponse>('/api/v1/dashboards/config')
   }
 
-  public getSummary(): Promise<DashboardSummaryResponse> {
-    return apiClient.get<DashboardSummaryResponse>('/api/v1/dashboards/summary')
+  public getSummary(query: DashboardSummaryQuery = {}): Promise<DashboardSummaryResponse> {
+    return apiClient.get<DashboardSummaryResponse>('/api/v1/dashboards/summary', {
+      params: query,
+    })
   }
 
   public getAuthoredActionItems(): Promise<AuthoredActionItem[]> {
