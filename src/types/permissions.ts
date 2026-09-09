@@ -9,6 +9,7 @@ export const PERMISSION_KEYS = {
   APPROVE_REJECT_CANDIDATES: 'approve_reject_candidates',
   MANAGE_FUNCTIONAL_ROLES: 'manage_functional_roles',
   ASSIGN_END_MENTORSHIPS: 'assign_end_mentorships',
+  MAINTAIN_CDS_RECORDS: 'maintain_cds_records',
 } as const
 
 export type PermissionKey = (typeof PERMISSION_KEYS)[keyof typeof PERMISSION_KEYS]

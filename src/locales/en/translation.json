@@ -617,10 +617,44 @@
       "matrixLinkHeading": "Skills matrix",
       "matrixLink": "Open skills matrix",
       "noMatrixLink": "No skills matrix mapping for the current department and position.",
+      "assessmentsHeading": "Assessment log",
       "empty": "No assessments recorded.",
       "date": "Assessed {{date}}",
       "assessor": "Assessor: {{name}}",
-      "resultLink": "View results"
+      "resultLink": "View results",
+      "idp": {
+        "heading": "Individual development plans",
+        "empty": "No IDP records recorded.",
+        "addRecord": "Add IDP record",
+        "descriptionLabel": "Description",
+        "deadlineLabel": "Deadline",
+        "fileUrlLabel": "Plan file link",
+        "deadline": "Deadline {{date}}",
+        "fileLink": "Open plan file",
+        "completedAt": "Completed {{date}}",
+        "statusComplete": "Complete",
+        "completeLabel": "Mark complete",
+        "saveFailed": "Could not save the IDP record.",
+        "create": {
+          "success": "IDP record created.",
+          "error": "Could not create the IDP record."
+        },
+        "update": {
+          "success": "IDP record updated.",
+          "error": "Could not update the IDP record."
+        },
+        "complete": {
+          "success": "IDP record marked complete.",
+          "error": "Could not complete the IDP record."
+        },
+        "validation": {
+          "descriptionRequired": "Description is required.",
+          "descriptionMax": "Description must be at most 2000 characters.",
+          "deadlineFormat": "Deadline must be a valid date.",
+          "fileUrlFormat": "Plan file link must be a valid URL.",
+          "fileUrlMax": "Plan file link must be at most 2048 characters."
+        }
+      }
     },
     "s15": {
       "empty": "No resourcing proposals recorded.",
