@@ -5,9 +5,16 @@ const DEFAULT_PAGE_SIZE = 50
 
 export const useDashboardPage = () => {
   const [page, setPage] = useState(1)
+  const [selectedProjectId, setSelectedProjectId] = useState<string | undefined>(
+    undefined,
+  )
   const summaryQueryParams = useMemo(
-    () => ({ page, pageSize: DEFAULT_PAGE_SIZE }),
-    [page],
+    () => ({
+      page,
+      pageSize: DEFAULT_PAGE_SIZE,
+      projectId: selectedProjectId,
+    }),
+    [page, selectedProjectId],
   )
 
   const {
@@ -15,9 +22,10 @@ export const useDashboardPage = () => {
     summaryQuery,
     actionItemsQuery,
     configForbidden,
-    isLoading,
     isError,
   } = useDashboardData(summaryQueryParams)
+
+  const isInitialLoading = configQuery.isLoading
 
   const actionItems = useMemo(() => {
     const items = actionItemsQuery.data ?? []
@@ -30,9 +38,13 @@ export const useDashboardPage = () => {
     return Math.max(1, Math.ceil(totalRows / pageSize))
   }, [summaryQuery.data?.pagination])
 
+  const isSummaryLoading =
+    configQuery.isSuccess && summaryQuery.isFetching && !summaryQuery.data
+
   return {
     configForbidden,
-    isLoading,
+    isInitialLoading,
+    isSummaryLoading,
     isError,
     config: configQuery.data,
     summary: summaryQuery.data,
@@ -40,5 +52,7 @@ export const useDashboardPage = () => {
     page,
     totalPages,
     setPage,
+    selectedProjectId,
+    setSelectedProjectId,
   }
 }

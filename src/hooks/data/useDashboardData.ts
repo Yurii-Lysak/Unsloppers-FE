@@ -17,7 +17,16 @@ export const useDashboardData = (summaryParams: DashboardSummaryQuery = {}) => {
     configQuery.data.variant === 'um' &&
     configQuery.data.grouping === 'people'
 
-  const summaryQueryParams = isUmPeopleDashboard ? summaryParams : {}
+  const isDmProjectDashboard =
+    configLoaded &&
+    configQuery.data.variant === 'dm' &&
+    configQuery.data.grouping === 'project'
+
+  const summaryQueryParams = isUmPeopleDashboard
+    ? summaryParams
+    : isDmProjectDashboard
+      ? { projectId: summaryParams.projectId }
+      : {}
   const summaryQuery = useDashboardSummary(configLoaded, summaryQueryParams)
   const showOwnActionItems =
     configLoaded && configQuery.data.blocks.includes('ownActionItems')
@@ -28,7 +37,6 @@ export const useDashboardData = (summaryParams: DashboardSummaryQuery = {}) => {
     summaryQuery,
     actionItemsQuery,
     configForbidden,
-    isLoading: configQuery.isLoading || (configLoaded && summaryQuery.isLoading),
     isError:
       (configQuery.isError && !configForbidden) ||
       (configLoaded && summaryQuery.isError),

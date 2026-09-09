@@ -1,8 +1,16 @@
+export const DASHBOARD_UNASSIGNED_PROJECT_ID = 'unassigned'
+export const DASHBOARD_ALL_PROJECTS_VALUE = 'all'
+
 export type DashboardVariant = 'um' | 'dm' | 'pm' | 'pp'
 
 export type DashboardGrouping = 'people' | 'project'
 
-export type DashboardBlockId = 'counters' | 'table' | 'ownActionItems' | 'quickNav'
+export type DashboardBlockId =
+  | 'counters'
+  | 'table'
+  | 'ownActionItems'
+  | 'quickNav'
+  | 'resourcingRequests'
 
 export type DashboardVariantResolvedBy = 'seed-map' | 'functional-role'
 
@@ -17,6 +25,20 @@ export interface DashboardQuickNavLink {
   path: string
 }
 
+export interface DashboardSelectorProject {
+  projectId: string
+  projectName: string
+}
+
+export interface DashboardResourcingRequestRow {
+  id: string
+  vacancyDetails: string
+  status: 'open' | 'pending_dm_review'
+  projectId?: string | null
+  authorDisplayName: string
+  createdAt: string
+}
+
 export interface DashboardConfigResponse {
   variant: DashboardVariant
   grouping: DashboardGrouping
@@ -24,6 +46,7 @@ export interface DashboardConfigResponse {
   counters: DashboardCounterSpec[]
   quickNav: DashboardQuickNavLink[]
   resolvedBy: DashboardVariantResolvedBy
+  selectorProjects?: DashboardSelectorProject[]
 }
 
 export interface DashboardCounterValue {
@@ -68,6 +91,8 @@ export interface DashboardSummaryResponse {
   rows?: DashboardTableRow[]
   groups?: DashboardProjectGroup[]
   pagination?: DashboardPagination
+  selectorProjects?: DashboardSelectorProject[]
+  resourcingRequests?: DashboardResourcingRequestRow[]
 }
 
 export interface AuthoredActionItem {

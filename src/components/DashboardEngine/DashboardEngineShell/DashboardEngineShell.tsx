@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { CounterTileGrid } from '@/components/DashboardEngine/CounterTileGrid/CounterTileGrid'
 import { OwnActionItemsWidget } from '@/components/DashboardEngine/OwnActionItemsWidget/OwnActionItemsWidget'
 import { QuickNavLinks } from '@/components/DashboardEngine/QuickNavLinks/QuickNavLinks'
+import { ResourcingRequestsWidget } from '@/components/DashboardEngine/ResourcingRequestsWidget/ResourcingRequestsWidget'
 import { ScopedPeopleTable } from '@/components/DashboardEngine/ScopedPeopleTable/ScopedPeopleTable'
 import { Button } from '@/components/ui/button'
 import type {
@@ -29,6 +30,11 @@ export const DashboardEngineShell = ({
 }: DashboardEngineShellProps) => {
   const { t } = useTranslation()
 
+  const tableTitle =
+    config.variant === 'dm'
+      ? t('dashboard.table.projectsTitle')
+      : t('dashboard.table.title')
+
   const tableRows =
     summary.grouping === 'people'
       ? (summary.rows ?? [])
@@ -48,7 +54,7 @@ export const DashboardEngineShell = ({
 
       {config.blocks.includes('table') ? (
         <section className="space-y-3 rounded-lg border border-border bg-card p-4">
-          <h2 className="text-sm font-semibold">{t('dashboard.table.title')}</h2>
+          <h2 className="text-sm font-semibold">{tableTitle}</h2>
           {summary.grouping === 'project' ? (
             <div className="space-y-6">
               {(summary.groups ?? []).map(group => (
@@ -101,6 +107,19 @@ export const DashboardEngineShell = ({
               ) : null}
             </>
           )}
+        </section>
+      ) : null}
+
+      {config.blocks.includes('resourcingRequests') ? (
+        <section
+          className="space-y-3 rounded-lg border border-border bg-card p-4"
+          data-testid="dashboard-resourcing-block"
+        >
+          <h2 className="text-sm font-semibold">{t('dashboard.resourcing.title')}</h2>
+          <ResourcingRequestsWidget
+            requests={summary.resourcingRequests}
+            unavailable={summary.resourcingRequests === undefined}
+          />
         </section>
       ) : null}
 
