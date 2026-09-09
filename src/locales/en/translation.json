@@ -607,10 +607,20 @@
       "timeline": "Career timeline",
       "leaves": "Leaves and absences",
       "projects": "Projects",
+      "cds": "Career development (CDS)",
       "mentorship": "Mentorship",
       "requestHistory": "Request history",
       "customFields": "Custom fields",
       "generic": "Section {{id}}"
+    },
+    "s12": {
+      "matrixLinkHeading": "Skills matrix",
+      "matrixLink": "Open skills matrix",
+      "noMatrixLink": "No skills matrix mapping for the current department and position.",
+      "empty": "No assessments recorded.",
+      "date": "Assessed {{date}}",
+      "assessor": "Assessor: {{name}}",
+      "resultLink": "View results"
     },
     "s15": {
       "empty": "No resourcing proposals recorded.",

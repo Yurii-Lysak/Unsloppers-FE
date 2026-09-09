@@ -97,6 +97,20 @@ export interface RequestHistorySection {
   entries: RequestHistoryEntry[]
 }
 
+export interface CdsAssessmentEntry {
+  id: string
+  date: string
+  assessor: string
+  resultLink: string
+  conclusion: string
+  createdAt: string
+}
+
+export interface CdsSection {
+  matrixLink: string | null
+  assessments: CdsAssessmentEntry[]
+}
+
 export interface CreateRiskRecordPayload {
   level: RiskLevel
   description: string

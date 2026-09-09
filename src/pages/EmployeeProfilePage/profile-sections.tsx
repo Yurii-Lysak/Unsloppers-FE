@@ -9,6 +9,7 @@ import type {
   MentorshipSection as MentorshipSectionData,
   ProfileSectionEnvelope,
   ProjectsSection,
+  CdsSection as CdsSectionData,
   RequestHistorySection as RequestHistorySectionData,
   RisksSection as RisksSectionData,
   SectionAccessLevel,
@@ -19,6 +20,7 @@ import { CustomFieldsSectionCard } from './components/CustomFieldsSection/Custom
 import { FeedbackSectionCard } from './components/FeedbackSection/FeedbackSection'
 import { ManagementNotesSectionCard } from './components/ManagementNotesSection/ManagementNotesSection'
 import { MentorshipSectionCard } from './components/MentorshipSection/MentorshipSection'
+import { CdsSectionCard } from './components/CdsSection/CdsSection'
 import { RequestHistorySectionCard } from './components/RequestHistorySection/RequestHistorySection'
 import { RisksSectionCard } from './components/RisksSection/RisksSection'
 
@@ -49,6 +51,7 @@ export const PROFILE_SECTION_TITLE_KEYS: Partial<Record<SectionId, string>> = {
   S9: 'employeeProfile.sections.timeline',
   S10: 'employeeProfile.sections.leaves',
   S11: 'employeeProfile.sections.projects',
+  S12: 'employeeProfile.sections.cds',
   S13: 'employeeProfile.sections.mentorship',
   S15: 'employeeProfile.sections.requestHistory',
   S16: 'employeeProfile.sections.customFields',
@@ -164,6 +167,9 @@ export const PROFILE_SECTION_RENDERERS: Partial<Record<SectionId, SectionRendere
         accessLevel={accessLevel}
         audienceRole={audienceRole}
       />
+    ),
+    S12: ({ section }) => (
+      <CdsSectionCard section={section as ProfileSectionEnvelope<CdsSectionData>} />
     ),
     S15: ({ section }) => (
       <RequestHistorySectionCard
