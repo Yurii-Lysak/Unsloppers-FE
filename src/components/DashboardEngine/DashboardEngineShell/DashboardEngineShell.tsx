@@ -3,6 +3,7 @@ import { CounterTileGrid } from '@/components/DashboardEngine/CounterTileGrid/Co
 import { OwnActionItemsWidget } from '@/components/DashboardEngine/OwnActionItemsWidget/OwnActionItemsWidget'
 import { QuickNavLinks } from '@/components/DashboardEngine/QuickNavLinks/QuickNavLinks'
 import { ScopedPeopleTable } from '@/components/DashboardEngine/ScopedPeopleTable/ScopedPeopleTable'
+import { Button } from '@/components/ui/button'
 import type {
   AuthoredActionItem,
   DashboardConfigResponse,
@@ -13,12 +14,18 @@ interface DashboardEngineShellProps {
   config: DashboardConfigResponse
   summary: DashboardSummaryResponse
   actionItems: AuthoredActionItem[]
+  page?: number
+  totalPages?: number
+  onPageChange?: (page: number) => void
 }
 
 export const DashboardEngineShell = ({
   config,
   summary,
   actionItems,
+  page = 1,
+  totalPages = 1,
+  onPageChange,
 }: DashboardEngineShellProps) => {
   const { t } = useTranslation()
 
@@ -26,6 +33,12 @@ export const DashboardEngineShell = ({
     summary.grouping === 'people'
       ? (summary.rows ?? [])
       : (summary.groups ?? []).flatMap(group => group.rows)
+
+  const showPagination =
+    summary.grouping === 'people' &&
+    config.variant === 'um' &&
+    summary.pagination !== undefined &&
+    summary.pagination.totalRows > summary.pagination.pageSize
 
   return (
     <div className="space-y-6" data-testid="dashboard-engine">
@@ -48,7 +61,45 @@ export const DashboardEngineShell = ({
               ))}
             </div>
           ) : (
-            <ScopedPeopleTable rows={tableRows} />
+            <>
+              <ScopedPeopleTable rows={tableRows} />
+              {showPagination && onPageChange ? (
+                <div
+                  className="flex items-center justify-between gap-3"
+                  data-testid="dashboard-table-pagination"
+                >
+                  <p className="text-sm text-muted-foreground">
+                    {t('dashboard.pagination.summary', {
+                      page,
+                      totalPages,
+                      totalRows: summary.pagination?.totalRows ?? 0,
+                    })}
+                  </p>
+                  <div className="flex gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      disabled={page <= 1}
+                      onClick={() => onPageChange(page - 1)}
+                      data-testid="dashboard-pagination-prev"
+                    >
+                      {t('dashboard.pagination.previous')}
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      disabled={page >= totalPages}
+                      onClick={() => onPageChange(page + 1)}
+                      data-testid="dashboard-pagination-next"
+                    >
+                      {t('dashboard.pagination.next')}
+                    </Button>
+                  </div>
+                </div>
+              ) : null}
+            </>
           )}
         </section>
       ) : null}
@@ -64,7 +115,7 @@ export const DashboardEngineShell = ({
         {config.blocks.includes('quickNav') ? (
           <section className="rounded-lg border border-border bg-card p-4">
             <h2 className="mb-3 text-sm font-semibold">{t('dashboard.quickNav.title')}</h2>
-            <QuickNavLinks />
+            <QuickNavLinks links={config.quickNav} />
           </section>
         ) : null}
       </div>

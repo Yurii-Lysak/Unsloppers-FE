@@ -12,11 +12,17 @@ export interface DashboardCounterSpec {
   labelKey: string
 }
 
+export interface DashboardQuickNavLink {
+  labelKey: string
+  path: string
+}
+
 export interface DashboardConfigResponse {
   variant: DashboardVariant
   grouping: DashboardGrouping
   blocks: DashboardBlockId[]
   counters: DashboardCounterSpec[]
+  quickNav: DashboardQuickNavLink[]
   resolvedBy: DashboardVariantResolvedBy
 }
 
@@ -37,8 +43,10 @@ export interface DashboardTableRow {
   risk?: DashboardTableRiskCell
   leaveStatus: 'available' | 'unavailable'
   leaveLabel?: string
+  leaveStale?: boolean
   projectStatus: 'available' | 'unavailable'
   projectLabel?: string
+  projectStale?: boolean
 }
 
 export interface DashboardProjectGroup {
@@ -47,12 +55,19 @@ export interface DashboardProjectGroup {
   rows: DashboardTableRow[]
 }
 
+export interface DashboardPagination {
+  page: number
+  pageSize: number
+  totalRows: number
+}
+
 export interface DashboardSummaryResponse {
   variant: DashboardVariant
   grouping: DashboardGrouping
   counters: Record<string, DashboardCounterValue>
   rows?: DashboardTableRow[]
   groups?: DashboardProjectGroup[]
+  pagination?: DashboardPagination
 }
 
 export interface AuthoredActionItem {

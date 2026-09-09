@@ -66,14 +66,28 @@ export const ScopedPeopleTable = ({ rows }: ScopedPeopleTableProps) => {
               )}
             </TableCell>
             <TableCell>
-              {row.leaveStatus === 'available'
-                ? (row.leaveLabel ?? t('dashboard.table.emptyCell'))
-                : t('dashboard.unavailable')}
+              {row.leaveStatus === 'available' ? (
+                <span className={row.leaveStale ? 'text-muted-foreground italic' : undefined}>
+                  {row.leaveLabel?.trim()
+                    ? row.leaveLabel
+                    : t('dashboard.table.emptyCell')}
+                  {row.leaveStale ? ` (${t('dashboard.staleData')})` : ''}
+                </span>
+              ) : (
+                t('dashboard.unavailable')
+              )}
             </TableCell>
             <TableCell>
-              {row.projectStatus === 'available'
-                ? (row.projectLabel ?? t('dashboard.table.emptyCell'))
-                : t('dashboard.unavailable')}
+              {row.projectStatus === 'available' ? (
+                <span className={row.projectStale ? 'text-muted-foreground italic' : undefined}>
+                  {row.projectLabel?.trim()
+                    ? row.projectLabel
+                    : t('dashboard.table.emptyCell')}
+                  {row.projectStale ? ` (${t('dashboard.staleData')})` : ''}
+                </span>
+              ) : (
+                t('dashboard.unavailable')
+              )}
             </TableCell>
           </TableRow>
         ))}
