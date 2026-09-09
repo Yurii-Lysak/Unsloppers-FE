@@ -31,7 +31,7 @@ export const DashboardEngineShell = ({
   const { t } = useTranslation()
 
   const tableTitle =
-    config.variant === 'dm'
+    config.grouping === 'project'
       ? t('dashboard.table.projectsTitle')
       : t('dashboard.table.title')
 

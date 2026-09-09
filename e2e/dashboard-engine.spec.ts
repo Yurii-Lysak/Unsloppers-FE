@@ -141,6 +141,69 @@ const dmSummary = {
   ],
 }
 
+const pmCounters = [
+  { id: 'headcount', providerId: 'audience', labelKey: 'dashboard.counters.headcount' },
+  { id: 'need_attention', providerId: 'risks', labelKey: 'dashboard.counters.needAttention' },
+  { id: 'medium', providerId: 'risks', labelKey: 'dashboard.counters.medium' },
+  { id: 'high', providerId: 'risks', labelKey: 'dashboard.counters.high' },
+  { id: 'leaver', providerId: 'risks', labelKey: 'dashboard.counters.leaver' },
+  {
+    id: 'openResourcingRequests',
+    providerId: 'resourcing',
+    labelKey: 'dashboard.counters.openResourcingRequests',
+  },
+]
+
+const pmConfig = {
+  variant: 'pm',
+  grouping: 'project',
+  blocks: ['counters', 'table', 'resourcingRequests', 'ownActionItems', 'quickNav'],
+  counters: pmCounters,
+  quickNav: [
+    { labelKey: 'dashboard.quickNav.employees', path: '/employees' },
+    { labelKey: 'dashboard.quickNav.risks', path: '/risks' },
+    { labelKey: 'dashboard.quickNav.campaigns', path: '/campaigns' },
+  ],
+  resolvedBy: 'functional-role',
+}
+
+const pmSummary = {
+  variant: 'pm',
+  grouping: 'project',
+  counters: {
+    headcount: { status: 'available', value: 1 },
+    need_attention: { status: 'available', value: 0 },
+    medium: { status: 'available', value: 0 },
+    high: { status: 'available', value: 1 },
+    leaver: { status: 'available', value: 0 },
+    openResourcingRequests: { status: 'available', value: 1 },
+  },
+  groups: [
+    {
+      projectId: 'proj-pm-a',
+      projectName: 'proj-pm-a',
+      rows: [
+        {
+          employeeId: 'member-1',
+          displayName: 'Member One',
+          leaveStatus: 'unavailable',
+          projectStatus: 'unavailable',
+        },
+      ],
+    },
+  ],
+  resourcingRequests: [
+    {
+      id: 'req-pm-1',
+      vacancyDetails: 'Backend engineer',
+      status: 'open',
+      projectId: 'proj-pm-a',
+      authorDisplayName: 'PM Viewer',
+      createdAt: '2026-01-01T00:00:00.000Z',
+    },
+  ],
+}
+
 const quickNavPermissions = {
   permissions: [
     'create_resourcing_requests',
@@ -243,9 +306,12 @@ const setupQuickNavDestinationMocks = async (
   })
 }
 
+const configByVariant = { um: umConfig, dm: dmConfig, pm: pmConfig }
+const summaryByVariant = { um: umSummary, dm: dmSummary, pm: pmSummary }
+
 const setupDashboardApi = async (
   page: import('@playwright/test').Page,
-  variant: 'um' | 'dm',
+  variant: 'um' | 'dm' | 'pm',
 ) => {
   await page.route(`${apiBaseUrl}/api/v1/permissions/me**`, async route => {
     await route.fulfill({
@@ -259,7 +325,7 @@ const setupDashboardApi = async (
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
-      body: JSON.stringify(variant === 'um' ? umConfig : dmConfig),
+      body: JSON.stringify(configByVariant[variant]),
     })
   })
 
@@ -267,7 +333,7 @@ const setupDashboardApi = async (
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
-      body: JSON.stringify(variant === 'um' ? umSummary : dmSummary),
+      body: JSON.stringify(summaryByVariant[variant]),
     })
   })
 
@@ -452,6 +518,32 @@ test.describe('Dashboard engine', () => {
 
     await expect.poll(() => summaryRequests.some(url => url.includes('projectId=proj-b'))).toBe(true)
     await expect(page.getByTestId('dashboard-group-proj-a')).toHaveCount(0)
+  })
+
+  test('renders PM dashboard with DM-shaped engine, "Your projects" heading, resourcing block, and no selector', async ({
+    page,
+  }) => {
+    await setupAuthApi(page, { authenticated: true })
+    await setupDashboardApi(page, 'pm')
+
+    await page.goto('/')
+
+    await expect(page.getByTestId('dashboard-engine')).toBeVisible()
+    for (const counterId of [
+      'headcount',
+      'need_attention',
+      'medium',
+      'high',
+      'leaver',
+      'openResourcingRequests',
+    ]) {
+      await expect(page.getByTestId(`dashboard-counter-${counterId}`)).toBeVisible()
+    }
+    await expect(page.getByTestId('dashboard-group-proj-pm-a')).toBeVisible()
+    await expect(page.getByText('Your projects')).toBeVisible()
+    await expect(page.getByTestId('dashboard-resourcing-block')).toBeVisible()
+    await expect(page.getByTestId('dashboard-resourcing-request-req-pm-1')).toBeVisible()
+    await expect(page.getByTestId('dashboard-project-selector')).toHaveCount(0)
   })
 
   test('shows access denied without calling summary when config is forbidden', async ({
