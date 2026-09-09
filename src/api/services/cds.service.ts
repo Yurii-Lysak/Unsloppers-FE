@@ -1,7 +1,10 @@
 import { apiClient } from '@/api/client'
 import type {
+  CdsAssessmentEntry,
+  CreateCdsAssessmentPayload,
   CreateIdpRecordPayload,
   IdpRecord,
+  UpdateCdsAssessmentConclusionPayload,
   UpdateIdpRecordPayload,
 } from '@/types/employee-profile'
 
@@ -30,6 +33,27 @@ class CdsApiService {
   public completeIdpRecord(employeeId: string, idpId: string): Promise<IdpRecord> {
     return apiClient.post<IdpRecord>(
       `/api/v1/employees/${employeeId}/idp-records/${idpId}/complete`,
+    )
+  }
+
+  public createAssessment(
+    employeeId: string,
+    payload: CreateCdsAssessmentPayload,
+  ): Promise<CdsAssessmentEntry> {
+    return apiClient.post<CdsAssessmentEntry>(
+      `/api/v1/employees/${employeeId}/cds-assessments`,
+      payload,
+    )
+  }
+
+  public updateAssessmentConclusion(
+    employeeId: string,
+    assessmentId: string,
+    payload: UpdateCdsAssessmentConclusionPayload,
+  ): Promise<CdsAssessmentEntry> {
+    return apiClient.patch<CdsAssessmentEntry>(
+      `/api/v1/employees/${employeeId}/cds-assessments/${assessmentId}`,
+      payload,
     )
   }
 }

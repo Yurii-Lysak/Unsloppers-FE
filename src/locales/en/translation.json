@@ -622,6 +622,40 @@
       "date": "Assessed {{date}}",
       "assessor": "Assessor: {{name}}",
       "resultLink": "View results",
+      "addAssessment": {
+        "heading": "Add assessment",
+        "submit": "Add assessment",
+        "dateLabel": "Assessment date",
+        "assessorLabel": "Assessor",
+        "resultLinkLabel": "Results link",
+        "conclusionLabel": "Conclusion",
+        "saveFailed": "Could not save the assessment.",
+        "create": {
+          "success": "Assessment added.",
+          "error": "Could not add the assessment."
+        },
+        "validation": {
+          "dateFormat": "Assessment date must be a valid date.",
+          "assessorRequired": "Assessor is required.",
+          "assessorMax": "Assessor must be at most 200 characters.",
+          "resultLinkFormat": "Results link must be a valid URL.",
+          "resultLinkMax": "Results link must be at most 2048 characters.",
+          "conclusionRequired": "Conclusion is required.",
+          "conclusionMax": "Conclusion must be at most 10000 characters."
+        }
+      },
+      "editConclusion": {
+        "label": "Conclusion",
+        "saveFailed": "Could not save the conclusion.",
+        "validation": {
+          "conclusionRequired": "Conclusion is required.",
+          "conclusionMax": "Conclusion must be at most 10000 characters."
+        },
+        "update": {
+          "success": "Assessment conclusion updated.",
+          "error": "Could not update the assessment conclusion."
+        }
+      },
       "idp": {
         "heading": "Individual development plans",
         "empty": "No IDP records recorded.",

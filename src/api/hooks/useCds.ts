@@ -4,7 +4,9 @@ import { toast } from 'sonner'
 import { employeeProfileQueryKey } from '@/api/hooks/useEmployeeProfile'
 import { cdsApiService } from '@/api/services/cds.service'
 import type {
+  CreateCdsAssessmentPayload,
   CreateIdpRecordPayload,
+  UpdateCdsAssessmentConclusionPayload,
   UpdateIdpRecordPayload,
 } from '@/types/employee-profile'
 
@@ -47,6 +49,50 @@ export const useUpdateIdpRecord = (employeeId: string) => {
     },
     onError: () => {
       toast.error(t('employeeProfile.s12.idp.update.error'))
+    },
+  })
+}
+
+export const useCreateAssessment = (employeeId: string) => {
+  const { t } = useTranslation()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (payload: CreateCdsAssessmentPayload) =>
+      cdsApiService.createAssessment(employeeId, payload),
+    onSuccess: async () => {
+      toast.success(t('employeeProfile.s12.addAssessment.create.success'))
+      await queryClient.invalidateQueries({
+        queryKey: employeeProfileQueryKey(employeeId),
+      })
+    },
+    onError: () => {
+      toast.error(t('employeeProfile.s12.addAssessment.create.error'))
+    },
+  })
+}
+
+export const useUpdateAssessmentConclusion = (employeeId: string) => {
+  const { t } = useTranslation()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({
+      assessmentId,
+      payload,
+    }: {
+      assessmentId: string
+      payload: UpdateCdsAssessmentConclusionPayload
+    }) =>
+      cdsApiService.updateAssessmentConclusion(employeeId, assessmentId, payload),
+    onSuccess: async () => {
+      toast.success(t('employeeProfile.s12.editConclusion.update.success'))
+      await queryClient.invalidateQueries({
+        queryKey: employeeProfileQueryKey(employeeId),
+      })
+    },
+    onError: () => {
+      toast.error(t('employeeProfile.s12.editConclusion.update.error'))
     },
   })
 }

@@ -3,7 +3,13 @@ import { useEffect, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useCdsData } from '@/hooks/data/useCdsData'
-import type { IdpRecord } from '@/types/employee-profile'
+import type { CdsAssessmentEntry, IdpRecord } from '@/types/employee-profile'
+import {
+  createAddCdsAssessmentFormSchema,
+  createEditCdsAssessmentConclusionFormSchema,
+  type AddCdsAssessmentFormValues,
+  type EditCdsAssessmentConclusionFormValues,
+} from '../schemas/cds-assessment-form.schema'
 import {
   createAddIdpRecordFormSchema,
   createEditIdpRecordFormSchema,
@@ -86,6 +92,88 @@ export const useIdpRecordItem = (employeeId: string, record: IdpRecord) => {
     form,
     onSubmit,
     isUpdatingIdpRecord,
+  }
+}
+
+const defaultAssessmentDate = (): string => new Date().toISOString().slice(0, 10)
+
+export const useAddCdsAssessmentForm = (employeeId: string) => {
+  const { t } = useTranslation()
+  const { createAssessment, isCreatingAssessment } = useCdsData(employeeId)
+  const { schema } = useMemo(() => createAddCdsAssessmentFormSchema(t), [t])
+
+  const form = useForm<AddCdsAssessmentFormValues>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      date: defaultAssessmentDate(),
+      assessor: '',
+      resultLink: '',
+      conclusion: '',
+    },
+  })
+
+  const onSubmit = async (values: AddCdsAssessmentFormValues) => {
+    try {
+      await createAssessment(values)
+      form.reset({
+        date: defaultAssessmentDate(),
+        assessor: '',
+        resultLink: '',
+        conclusion: '',
+      })
+    } catch {
+      form.setError('root', {
+        message: t('employeeProfile.s12.addAssessment.saveFailed'),
+      })
+    }
+  }
+
+  return {
+    form,
+    onSubmit,
+    isCreatingAssessment,
+  }
+}
+
+export const useCdsAssessmentConclusionEdit = (
+  employeeId: string,
+  entry: CdsAssessmentEntry,
+) => {
+  const { t } = useTranslation()
+  const { updateAssessmentConclusion, isUpdatingAssessmentConclusion } =
+    useCdsData(employeeId)
+  const { schema } = useMemo(
+    () => createEditCdsAssessmentConclusionFormSchema(t),
+    [t],
+  )
+  const defaultValues = useMemo<EditCdsAssessmentConclusionFormValues>(
+    () => ({
+      conclusion: entry.conclusion,
+    }),
+    [entry.conclusion],
+  )
+
+  const form = useForm<EditCdsAssessmentConclusionFormValues>({
+    resolver: zodResolver(schema),
+    defaultValues,
+    values: defaultValues,
+    resetOptions: { keepDirtyValues: true },
+  })
+
+  const onSubmit = async (values: EditCdsAssessmentConclusionFormValues) => {
+    try {
+      await updateAssessmentConclusion(entry.id, values)
+    } catch {
+      form.setError('root', {
+        message: t('employeeProfile.s12.editConclusion.saveFailed'),
+      })
+    }
+  }
+
+  return {
+    form,
+    onSubmit,
+    isUpdatingAssessmentConclusion,
   }
 }
 
