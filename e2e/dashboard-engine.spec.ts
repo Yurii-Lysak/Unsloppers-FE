@@ -34,18 +34,32 @@ const umConfig = {
   resolvedBy: 'functional-role',
 }
 
+const dmCounters = [
+  { id: 'headcount', providerId: 'audience', labelKey: 'dashboard.counters.headcount' },
+  { id: 'need_attention', providerId: 'risks', labelKey: 'dashboard.counters.needAttention' },
+  { id: 'medium', providerId: 'risks', labelKey: 'dashboard.counters.medium' },
+  { id: 'high', providerId: 'risks', labelKey: 'dashboard.counters.high' },
+  { id: 'leaver', providerId: 'risks', labelKey: 'dashboard.counters.leaver' },
+  {
+    id: 'openResourcingRequests',
+    providerId: 'resourcing',
+    labelKey: 'dashboard.counters.openResourcingRequests',
+  },
+]
+
 const dmConfig = {
   variant: 'dm',
   grouping: 'project',
-  blocks: ['counters', 'table', 'ownActionItems', 'quickNav'],
-  counters: [
-    { id: 'headcount', providerId: 'audience', labelKey: 'dashboard.counters.headcount' },
-    { id: 'totalActive', providerId: 'risks', labelKey: 'dashboard.counters.activeRisk' },
-  ],
+  blocks: ['counters', 'table', 'resourcingRequests', 'ownActionItems', 'quickNav'],
+  counters: dmCounters,
   quickNav: [
     { labelKey: 'dashboard.quickNav.employees', path: '/employees' },
     { labelKey: 'dashboard.quickNav.risks', path: '/risks' },
     { labelKey: 'dashboard.quickNav.campaigns', path: '/campaigns' },
+  ],
+  selectorProjects: [
+    { projectId: 'proj-a', projectName: 'proj-a' },
+    { projectId: 'proj-b', projectName: 'proj-b' },
   ],
   resolvedBy: 'functional-role',
 }
@@ -91,7 +105,11 @@ const dmSummary = {
   grouping: 'project',
   counters: {
     headcount: { status: 'available', value: 1 },
-    totalActive: { status: 'unavailable' },
+    need_attention: { status: 'available', value: 0 },
+    medium: { status: 'available', value: 0 },
+    high: { status: 'available', value: 1 },
+    leaver: { status: 'available', value: 0 },
+    openResourcingRequests: { status: 'available', value: 1 },
   },
   groups: [
     {
@@ -105,6 +123,20 @@ const dmSummary = {
           projectStatus: 'unavailable',
         },
       ],
+    },
+  ],
+  selectorProjects: [
+    { projectId: 'proj-a', projectName: 'proj-a' },
+    { projectId: 'proj-b', projectName: 'proj-b' },
+  ],
+  resourcingRequests: [
+    {
+      id: 'req-1',
+      vacancyDetails: 'Backend engineer',
+      status: 'open',
+      projectId: 'proj-a',
+      authorDisplayName: 'DM Viewer',
+      createdAt: '2026-01-01T00:00:00.000Z',
     },
   ],
 }
@@ -366,9 +398,60 @@ test.describe('Dashboard engine', () => {
     await page.goto('/')
 
     await expect(page.getByTestId('dashboard-engine')).toBeVisible()
+    await expect(page.getByTestId('dashboard-project-selector')).toBeVisible()
     await expect(page.getByTestId('dashboard-group-proj-a')).toBeVisible()
     await expect(page.getByTestId('dashboard-counter-grid')).toBeVisible()
+    await expect(page.getByTestId('dashboard-resourcing-block')).toBeVisible()
+    await expect(page.getByTestId('dashboard-resourcing-request-req-1')).toBeVisible()
     await expect(page.getByTestId('dashboard-action-items')).toBeVisible()
+  })
+
+  test('refetches DM summary when project selector changes', async ({ page }) => {
+    const summaryRequests: string[] = []
+
+    await setupAuthApi(page, { authenticated: true })
+    await page.route(`${apiBaseUrl}/api/v1/dashboards/config**`, async route => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(dmConfig),
+      })
+    })
+    await page.route(`${apiBaseUrl}/api/v1/dashboards/summary**`, async route => {
+      summaryRequests.push(route.request().url())
+      const projectId = new URL(route.request().url()).searchParams.get('projectId')
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          ...dmSummary,
+          groups: projectId === 'proj-b'
+            ? []
+            : dmSummary.groups,
+          counters: {
+            ...dmSummary.counters,
+            headcount: {
+              status: 'available',
+              value: projectId === 'proj-b' ? 0 : 1,
+            },
+          },
+        }),
+      })
+    })
+    await page.route(`${apiBaseUrl}/api/v1/me/authored-action-items**`, async route => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify([]),
+      })
+    })
+
+    await page.goto('/')
+    await page.getByTestId('dashboard-project-selector-trigger').click()
+    await page.getByRole('option', { name: 'proj-b' }).click()
+
+    await expect.poll(() => summaryRequests.some(url => url.includes('projectId=proj-b'))).toBe(true)
+    await expect(page.getByTestId('dashboard-group-proj-a')).toHaveCount(0)
   })
 
   test('shows access denied without calling summary when config is forbidden', async ({

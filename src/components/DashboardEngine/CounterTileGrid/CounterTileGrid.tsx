@@ -9,9 +9,13 @@ interface CounterTileGridProps {
 
 export const CounterTileGrid = ({ specs, counters }: CounterTileGridProps) => {
   const { t } = useTranslation()
+  const gridClass =
+    specs.length > 6
+      ? 'grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5'
+      : 'grid gap-4 sm:grid-cols-2 lg:grid-cols-3'
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5" data-testid="dashboard-counter-grid">
+    <div className={gridClass} data-testid="dashboard-counter-grid">
       {specs.map(spec => {
         const counter = counters[spec.id]
         return (

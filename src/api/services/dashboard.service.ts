@@ -8,6 +8,7 @@ import type {
 export interface DashboardSummaryQuery {
   page?: number
   pageSize?: number
+  projectId?: string
 }
 
 class DashboardApiService {

@@ -1,13 +1,15 @@
 import { Home } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { DashboardEngineShell } from '@/components/DashboardEngine/DashboardEngineShell/DashboardEngineShell'
+import { ProjectSelector } from '@/components/DashboardEngine/ProjectSelector/ProjectSelector'
 import { useDashboardPage } from './hooks/useDashboardPage'
 
 export const DashboardPage = () => {
   const { t } = useTranslation()
   const {
     configForbidden,
-    isLoading,
+    isInitialLoading,
+    isSummaryLoading,
     isError,
     config,
     summary,
@@ -15,6 +17,8 @@ export const DashboardPage = () => {
     page,
     totalPages,
     setPage,
+    selectedProjectId,
+    setSelectedProjectId,
   } = useDashboardPage()
 
   if (configForbidden) {
@@ -28,11 +32,15 @@ export const DashboardPage = () => {
     )
   }
 
-  if (isLoading) {
+  if (isInitialLoading) {
     return <p className="text-muted-foreground">{t('dashboard.loading')}</p>
   }
 
-  if (isError || !config || !summary) {
+  if (isError || !config) {
+    return <p className="text-destructive">{t('dashboard.loadFailed')}</p>
+  }
+
+  if (!summary && !isSummaryLoading) {
     return <p className="text-destructive">{t('dashboard.loadFailed')}</p>
   }
 
@@ -45,14 +53,30 @@ export const DashboardPage = () => {
         </h1>
       </div>
 
-      <DashboardEngineShell
-        config={config}
-        summary={summary}
-        actionItems={actionItems}
-        page={page}
-        totalPages={totalPages}
-        onPageChange={setPage}
-      />
+      {config.variant === 'dm' ? (
+        <ProjectSelector
+          projects={summary?.selectorProjects ?? config.selectorProjects ?? []}
+          value={selectedProjectId}
+          onChange={setSelectedProjectId}
+        />
+      ) : null}
+
+      {isSummaryLoading ? (
+        <p className="text-sm text-muted-foreground" data-testid="dashboard-summary-loading">
+          {t('dashboard.loading')}
+        </p>
+      ) : null}
+
+      {summary ? (
+        <DashboardEngineShell
+          config={config}
+          summary={summary}
+          actionItems={actionItems}
+          page={page}
+          totalPages={totalPages}
+          onPageChange={setPage}
+        />
+      ) : null}
     </div>
   )
 }

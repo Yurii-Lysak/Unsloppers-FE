@@ -25,8 +25,26 @@
       "openResourcingRequests": "Open resourcing requests",
       "openCampaigns": "Open campaigns"
     },
+    "projectSelector": {
+      "label": "Project filter",
+      "allProjects": "All projects",
+      "unassigned": "Unassigned"
+    },
+    "resourcing": {
+      "title": "Resourcing requests",
+      "empty": "No resourcing requests in this view.",
+      "author": "By {{name}}",
+      "project": "Project: {{name}}",
+      "unassignedProject": "Unassigned project",
+      "viewRequest": "View request",
+      "status": {
+        "open": "Open",
+        "pending_dm_review": "Pending DM review"
+      }
+    },
     "table": {
       "title": "Your people",
+      "projectsTitle": "Your projects",
       "name": "Name",
       "risk": "Risk",
       "leave": "Leave",
