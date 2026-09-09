@@ -106,9 +106,30 @@ export interface CdsAssessmentEntry {
   createdAt: string
 }
 
+export interface IdpRecord {
+  id: string
+  description: string
+  deadline: string
+  fileUrl: string
+  completedAt: string | null
+}
+
 export interface CdsSection {
   matrixLink: string | null
   assessments: CdsAssessmentEntry[]
+  idpRecords: IdpRecord[]
+}
+
+export interface CreateIdpRecordPayload {
+  description: string
+  deadline: string
+  fileUrl: string
+}
+
+export interface UpdateIdpRecordPayload {
+  description?: string
+  deadline?: string
+  fileUrl?: string
 }
 
 export interface CreateRiskRecordPayload {

@@ -168,8 +168,13 @@ export const PROFILE_SECTION_RENDERERS: Partial<Record<SectionId, SectionRendere
         audienceRole={audienceRole}
       />
     ),
-    S12: ({ section }) => (
-      <CdsSectionCard section={section as ProfileSectionEnvelope<CdsSectionData>} />
+    S12: ({ employeeId, section, accessLevel, audienceRole }) => (
+      <CdsSectionCard
+        employeeId={employeeId}
+        section={section as ProfileSectionEnvelope<CdsSectionData>}
+        accessLevel={accessLevel}
+        audienceRole={audienceRole}
+      />
     ),
     S15: ({ section }) => (
       <RequestHistorySectionCard

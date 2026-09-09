@@ -35,6 +35,10 @@ export const usePermissionsData = () => {
     isPermissionsSuccess &&
     permissionsData.permissions.includes(PERMISSION_KEYS.ASSIGN_END_MENTORSHIPS)
 
+  const canMaintainCdsRecords =
+    isPermissionsSuccess &&
+    permissionsData.permissions.includes(PERMISSION_KEYS.MAINTAIN_CDS_RECORDS)
+
   return {
     permissionsData,
     isPermissionsLoading,
@@ -47,6 +51,7 @@ export const usePermissionsData = () => {
     canFulfilResourcingRequests,
     canApproveRejectCandidates,
     canAssignEndMentorships,
+    canMaintainCdsRecords,
   }
 }
 
