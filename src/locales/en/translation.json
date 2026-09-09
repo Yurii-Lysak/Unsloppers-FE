@@ -252,6 +252,7 @@
         "reasonLabel": "Reason",
         "reasonPlaceholder": "Explain the decision…",
         "reasonShown": "Reason: {{reason}}",
+        "decidedAt": "Decided {{date}}",
         "reject": {
           "action": "Reject",
           "title": "Reject this candidate?",
@@ -607,8 +608,25 @@
       "leaves": "Leaves and absences",
       "projects": "Projects",
       "mentorship": "Mentorship",
+      "requestHistory": "Request history",
       "customFields": "Custom fields",
       "generic": "Section {{id}}"
+    },
+    "s15": {
+      "empty": "No resourcing proposals recorded.",
+      "project": "Project {{project}}",
+      "proposedAt": "Proposed {{date}}",
+      "decidedAt": "Decided {{date}}",
+      "reason": "Reason: {{reason}}",
+      "status": {
+        "proposed": "Proposed",
+        "approved": "Approved",
+        "rejected": "Rejected"
+      },
+      "requestStatus": {
+        "open": "Request open",
+        "pending_dm_review": "Pending DM review"
+      }
     },
     "roles": {
       "Self": "Self",

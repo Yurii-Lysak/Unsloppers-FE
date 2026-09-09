@@ -30,7 +30,7 @@ export const SHAREABLE_SECTION_TITLE_KEYS: Record<SectionId, string> = {
   S12: 'employeeProfile.sections.generic',
   S13: 'employeeProfile.sections.mentorship',
   S14: 'employeeProfile.sections.generic',
-  S15: 'employeeProfile.sections.generic',
+  S15: 'employeeProfile.sections.requestHistory',
   S16: 'employeeProfile.sections.customFields',
 }
 

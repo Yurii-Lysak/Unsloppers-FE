@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import axios from 'axios'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
+import { employeeProfileQueryKey } from '@/api/hooks/useEmployeeProfile'
 import {
   resourcingAssignedListQueryKey,
   resourcingDetailQueryKey,
@@ -39,11 +40,21 @@ export const useCreateResourcingProposal = (requestId: string) => {
   return useMutation({
     mutationFn: (input: CreateResourcingProposalInput) =>
       resourcingApiService.createProposal(requestId, input),
-    onSuccess: async () => {
+    onSuccess: async (_data, input) => {
       toast.success(t('resourcing.detail.proposal.create.success'))
-      await queryClient.invalidateQueries({
-        queryKey: resourcingDetailQueryKey(requestId),
-      })
+      const invalidations = [
+        queryClient.invalidateQueries({
+          queryKey: resourcingDetailQueryKey(requestId),
+        }),
+      ]
+      if (input.candidateEmployeeId) {
+        invalidations.push(
+          queryClient.invalidateQueries({
+            queryKey: employeeProfileQueryKey(input.candidateEmployeeId),
+          }),
+        )
+      }
+      await Promise.all(invalidations)
     },
     onError: () => {
       toast.error(t('resourcing.detail.proposal.create.error'))
@@ -62,17 +73,26 @@ export const useDecideResourcingProposal = (requestId: string) => {
     }: {
       proposalId: string
       input: DecideResourcingProposalInput
+      candidateEmployeeId?: string | null
     }) => resourcingApiService.decideProposal(requestId, proposalId, input),
-    onSuccess: async () => {
+    onSuccess: async (_data, variables) => {
       toast.success(t('resourcing.detail.decide.success'))
-      await Promise.all([
+      const invalidations = [
         queryClient.invalidateQueries({
           queryKey: resourcingDetailQueryKey(requestId),
         }),
         queryClient.invalidateQueries({
           queryKey: resourcingPendingReviewListQueryKey,
         }),
-      ])
+      ]
+      if (variables.candidateEmployeeId) {
+        invalidations.push(
+          queryClient.invalidateQueries({
+            queryKey: employeeProfileQueryKey(variables.candidateEmployeeId),
+          }),
+        )
+      }
+      await Promise.all(invalidations)
     },
     onError: async error => {
       if (

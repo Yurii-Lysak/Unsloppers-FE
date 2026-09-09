@@ -39,8 +39,12 @@ export const useResourcingDetailPage = () => {
     await submitRequest()
   }
 
+  const findProposal = (proposalId: string) =>
+    requestDetail?.proposals.find(proposal => proposal.id === proposalId) ?? null
+
   const handleApprove = async (proposalId: string) => {
-    await decideProposal(proposalId, { decision: 'approved' })
+    const proposal = findProposal(proposalId)
+    await decideProposal(proposalId, { decision: 'approved' }, proposal?.candidateEmployeeId)
   }
 
   const openReasonDialog = (proposalId: string) => {
@@ -51,17 +55,21 @@ export const useResourcingDetailPage = () => {
     setDecisionTargetProposalId(null)
   }
 
+  const decisionTargetProposal =
+    requestDetail?.proposals.find(proposal => proposal.id === decisionTargetProposalId) ??
+    null
+
   const confirmRejectOrReverse = async (reason: string) => {
     if (!decisionTargetProposalId) {
       return
     }
-    await decideProposal(decisionTargetProposalId, { decision: 'rejected', reason })
+    await decideProposal(
+      decisionTargetProposalId,
+      { decision: 'rejected', reason },
+      decisionTargetProposal?.candidateEmployeeId,
+    )
     setDecisionTargetProposalId(null)
   }
-
-  const decisionTargetProposal =
-    requestDetail?.proposals.find(proposal => proposal.id === decisionTargetProposalId) ??
-    null
 
   const goBack = () => {
     navigate('/resourcing')

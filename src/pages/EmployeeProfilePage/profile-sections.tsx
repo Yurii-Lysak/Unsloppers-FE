@@ -9,6 +9,7 @@ import type {
   MentorshipSection as MentorshipSectionData,
   ProfileSectionEnvelope,
   ProjectsSection,
+  RequestHistorySection as RequestHistorySectionData,
   RisksSection as RisksSectionData,
   SectionAccessLevel,
   SectionId,
@@ -18,6 +19,7 @@ import { CustomFieldsSectionCard } from './components/CustomFieldsSection/Custom
 import { FeedbackSectionCard } from './components/FeedbackSection/FeedbackSection'
 import { ManagementNotesSectionCard } from './components/ManagementNotesSection/ManagementNotesSection'
 import { MentorshipSectionCard } from './components/MentorshipSection/MentorshipSection'
+import { RequestHistorySectionCard } from './components/RequestHistorySection/RequestHistorySection'
 import { RisksSectionCard } from './components/RisksSection/RisksSection'
 
 export const PROFILE_SECTION_ORDER: SectionId[] = [
@@ -48,6 +50,7 @@ export const PROFILE_SECTION_TITLE_KEYS: Partial<Record<SectionId, string>> = {
   S10: 'employeeProfile.sections.leaves',
   S11: 'employeeProfile.sections.projects',
   S13: 'employeeProfile.sections.mentorship',
+  S15: 'employeeProfile.sections.requestHistory',
   S16: 'employeeProfile.sections.customFields',
 }
 
@@ -160,6 +163,11 @@ export const PROFILE_SECTION_RENDERERS: Partial<Record<SectionId, SectionRendere
         section={section as ProfileSectionEnvelope<MentorshipSectionData>}
         accessLevel={accessLevel}
         audienceRole={audienceRole}
+      />
+    ),
+    S15: ({ section }) => (
+      <RequestHistorySectionCard
+        section={section as ProfileSectionEnvelope<RequestHistorySectionData>}
       />
     ),
   }
