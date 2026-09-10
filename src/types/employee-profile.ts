@@ -263,6 +263,16 @@ export interface ProjectsSection {
   projects: Array<{ name: string }>
 }
 
+export interface EmploymentSection {
+  grade: string | null
+  position: string | null
+  seniority: string | null
+  employmentType: string | null
+  englishLevel: string | null
+  probationStatus: string | null
+  contractType: string | null
+}
+
 export type CustomFieldValueType =
   | 'text'
   | 'number'
