@@ -69,7 +69,12 @@ export const EmployeeProfilePage = ({
           >
             {employeeProfile?.displayName ?? t('employeeProfile.loading')}
           </h1>
-          {employeeProfile && <ProfileHeader profile={employeeProfile} />}
+          {employeeProfile && (
+            <ProfileHeader
+              profile={employeeProfile}
+              audienceRole={employeeProfile.audience.role}
+            />
+          )}
           {showAccessChip && employeeProfile && (
             <div className="mt-2 flex flex-wrap items-center gap-2">
               <p

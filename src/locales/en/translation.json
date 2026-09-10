@@ -605,7 +605,14 @@
     "header": {
       "manager": "Manager",
       "peoplePartner": "People partner",
-      "mentor": "Mentor"
+      "mentor": "Mentor",
+      "photoAlt": "Profile photo for {{name}}",
+      "photoUpload": {
+        "action": "Upload photo",
+        "uploading": "Uploading photo…",
+        "success": "Profile photo updated.",
+        "error": "Could not upload the profile photo."
+      }
     },
     "emptySection": "No records yet.",
     "sections": {
@@ -620,6 +627,16 @@
       },
       "emergencyContacts": {
         "title": "Emergency contacts"
+      },
+      "documents": {
+        "title": "Documents",
+        "empty": "No documents yet.",
+        "upload": {
+          "action": "Upload certificate",
+          "uploading": "Uploading certificate…",
+          "success": "Certificate uploaded.",
+          "error": "Could not upload the certificate."
+        }
       },
       "employment": {
         "title": "Employment details",
