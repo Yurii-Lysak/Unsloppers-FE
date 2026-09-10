@@ -42,15 +42,27 @@
         "pending_dm_review": "Pending DM review"
       }
     },
+    "idp": {
+      "title": "IDPs approaching deadline",
+      "empty": "No open IDPs due within the next 30 days.",
+      "employee": "For {{name}}",
+      "deadline": "Due {{date}}",
+      "viewEmployee": "View employee"
+    },
     "table": {
       "title": "Your people",
       "projectsTitle": "Your projects",
       "name": "Name",
       "risk": "Risk",
       "leave": "Leave",
+      "department": "Department",
       "project": "Project",
       "emptyCell": "—",
-      "empty": "No people in your dashboard scope."
+      "empty": "No people in your dashboard scope.",
+      "groupByLabel": "Group by:",
+      "groupByDepartment": "Department",
+      "groupByProject": "Project",
+      "unassignedGroup": "Unassigned"
     },
     "pagination": {
       "summary": "Page {{page}} of {{totalPages}} ({{totalRows}} people)",

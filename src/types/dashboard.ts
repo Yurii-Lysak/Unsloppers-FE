@@ -11,6 +11,7 @@ export type DashboardBlockId =
   | 'ownActionItems'
   | 'quickNav'
   | 'resourcingRequests'
+  | 'idpDeadlines'
 
 export type DashboardVariantResolvedBy = 'seed-map' | 'functional-role'
 
@@ -37,6 +38,14 @@ export interface DashboardResourcingRequestRow {
   projectId?: string | null
   authorDisplayName: string
   createdAt: string
+}
+
+export interface DashboardIdpRow {
+  id: string
+  employeeId: string
+  employeeDisplayName: string
+  description: string
+  deadline: string
 }
 
 export interface DashboardConfigResponse {
@@ -70,6 +79,9 @@ export interface DashboardTableRow {
   projectStatus: 'available' | 'unavailable'
   projectLabel?: string
   projectStale?: boolean
+  departmentStatus?: 'available' | 'unavailable'
+  departmentLabel?: string
+  departmentStale?: boolean
 }
 
 export interface DashboardProjectGroup {
@@ -93,6 +105,7 @@ export interface DashboardSummaryResponse {
   pagination?: DashboardPagination
   selectorProjects?: DashboardSelectorProject[]
   resourcingRequests?: DashboardResourcingRequestRow[]
+  idpDeadlines?: DashboardIdpRow[]
 }
 
 export interface AuthoredActionItem {
