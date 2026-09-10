@@ -595,6 +595,16 @@
         "error": "Could not delete management note. Try again."
       }
     },
+    "actionItems": {
+      "complete": {
+        "success": "Action item marked complete.",
+        "error": {
+          "generic": "Could not mark action item complete. Try again.",
+          "completed": "This action item is already completed.",
+          "cancelled": "This action item was cancelled."
+        }
+      }
+    },
     "risks": {
       "create": {
         "success": "Risk record added.",
@@ -654,6 +664,7 @@
       "risks": "Risks",
       "managementNotes": "Management notes",
       "feedback": "Feedback",
+      "actionItems": "Action items",
       "timeline": "Career timeline",
       "leaves": {
         "title": "Leaves and absences",
@@ -884,6 +895,15 @@
         "phoneTooLong": "Phone must be at most 50 characters.",
         "phoneInvalid": "Enter a valid phone number."
       }
+    },
+    "s14": {
+      "empty": "No action items yet.",
+      "dueDate": "Due {{date}}",
+      "markComplete": "Mark complete",
+      "completedOn": "Completed on {{date}}",
+      "cancelled": "Cancelled",
+      "cancelledOn": "Cancelled on {{date}}",
+      "cancelledReason": "Reason: {{reason}}"
     },
     "s7": {
       "gated": "A management note exists here. Not shared with your role.",

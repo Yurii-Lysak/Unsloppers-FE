@@ -3,6 +3,7 @@ import type {
   AccessRole,
   CustomFieldsSection as CustomFieldsSectionData,
   EmployeeProfile,
+  ActionItemsSection as ActionItemsSectionData,
   FeedbackSection as FeedbackSectionData,
   LeavesSection,
   ManagementNotesSection as ManagementNotesSectionData,
@@ -20,6 +21,7 @@ import type {
   SectionId,
   TimelineSection,
 } from '@/types/employee-profile'
+import { ActionItemsSectionCard } from './components/ActionItemsSection/ActionItemsSection'
 import { CustomFieldsSectionCard } from './components/CustomFieldsSection/CustomFieldsSection'
 import { FeedbackSectionCard } from './components/FeedbackSection/FeedbackSection'
 import { ManagementNotesSectionCard } from './components/ManagementNotesSection/ManagementNotesSection'
@@ -97,6 +99,7 @@ export const PROFILE_SECTION_TITLE_KEYS: Partial<Record<SectionId, string>> = {
   S6: 'employeeProfile.sections.risks',
   S7: 'employeeProfile.sections.managementNotes',
   S8: 'employeeProfile.sections.feedback',
+  S14: 'employeeProfile.sections.actionItems',
   S9: 'employeeProfile.sections.timeline',
   S10: 'employeeProfile.sections.leaves.title',
   S11: 'employeeProfile.sections.projects.title',
@@ -201,6 +204,13 @@ export const PROFILE_SECTION_RENDERERS: Partial<Record<SectionId, SectionRendere
         accessLevel={accessLevel}
         subjectDisplayName={subjectDisplayName}
         audienceRole={audienceRole}
+      />
+    ),
+    S14: ({ employeeId, section, accessLevel }) => (
+      <ActionItemsSectionCard
+        employeeId={employeeId}
+        section={section as ProfileSectionEnvelope<ActionItemsSectionData>}
+        accessLevel={accessLevel}
       />
     ),
     S9: ({ section, t }) => {
