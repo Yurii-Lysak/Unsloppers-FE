@@ -610,6 +610,17 @@
     "emptySection": "No records yet.",
     "sections": {
       "identity": "Identity",
+      "personalContacts": {
+        "title": "Personal contacts",
+        "notSet": "Not set",
+        "fields": {
+          "residentialAddress": "Residential address",
+          "placeOfStay": "Place of stay"
+        }
+      },
+      "emergencyContacts": {
+        "title": "Emergency contacts"
+      },
       "employment": {
         "title": "Employment details",
         "notSet": "Not set",
@@ -765,6 +776,85 @@
         "detailsTooLong": "Details must be at most 5,000 characters.",
         "recordedAtRequired": "Date recorded is required.",
         "recordedAtInvalid": "Date recorded must be a valid calendar date."
+      }
+    },
+    "s2": {
+      "addressHeading": "Address",
+      "contactMethodsHeading": "Contact methods",
+      "empty": "No contact methods yet.",
+      "addHeading": "Add contact method",
+      "addSubmit": "Add contact method",
+      "deleteButton": "Delete",
+      "confirmDelete": "Delete this contact method?",
+      "saveFailed": "Could not save personal contacts. Try again.",
+      "fields": {
+        "type": "Type",
+        "label": "Label",
+        "value": "Value"
+      },
+      "types": {
+        "phone": "Phone",
+        "email": "Email",
+        "messenger": "Messenger"
+      },
+      "create": {
+        "success": "Contact method added.",
+        "error": "Could not add contact method. Try again."
+      },
+      "update": {
+        "success": "Contact method updated.",
+        "error": "Could not update contact method. Try again."
+      },
+      "delete": {
+        "success": "Contact method deleted.",
+        "error": "Could not delete contact method. Try again."
+      },
+      "address": {
+        "success": "Address updated.",
+        "error": "Could not update address. Try again."
+      },
+      "validation": {
+        "labelRequired": "Label is required.",
+        "labelTooLong": "Label must be at most 200 characters.",
+        "valueRequired": "Value is required.",
+        "valueTooLong": "Value must be at most 500 characters.",
+        "emailInvalid": "Enter a valid email address.",
+        "phoneInvalid": "Enter a valid phone number.",
+        "addressTooLong": "Address must be at most 1,000 characters."
+      }
+    },
+    "s3": {
+      "empty": "No emergency contacts yet.",
+      "addHeading": "Add emergency contact",
+      "addSubmit": "Add emergency contact",
+      "deleteButton": "Delete",
+      "confirmDelete": "Delete this emergency contact?",
+      "saveFailed": "Could not save emergency contacts. Try again.",
+      "fields": {
+        "contactPerson": "Contact person",
+        "relationship": "Relationship",
+        "phone": "Phone"
+      },
+      "create": {
+        "success": "Emergency contact added.",
+        "error": "Could not add emergency contact. Try again."
+      },
+      "update": {
+        "success": "Emergency contact updated.",
+        "error": "Could not update emergency contact. Try again."
+      },
+      "delete": {
+        "success": "Emergency contact deleted.",
+        "error": "Could not delete emergency contact. Try again."
+      },
+      "validation": {
+        "contactPersonRequired": "Contact person is required.",
+        "contactPersonTooLong": "Contact person must be at most 200 characters.",
+        "relationshipRequired": "Relationship is required.",
+        "relationshipTooLong": "Relationship must be at most 200 characters.",
+        "phoneRequired": "Phone is required.",
+        "phoneTooLong": "Phone must be at most 50 characters.",
+        "phoneInvalid": "Enter a valid phone number."
       }
     },
     "s7": {

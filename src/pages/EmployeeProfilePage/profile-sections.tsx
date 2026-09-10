@@ -11,6 +11,8 @@ import type {
   ProjectsSection,
   CdsSection as CdsSectionData,
   EmploymentSection,
+  EmergencyContactsSection as EmergencyContactsSectionData,
+  PersonalContactsSection as PersonalContactsSectionData,
   RequestHistorySection as RequestHistorySectionData,
   RisksSection as RisksSectionData,
   SectionAccessLevel,
@@ -22,6 +24,8 @@ import { FeedbackSectionCard } from './components/FeedbackSection/FeedbackSectio
 import { ManagementNotesSectionCard } from './components/ManagementNotesSection/ManagementNotesSection'
 import { MentorshipSectionCard } from './components/MentorshipSection/MentorshipSection'
 import { CdsSectionCard } from './components/CdsSection/CdsSection'
+import { EmergencyContactsSectionCard } from './components/EmergencyContactsSection/EmergencyContactsSection'
+import { PersonalContactsSectionCard } from './components/PersonalContactsSection/PersonalContactsSection'
 import { RequestHistorySectionCard } from './components/RequestHistorySection/RequestHistorySection'
 import { RisksSectionCard } from './components/RisksSection/RisksSection'
 
@@ -84,6 +88,8 @@ const EMPLOYMENT_FIELD_KEYS: Array<{
 
 export const PROFILE_SECTION_TITLE_KEYS: Partial<Record<SectionId, string>> = {
   S1: 'employeeProfile.sections.identity',
+  S2: 'employeeProfile.sections.personalContacts.title',
+  S3: 'employeeProfile.sections.emergencyContacts.title',
   S4: 'employeeProfile.sections.employment.title',
   S6: 'employeeProfile.sections.risks',
   S7: 'employeeProfile.sections.managementNotes',
@@ -119,6 +125,20 @@ type SectionRenderer = (props: {
 export const PROFILE_SECTION_RENDERERS: Partial<Record<SectionId, SectionRenderer>> =
   {
     S1: () => null,
+    S2: ({ employeeId, section, accessLevel }) => (
+      <PersonalContactsSectionCard
+        employeeId={employeeId}
+        section={section as ProfileSectionEnvelope<PersonalContactsSectionData>}
+        accessLevel={accessLevel}
+      />
+    ),
+    S3: ({ employeeId, section, accessLevel }) => (
+      <EmergencyContactsSectionCard
+        employeeId={employeeId}
+        section={section as ProfileSectionEnvelope<EmergencyContactsSectionData>}
+        accessLevel={accessLevel}
+      />
+    ),
     S4: ({ section, t }) => {
       if (!isSectionData<EmploymentSection>(section)) {
         return null
