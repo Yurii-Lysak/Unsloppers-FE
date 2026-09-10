@@ -601,6 +601,469 @@ test.describe('Employee profile assembly', () => {
     await expect(projectEntry).not.toContainText('Period:')
   })
 
+  test('renders S7 and S8 read-only for Self without create or request controls', async ({
+    page,
+    stubNetworkCall,
+    interceptNetworkCall,
+  }) => {
+    await setupAuthApi(page, { authenticated: true })
+    await stubNetworkCall({
+      url: `${apiBaseUrl}/api/v1/permissions/me`,
+      body: { permissions: [] },
+    })
+    await stubNetworkCall({
+      url: profileUrl,
+      body: {
+        ...selfProfile,
+        audience: {
+          role: 'Self',
+          sections: {
+            ...selfProfile.audience.sections,
+            S7: 'R',
+            S8: 'R',
+          },
+        },
+        sections: {
+          ...selfProfile.sections,
+          S7: {
+            accessLevel: 'R',
+            data: {
+              notes: [
+                {
+                  id: 'note-visible',
+                  content: 'Flagged management note',
+                  author: { id: 'mgr-1', displayName: 'Pat Manager' },
+                  createdAt: '2026-01-01T10:00:00.000Z',
+                  updatedAt: '2026-01-01T10:00:00.000Z',
+                },
+              ],
+            },
+          },
+          S8: {
+            accessLevel: 'R',
+            data: {
+              records: [
+                {
+                  id: 'feedback-shared',
+                  recordedAt: '2026-02-01',
+                  context: 'Shared review',
+                  body: 'Shared feedback body',
+                  author: { id: 'mgr-1', displayName: 'Pat Manager' },
+                  createdAt: '2026-02-01T10:00:00.000Z',
+                  updatedAt: '2026-02-01T10:00:00.000Z',
+                },
+              ],
+            },
+          },
+        },
+      },
+    })
+
+    const profileRequest = interceptNetworkCall({ url: profileUrl, method: 'GET' })
+    await page.goto(`/employees/${employeeId}`)
+    await profileRequest.settled
+
+    await expect(page.getByTestId('profile-section-s7')).toBeVisible()
+    await expect(page.getByTestId('management-notes-section')).toContainText(
+      'Flagged management note',
+    )
+    await expect(page.getByTestId('management-note-note-visible')).toBeVisible()
+    await expect(page.getByTestId('management-note-add-content')).toHaveCount(0)
+
+    await expect(page.getByTestId('profile-section-s8')).toBeVisible()
+    await expect(page.getByTestId('feedback-section')).toContainText('Shared review')
+    await expect(page.getByTestId('feedback-record-feedback-shared')).toBeVisible()
+    await expect(page.getByTestId('feedback-request-action')).toHaveCount(0)
+  })
+
+  test('renders S14 for Self with mark complete and updates after completion', async ({
+    page,
+    stubNetworkCall,
+  }) => {
+    const openItemId = 'action-item-open'
+    const completeUrl = `${apiBaseUrl}/api/v1/employees/${employeeId}/action-items/${openItemId}/complete`
+    let profileBody = {
+      ...selfProfile,
+      audience: {
+        role: 'Self',
+        sections: {
+          ...selfProfile.audience.sections,
+          S14: 'R',
+        },
+      },
+      sections: {
+        ...selfProfile.sections,
+        S14: {
+          accessLevel: 'R',
+          data: {
+            items: [
+              {
+                id: openItemId,
+                title: 'Follow up on goals',
+                description: 'Discuss progress in the next 1:1',
+                dueDate: '2026-01-01',
+                status: 'open',
+                source: 'manual',
+                author: { id: 'mgr-1', displayName: 'Pat Manager' },
+                createdAt: '2026-01-01T10:00:00.000Z',
+                updatedAt: '2026-01-01T10:00:00.000Z',
+                isOverdue: true,
+              },
+            ],
+          },
+        },
+      },
+    }
+
+    await setupAuthApi(page, { authenticated: true })
+    await stubNetworkCall({
+      url: `${apiBaseUrl}/api/v1/permissions/me`,
+      body: { permissions: [] },
+    })
+    await page.route(profileUrl, async route => {
+      if (route.request().method() === 'GET') {
+        await route.fulfill({ status: 200, json: profileBody })
+        return
+      }
+      await route.fallback()
+    })
+    await page.route(completeUrl, async route => {
+      profileBody = {
+        ...profileBody,
+        sections: {
+          ...profileBody.sections,
+          S14: {
+            accessLevel: 'R',
+            data: {
+              items: [
+                {
+                  id: openItemId,
+                  title: 'Follow up on goals',
+                  description: 'Discuss progress in the next 1:1',
+                  dueDate: '2026-01-01',
+                  status: 'completed',
+                  source: 'manual',
+                  author: { id: 'mgr-1', displayName: 'Pat Manager' },
+                  createdAt: '2026-01-01T10:00:00.000Z',
+                  updatedAt: '2026-01-02T10:00:00.000Z',
+                  completedAt: '2026-01-02T10:00:00.000Z',
+                  isOverdue: false,
+                },
+              ],
+            },
+          },
+        },
+      }
+      await route.fulfill({
+        status: 200,
+        json: {
+          id: openItemId,
+          title: 'Follow up on goals',
+          dueDate: '2026-01-01',
+          status: 'completed',
+          source: 'manual',
+          author: { id: 'mgr-1', displayName: 'Pat Manager' },
+          createdAt: '2026-01-01T10:00:00.000Z',
+          updatedAt: '2026-01-02T10:00:00.000Z',
+          completedAt: '2026-01-02T10:00:00.000Z',
+          isOverdue: false,
+        },
+      })
+    })
+
+    await page.goto(`/employees/${employeeId}`)
+
+    await expect(page.getByTestId('profile-section-s14')).toBeVisible()
+    await expect(page.getByTestId('action-items-section')).toContainText(
+      'Follow up on goals',
+    )
+    await expect(page.getByTestId('action-items-section')).toContainText('Overdue')
+    await expect(page.getByTestId(`action-item-${openItemId}-complete`)).toBeVisible()
+
+    await page.getByTestId(`action-item-${openItemId}-complete`).click()
+
+    await expect(page.getByTestId(`action-item-${openItemId}-complete`)).toHaveCount(0)
+    await expect(page.getByTestId(`action-item-${openItemId}`)).toContainText(
+      'Completed on',
+    )
+  })
+
+  test('renders S14 empty state for Self with no assigned items', async ({
+    page,
+    stubNetworkCall,
+    interceptNetworkCall,
+  }) => {
+    await setupAuthApi(page, { authenticated: true })
+    await stubNetworkCall({
+      url: `${apiBaseUrl}/api/v1/permissions/me`,
+      body: { permissions: [] },
+    })
+    await stubNetworkCall({
+      url: profileUrl,
+      body: {
+        ...selfProfile,
+        audience: {
+          role: 'Self',
+          sections: {
+            ...selfProfile.audience.sections,
+            S14: 'R',
+          },
+        },
+        sections: {
+          ...selfProfile.sections,
+          S14: {
+            accessLevel: 'R',
+            data: { items: [] },
+          },
+        },
+      },
+    })
+
+    const profileRequest = interceptNetworkCall({ url: profileUrl, method: 'GET' })
+    await page.goto(`/employees/${employeeId}`)
+    await profileRequest.settled
+
+    await expect(page.getByTestId('profile-section-s14')).toBeVisible()
+    await expect(page.getByTestId('action-items-section')).toContainText(
+      'No action items yet.',
+    )
+  })
+
+  test('renders cancelled S14 item without mark complete for Self', async ({
+    page,
+    stubNetworkCall,
+    interceptNetworkCall,
+  }) => {
+    await setupAuthApi(page, { authenticated: true })
+    await stubNetworkCall({
+      url: `${apiBaseUrl}/api/v1/permissions/me`,
+      body: { permissions: [] },
+    })
+    await stubNetworkCall({
+      url: profileUrl,
+      body: {
+        ...selfProfile,
+        audience: {
+          role: 'Self',
+          sections: {
+            ...selfProfile.audience.sections,
+            S14: 'R',
+          },
+        },
+        sections: {
+          ...selfProfile.sections,
+          S14: {
+            accessLevel: 'R',
+            data: {
+              items: [
+                {
+                  id: 'action-item-cancelled',
+                  title: 'Cancelled follow-up',
+                  dueDate: '2026-02-01',
+                  status: 'cancelled',
+                  source: 'manual',
+                  author: { id: 'mgr-1', displayName: 'Pat Manager' },
+                  createdAt: '2026-02-01T10:00:00.000Z',
+                  updatedAt: '2026-02-02T10:00:00.000Z',
+                  cancelledAt: '2026-02-02T10:00:00.000Z',
+                  cancelledReason: 'No longer needed',
+                  isOverdue: false,
+                },
+              ],
+            },
+          },
+        },
+      },
+    })
+
+    const profileRequest = interceptNetworkCall({ url: profileUrl, method: 'GET' })
+    await page.goto(`/employees/${employeeId}`)
+    await profileRequest.settled
+
+    await expect(page.getByTestId('action-item-action-item-cancelled')).toContainText(
+      'Cancelled',
+    )
+    await expect(page.getByTestId('action-item-action-item-cancelled')).toContainText(
+      'Reason: No longer needed',
+    )
+    await expect(
+      page.getByTestId('action-item-action-item-cancelled-complete'),
+    ).toHaveCount(0)
+  })
+
+  test('shows distinct 409 toast when completing an already completed action item', async ({
+    page,
+    stubNetworkCall,
+  }) => {
+    const openItemId = 'action-item-stale-open'
+    const completeUrl = `${apiBaseUrl}/api/v1/employees/${employeeId}/action-items/${openItemId}/complete`
+
+    await setupAuthApi(page, { authenticated: true })
+    await stubNetworkCall({
+      url: `${apiBaseUrl}/api/v1/permissions/me`,
+      body: { permissions: [] },
+    })
+    await stubNetworkCall({
+      url: profileUrl,
+      body: {
+        ...selfProfile,
+        audience: {
+          role: 'Self',
+          sections: {
+            ...selfProfile.audience.sections,
+            S14: 'R',
+          },
+        },
+        sections: {
+          ...selfProfile.sections,
+          S14: {
+            accessLevel: 'R',
+            data: {
+              items: [
+                {
+                  id: openItemId,
+                  title: 'Stale open item',
+                  dueDate: '2026-03-01',
+                  status: 'open',
+                  source: 'manual',
+                  author: { id: 'mgr-1', displayName: 'Pat Manager' },
+                  createdAt: '2026-03-01T10:00:00.000Z',
+                  updatedAt: '2026-03-01T10:00:00.000Z',
+                  isOverdue: false,
+                },
+              ],
+            },
+          },
+        },
+      },
+    })
+    await page.route(completeUrl, async route => {
+      await route.fulfill({
+        status: 409,
+        json: { message: 'Action item is not open', status: 'completed' },
+      })
+    })
+
+    await page.goto(`/employees/${employeeId}`)
+    await page.getByTestId(`action-item-${openItemId}-complete`).click()
+
+    await expect(page.getByText('This action item is already completed.')).toBeVisible()
+  })
+
+  test('renders S14 read-only without mark complete for ReportingLine viewers', async ({
+    page,
+    stubNetworkCall,
+    interceptNetworkCall,
+  }) => {
+    await setupAuthApi(page, { authenticated: true })
+    await stubNetworkCall({
+      url: `${apiBaseUrl}/api/v1/permissions/me`,
+      body: { permissions: [] },
+    })
+    await stubNetworkCall({
+      url: profileUrl,
+      body: {
+        ...managerProfile,
+        audience: {
+          role: 'ReportingLine',
+          sections: {
+            ...managerProfile.audience.sections,
+            S14: 'RW',
+          },
+        },
+        sections: {
+          ...managerProfile.sections,
+          S14: {
+            accessLevel: 'RW',
+            data: {
+              items: [
+                {
+                  id: 'action-item-report',
+                  title: 'Report action item',
+                  dueDate: '2026-03-01',
+                  status: 'open',
+                  source: 'manual',
+                  author: { id: 'mgr-1', displayName: 'Pat Manager' },
+                  createdAt: '2026-03-01T10:00:00.000Z',
+                  updatedAt: '2026-03-01T10:00:00.000Z',
+                  isOverdue: false,
+                },
+              ],
+            },
+          },
+        },
+      },
+    })
+
+    const profileRequest = interceptNetworkCall({ url: profileUrl, method: 'GET' })
+    await page.goto(`/employees/${employeeId}`)
+    await profileRequest.settled
+
+    await expect(page.getByTestId('profile-section-s14')).toBeVisible()
+    await expect(page.getByTestId('action-item-action-item-report')).toContainText(
+      'Report action item',
+    )
+    await expect(
+      page.getByTestId('action-item-action-item-report-complete'),
+    ).toHaveCount(0)
+  })
+
+  test('renders S14 read-only without mark complete for PeoplePartner viewers', async ({
+    page,
+    stubNetworkCall,
+    interceptNetworkCall,
+  }) => {
+    await setupAuthApi(page, { authenticated: true })
+    await stubNetworkCall({
+      url: `${apiBaseUrl}/api/v1/permissions/me`,
+      body: { permissions: [] },
+    })
+    await stubNetworkCall({
+      url: profileUrl,
+      body: {
+        ...managerProfile,
+        audience: {
+          role: 'PeoplePartner',
+          sections: {
+            ...managerProfile.audience.sections,
+            S14: 'RW',
+          },
+        },
+        sections: {
+          ...managerProfile.sections,
+          S14: {
+            accessLevel: 'RW',
+            data: {
+              items: [
+                {
+                  id: 'action-item-pp',
+                  title: 'PP-visible action item',
+                  dueDate: '2026-04-01',
+                  status: 'open',
+                  source: 'manual',
+                  author: { id: 'mgr-1', displayName: 'Pat Manager' },
+                  createdAt: '2026-04-01T10:00:00.000Z',
+                  updatedAt: '2026-04-01T10:00:00.000Z',
+                  isOverdue: false,
+                },
+              ],
+            },
+          },
+        },
+      },
+    })
+
+    const profileRequest = interceptNetworkCall({ url: profileUrl, method: 'GET' })
+    await page.goto(`/employees/${employeeId}`)
+    await profileRequest.settled
+
+    await expect(page.getByTestId('profile-section-s14')).toBeVisible()
+    await expect(page.getByTestId('action-item-action-item-pp')).toContainText(
+      'PP-visible action item',
+    )
+    await expect(page.getByTestId('action-item-action-item-pp-complete')).toHaveCount(0)
+  })
+
   test('hides trend arrow when trend is absent on first record', async ({
     page,
     stubNetworkCall,

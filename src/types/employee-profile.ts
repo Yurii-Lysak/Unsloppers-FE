@@ -185,6 +185,32 @@ export interface FeedbackSection {
   records: FeedbackRecordRead[] | FeedbackRecord[]
 }
 
+export interface ActionItemAuthor {
+  id: string
+  displayName: string
+}
+
+export interface ActionItem {
+  id: string
+  title: string
+  description?: string
+  dueDate: string
+  link?: string
+  status: 'open' | 'completed' | 'cancelled'
+  source: 'manual' | 'campaign'
+  author: ActionItemAuthor
+  createdAt: string
+  updatedAt: string
+  completedAt?: string
+  cancelledAt?: string
+  cancelledReason?: string
+  isOverdue: boolean
+}
+
+export interface ActionItemsSection {
+  items: ActionItem[]
+}
+
 export interface CreateFeedbackRecordPayload {
   recordedAt: string
   context: string
