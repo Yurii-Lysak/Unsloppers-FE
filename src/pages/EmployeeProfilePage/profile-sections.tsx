@@ -98,8 +98,8 @@ export const PROFILE_SECTION_TITLE_KEYS: Partial<Record<SectionId, string>> = {
   S7: 'employeeProfile.sections.managementNotes',
   S8: 'employeeProfile.sections.feedback',
   S9: 'employeeProfile.sections.timeline',
-  S10: 'employeeProfile.sections.leaves',
-  S11: 'employeeProfile.sections.projects',
+  S10: 'employeeProfile.sections.leaves.title',
+  S11: 'employeeProfile.sections.projects.title',
   S12: 'employeeProfile.sections.cds',
   S13: 'employeeProfile.sections.mentorship',
   S15: 'employeeProfile.sections.requestHistory',
@@ -225,32 +225,83 @@ export const PROFILE_SECTION_RENDERERS: Partial<Record<SectionId, SectionRendere
       if (!isSectionData<LeavesSection>(section)) {
         return null
       }
-      return section.data.leaves.length === 0 ? (
-        <p className="text-sm text-muted-foreground">
-          {t('employeeProfile.emptySection')}
-        </p>
-      ) : (
-        <ul className="space-y-2 text-sm">
-          {section.data.leaves.map((leave, index) => (
-            <li key={`${leave.startDate}-${leave.endDate}-${index}`}>
-              {leave.startDate} — {leave.endDate}
-            </li>
-          ))}
-        </ul>
+
+      if (section.data.availability === 'unavailable') {
+        return (
+          <p
+            className="text-sm text-muted-foreground"
+            data-testid="leaves-unavailable"
+          >
+            {t('employeeProfile.sections.leaves.unavailable')}
+          </p>
+        )
+      }
+
+      return (
+        <div className="space-y-2 text-sm">
+          {section.data.leaves.length === 0 ? (
+            <p className="text-muted-foreground">
+              {t('employeeProfile.emptySection')}
+            </p>
+          ) : (
+            <ul className="space-y-2">
+              {section.data.leaves.map((leave, index) => (
+                <li key={`${leave.startDate}-${leave.endDate}-${index}`}>
+                  {leave.startDate} — {leave.endDate}
+                </li>
+              ))}
+            </ul>
+          )}
+          {section.data.manageLeaveUrl ? (
+            <a
+              href={section.data.manageLeaveUrl}
+              className="text-primary underline"
+              data-testid="leaves-manage-link"
+              target="_blank"
+              rel="noreferrer"
+            >
+              {t('employeeProfile.sections.leaves.manageLink')}
+            </a>
+          ) : null}
+        </div>
       )
     },
     S11: ({ section, t }) => {
       if (!isSectionData<ProjectsSection>(section)) {
         return null
       }
+
+      const notSetLabel = t('employeeProfile.sections.projects.notSet')
+      const ongoingLabel = t('employeeProfile.sections.projects.ongoing')
+
       return section.data.projects.length === 0 ? (
         <p className="text-sm text-muted-foreground">
           {t('employeeProfile.emptySection')}
         </p>
       ) : (
-        <ul className="space-y-1 text-sm">
+        <ul className="space-y-3 text-sm">
           {section.data.projects.map((project, index) => (
-            <li key={`${project.name}-${index}`}>{project.name}</li>
+            <li key={`${project.name}-${index}`} data-testid={`project-entry-${index}`}>
+              <div className="font-medium">{project.name}</div>
+              {project.pm !== undefined ? (
+                <div className="text-muted-foreground">
+                  {t('employeeProfile.sections.projects.pm')}:{' '}
+                  {project.pm ?? notSetLabel}
+                </div>
+              ) : null}
+              {project.dm !== undefined ? (
+                <div className="text-muted-foreground">
+                  {t('employeeProfile.sections.projects.dm')}:{' '}
+                  {project.dm ?? notSetLabel}
+                </div>
+              ) : null}
+              {project.startDate !== undefined ? (
+                <div className="text-muted-foreground">
+                  {t('employeeProfile.sections.projects.period')}:{' '}
+                  {project.startDate} — {project.endDate ?? ongoingLabel}
+                </div>
+              ) : null}
+            </li>
           ))}
         </ul>
       )
