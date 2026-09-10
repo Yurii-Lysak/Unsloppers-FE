@@ -1,5 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { CounterTileGrid } from '@/components/DashboardEngine/CounterTileGrid/CounterTileGrid'
+import { GroupedPeopleTable } from '@/components/DashboardEngine/GroupedPeopleTable/GroupedPeopleTable'
+import { IdpDeadlinesWidget } from '@/components/DashboardEngine/IdpDeadlinesWidget/IdpDeadlinesWidget'
 import { OwnActionItemsWidget } from '@/components/DashboardEngine/OwnActionItemsWidget/OwnActionItemsWidget'
 import { QuickNavLinks } from '@/components/DashboardEngine/QuickNavLinks/QuickNavLinks'
 import { ResourcingRequestsWidget } from '@/components/DashboardEngine/ResourcingRequestsWidget/ResourcingRequestsWidget'
@@ -68,7 +70,11 @@ export const DashboardEngineShell = ({
             </div>
           ) : (
             <>
-              <ScopedPeopleTable rows={tableRows} />
+              {config.variant === 'pp' ? (
+                <GroupedPeopleTable rows={tableRows} />
+              ) : (
+                <ScopedPeopleTable rows={tableRows} />
+              )}
               {showPagination && onPageChange ? (
                 <div
                   className="flex items-center justify-between gap-3"
@@ -119,6 +125,19 @@ export const DashboardEngineShell = ({
           <ResourcingRequestsWidget
             requests={summary.resourcingRequests}
             unavailable={summary.resourcingRequests === undefined}
+          />
+        </section>
+      ) : null}
+
+      {config.blocks.includes('idpDeadlines') ? (
+        <section
+          className="space-y-3 rounded-lg border border-border bg-card p-4"
+          data-testid="dashboard-idp-block"
+        >
+          <h2 className="text-sm font-semibold">{t('dashboard.idp.title')}</h2>
+          <IdpDeadlinesWidget
+            rows={summary.idpDeadlines}
+            unavailable={summary.idpDeadlines === undefined}
           />
         </section>
       ) : null}

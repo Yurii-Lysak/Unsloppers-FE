@@ -10,11 +10,12 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import type { DashboardTableRow } from '@/types/dashboard'
+import type { DashboardTableRow, DashboardVariant } from '@/types/dashboard'
 import type { RiskLevel } from '@/types/risk-dashboard'
 
 interface ScopedPeopleTableProps {
   rows: DashboardTableRow[]
+  variant?: DashboardVariant
 }
 
 const isRiskLevel = (value: string): value is RiskLevel =>
@@ -24,9 +25,10 @@ const isRiskLevel = (value: string): value is RiskLevel =>
   value === 'high' ||
   value === 'leaver'
 
-export const ScopedPeopleTable = ({ rows }: ScopedPeopleTableProps) => {
+export const ScopedPeopleTable = ({ rows, variant }: ScopedPeopleTableProps) => {
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const showDepartmentColumn = variant === 'pp'
 
   if (rows.length === 0) {
     return (
@@ -43,6 +45,9 @@ export const ScopedPeopleTable = ({ rows }: ScopedPeopleTableProps) => {
           <TableHead>{t('dashboard.table.name')}</TableHead>
           <TableHead>{t('dashboard.table.risk')}</TableHead>
           <TableHead>{t('dashboard.table.leave')}</TableHead>
+          {showDepartmentColumn ? (
+            <TableHead>{t('dashboard.table.department')}</TableHead>
+          ) : null}
           <TableHead>{t('dashboard.table.project')}</TableHead>
         </TableRow>
       </TableHeader>
@@ -77,6 +82,24 @@ export const ScopedPeopleTable = ({ rows }: ScopedPeopleTableProps) => {
                 t('dashboard.unavailable')
               )}
             </TableCell>
+            {showDepartmentColumn ? (
+              <TableCell>
+                {row.departmentStatus === 'available' ? (
+                  <span
+                    className={
+                      row.departmentStale ? 'text-muted-foreground italic' : undefined
+                    }
+                  >
+                    {row.departmentLabel?.trim()
+                      ? row.departmentLabel
+                      : t('dashboard.table.emptyCell')}
+                    {row.departmentStale ? ` (${t('dashboard.staleData')})` : ''}
+                  </span>
+                ) : (
+                  t('dashboard.unavailable')
+                )}
+              </TableCell>
+            ) : null}
             <TableCell>
               {row.projectStatus === 'available' ? (
                 <span className={row.projectStale ? 'text-muted-foreground italic' : undefined}>

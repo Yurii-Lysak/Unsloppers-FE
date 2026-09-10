@@ -204,6 +204,75 @@ const pmSummary = {
   ],
 }
 
+const ppCounters = [
+  { id: 'headcount', providerId: 'audience', labelKey: 'dashboard.counters.headcount' },
+  { id: 'need_attention', providerId: 'risks', labelKey: 'dashboard.counters.needAttention' },
+  { id: 'medium', providerId: 'risks', labelKey: 'dashboard.counters.medium' },
+  { id: 'high', providerId: 'risks', labelKey: 'dashboard.counters.high' },
+  { id: 'leaver', providerId: 'risks', labelKey: 'dashboard.counters.leaver' },
+  { id: 'openActionItems', providerId: 'action-items', labelKey: 'dashboard.counters.openActionItems' },
+  { id: 'overdueActionItems', providerId: 'action-items', labelKey: 'dashboard.counters.overdueActionItems' },
+  { id: 'openCampaigns', providerId: 'campaigns', labelKey: 'dashboard.counters.openCampaigns' },
+]
+
+const ppConfig = {
+  variant: 'pp',
+  grouping: 'people',
+  blocks: ['counters', 'table', 'idpDeadlines', 'ownActionItems', 'quickNav'],
+  counters: ppCounters,
+  quickNav: [
+    { labelKey: 'dashboard.quickNav.employees', path: '/employees' },
+    { labelKey: 'dashboard.quickNav.risks', path: '/risks' },
+    { labelKey: 'dashboard.quickNav.mentorship', path: '/mentorship' },
+    { labelKey: 'dashboard.quickNav.campaigns', path: '/campaigns' },
+  ],
+  resolvedBy: 'functional-role',
+}
+
+const ppSummary = {
+  variant: 'pp',
+  grouping: 'people',
+  counters: {
+    headcount: { status: 'available', value: 2 },
+    need_attention: { status: 'available', value: 0 },
+    medium: { status: 'available', value: 0 },
+    high: { status: 'available', value: 0 },
+    leaver: { status: 'available', value: 0 },
+    openActionItems: { status: 'available', value: 1 },
+    overdueActionItems: { status: 'available', value: 0 },
+    openCampaigns: { status: 'available', value: 0 },
+  },
+  rows: [
+    {
+      employeeId: 'pp-sub-1',
+      displayName: 'HR Assignee',
+      leaveStatus: 'unavailable',
+      projectStatus: 'available',
+      projectLabel: 'Atlas Migration',
+      departmentStatus: 'available',
+      departmentLabel: 'HR',
+    },
+    {
+      employeeId: 'pp-sub-2',
+      displayName: 'Sales Assignee',
+      leaveStatus: 'unavailable',
+      projectStatus: 'available',
+      projectLabel: 'Billing v2',
+      departmentStatus: 'available',
+      departmentLabel: 'sales',
+    },
+  ],
+  idpDeadlines: [
+    {
+      id: 'idp-1',
+      employeeId: 'pp-sub-1',
+      employeeDisplayName: 'HR Assignee',
+      description: 'Leadership plan',
+      deadline: '2026-01-20',
+    },
+  ],
+}
+
 const quickNavPermissions = {
   permissions: [
     'create_resourcing_requests',
@@ -306,12 +375,12 @@ const setupQuickNavDestinationMocks = async (
   })
 }
 
-const configByVariant = { um: umConfig, dm: dmConfig, pm: pmConfig }
-const summaryByVariant = { um: umSummary, dm: dmSummary, pm: pmSummary }
+const configByVariant = { um: umConfig, dm: dmConfig, pm: pmConfig, pp: ppConfig }
+const summaryByVariant = { um: umSummary, dm: dmSummary, pm: pmSummary, pp: ppSummary }
 
 const setupDashboardApi = async (
   page: import('@playwright/test').Page,
-  variant: 'um' | 'dm' | 'pm',
+  variant: 'um' | 'dm' | 'pm' | 'pp',
 ) => {
   await page.route(`${apiBaseUrl}/api/v1/permissions/me**`, async route => {
     await route.fulfill({
@@ -571,5 +640,87 @@ test.describe('Dashboard engine', () => {
 
     await expect(page.getByTestId('dashboard-access-denied')).toBeVisible()
     expect(summaryRequested).toBe(false)
+  })
+
+  test('renders PP dashboard with group-by toggle, IDP widget, and no resourcing block', async ({
+    page,
+  }) => {
+    await setupAuthApi(page, { authenticated: true })
+    await setupDashboardApi(page, 'pp')
+
+    await page.goto('/')
+
+    await expect(page.getByTestId('dashboard-engine')).toBeVisible()
+    for (const counterId of [
+      'headcount',
+      'need_attention',
+      'medium',
+      'high',
+      'leaver',
+      'openActionItems',
+      'overdueActionItems',
+      'openCampaigns',
+    ]) {
+      await expect(page.getByTestId(`dashboard-counter-${counterId}`)).toBeVisible()
+    }
+    await expect(page.getByTestId('dashboard-group-by-toggle')).toBeVisible()
+    await expect(page.getByTestId('dashboard-client-group-hr')).toBeVisible()
+    await expect(page.getByTestId('dashboard-idp-block')).toBeVisible()
+    await expect(page.getByTestId('dashboard-idp-row-idp-1')).toBeVisible()
+    await expect(page.getByTestId('dashboard-resourcing-block')).toHaveCount(0)
+    await expect(page.getByTestId('dashboard-quick-nav-resourcing')).toHaveCount(0)
+    await expect(page.getByTestId('dashboard-quick-nav-mentorship')).toBeVisible()
+
+    await page.getByTestId('dashboard-group-by-project').click()
+    await expect(page.getByTestId('dashboard-client-group-atlas migration')).toBeVisible()
+    await expect(page.getByTestId('dashboard-client-group-billing v2')).toBeVisible()
+  })
+
+  test('merges PP department groups case-insensitively and buckets unavailable values under Unassigned', async ({
+    page,
+  }) => {
+    await setupAuthApi(page, { authenticated: true })
+    await page.route(`${apiBaseUrl}/api/v1/dashboards/config**`, async route => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(ppConfig),
+      })
+    })
+    await page.route(`${apiBaseUrl}/api/v1/dashboards/summary**`, async route => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          ...ppSummary,
+          rows: [
+            ...ppSummary.rows,
+            {
+              employeeId: 'pp-sub-3',
+              displayName: 'Lowercase HR Assignee',
+              leaveStatus: 'unavailable',
+              projectStatus: 'unavailable',
+              departmentStatus: 'available',
+              departmentLabel: 'hr',
+            },
+            {
+              employeeId: 'pp-sub-4',
+              displayName: 'No Department',
+              leaveStatus: 'unavailable',
+              projectStatus: 'unavailable',
+              departmentStatus: 'unavailable',
+              departmentLabel: 'Ghost Dept',
+            },
+          ],
+        }),
+      })
+    })
+
+    await page.goto('/')
+
+    await expect(page.getByTestId('dashboard-client-group-hr')).toBeVisible()
+    await expect(page.getByTestId('dashboard-client-group-sales')).toBeVisible()
+    await expect(page.getByTestId('dashboard-client-group-unassigned')).toBeVisible()
+    await expect(page.getByTestId('dashboard-client-group-ghost dept')).toHaveCount(0)
   })
 })
