@@ -11,6 +11,7 @@ import type {
   ProjectsSection,
   CdsSection as CdsSectionData,
   EmploymentSection,
+  DocumentsSection as DocumentsSectionData,
   EmergencyContactsSection as EmergencyContactsSectionData,
   PersonalContactsSection as PersonalContactsSectionData,
   RequestHistorySection as RequestHistorySectionData,
@@ -24,6 +25,7 @@ import { FeedbackSectionCard } from './components/FeedbackSection/FeedbackSectio
 import { ManagementNotesSectionCard } from './components/ManagementNotesSection/ManagementNotesSection'
 import { MentorshipSectionCard } from './components/MentorshipSection/MentorshipSection'
 import { CdsSectionCard } from './components/CdsSection/CdsSection'
+import { DocumentsSectionCard } from './components/DocumentsSection/DocumentsSection'
 import { EmergencyContactsSectionCard } from './components/EmergencyContactsSection/EmergencyContactsSection'
 import { PersonalContactsSectionCard } from './components/PersonalContactsSection/PersonalContactsSection'
 import { RequestHistorySectionCard } from './components/RequestHistorySection/RequestHistorySection'
@@ -91,6 +93,7 @@ export const PROFILE_SECTION_TITLE_KEYS: Partial<Record<SectionId, string>> = {
   S2: 'employeeProfile.sections.personalContacts.title',
   S3: 'employeeProfile.sections.emergencyContacts.title',
   S4: 'employeeProfile.sections.employment.title',
+  S5: 'employeeProfile.sections.documents.title',
   S6: 'employeeProfile.sections.risks',
   S7: 'employeeProfile.sections.managementNotes',
   S8: 'employeeProfile.sections.feedback',
@@ -137,6 +140,14 @@ export const PROFILE_SECTION_RENDERERS: Partial<Record<SectionId, SectionRendere
         employeeId={employeeId}
         section={section as ProfileSectionEnvelope<EmergencyContactsSectionData>}
         accessLevel={accessLevel}
+      />
+    ),
+    S5: ({ employeeId, section, accessLevel, audienceRole }) => (
+      <DocumentsSectionCard
+        employeeId={employeeId}
+        section={section as ProfileSectionEnvelope<DocumentsSectionData>}
+        accessLevel={accessLevel}
+        audienceRole={audienceRole}
       />
     ),
     S4: ({ section, t }) => {

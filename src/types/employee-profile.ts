@@ -207,9 +207,30 @@ export interface IdentityRelation {
 
 export interface IdentitySection {
   displayName: string
+  photoUrl?: string | null
   manager?: IdentityRelation | null
   peoplePartner?: IdentityRelation | null
   mentor?: IdentityRelation
+}
+
+export type DocumentType =
+  | 'CONTRACT'
+  | 'W8'
+  | 'COOPERATION_FORM'
+  | 'DIIA_CITY'
+  | 'CV'
+  | 'CERTIFICATE'
+
+export interface DocumentRecord {
+  id: string
+  type: DocumentType
+  originalFilename: string
+  uploadedAt: string
+  downloadUrl: string
+}
+
+export interface DocumentsSection {
+  documents: DocumentRecord[]
 }
 
 export type MentorStatus = 'mentor' | 'openToMentoring' | 'none'
