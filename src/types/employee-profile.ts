@@ -264,6 +264,7 @@ export interface LeavePeriod {
 }
 
 export interface LeavesSection {
+  availability?: 'ok' | 'unavailable'
   leaves: LeavePeriod[]
   manageLeaveUrl?: string | null
 }
@@ -281,7 +282,13 @@ export interface TimelineSection {
 }
 
 export interface ProjectsSection {
-  projects: Array<{ name: string }>
+  projects: Array<{
+    name: string
+    pm?: string | null
+    dm?: string | null
+    startDate?: string
+    endDate?: string | null
+  }>
 }
 
 export interface EmploymentSection {

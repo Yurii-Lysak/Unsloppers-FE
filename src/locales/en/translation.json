@@ -655,8 +655,19 @@
       "managementNotes": "Management notes",
       "feedback": "Feedback",
       "timeline": "Career timeline",
-      "leaves": "Leaves and absences",
-      "projects": "Projects",
+      "leaves": {
+        "title": "Leaves and absences",
+        "manageLink": "Manage leave in TimeTracker",
+        "unavailable": "Leave data is temporarily unavailable."
+      },
+      "projects": {
+        "title": "Projects",
+        "pm": "Project manager",
+        "dm": "Delivery manager",
+        "period": "Period",
+        "notSet": "Not set",
+        "ongoing": "Ongoing"
+      },
       "cds": "Career development (CDS)",
       "mentorship": "Mentorship",
       "requestHistory": "Request history",
