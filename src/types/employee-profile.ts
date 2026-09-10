@@ -273,6 +273,65 @@ export interface EmploymentSection {
   contractType: string | null
 }
 
+export type PersonalContactMethodType = 'PHONE' | 'EMAIL' | 'MESSENGER'
+
+export interface PersonalContactMethod {
+  id: string
+  type: PersonalContactMethodType
+  label: string
+  value: string
+  createdAt: string
+  updatedAt: string
+}
+
+export interface PersonalContactsSection {
+  contactMethods: PersonalContactMethod[]
+  residentialAddress: string | null
+  placeOfStay: string | null
+}
+
+export interface EmergencyContact {
+  id: string
+  contactPerson: string
+  relationship: string
+  phone: string
+  createdAt: string
+  updatedAt: string
+}
+
+export interface EmergencyContactsSection {
+  contacts: EmergencyContact[]
+}
+
+export interface CreateContactMethodPayload {
+  type: PersonalContactMethodType
+  label: string
+  value: string
+}
+
+export interface UpdateContactMethodPayload {
+  type?: PersonalContactMethodType
+  label?: string
+  value?: string
+}
+
+export interface PatchAddressPayload {
+  residentialAddress?: string | null
+  placeOfStay?: string | null
+}
+
+export interface CreateEmergencyContactPayload {
+  contactPerson: string
+  relationship: string
+  phone: string
+}
+
+export interface UpdateEmergencyContactPayload {
+  contactPerson?: string
+  relationship?: string
+  phone?: string
+}
+
 export type CustomFieldValueType =
   | 'text'
   | 'number'
