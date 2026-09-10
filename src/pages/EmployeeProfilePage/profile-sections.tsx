@@ -10,6 +10,7 @@ import type {
   ProfileSectionEnvelope,
   ProjectsSection,
   CdsSection as CdsSectionData,
+  EmploymentSection,
   RequestHistorySection as RequestHistorySectionData,
   RisksSection as RisksSectionData,
   SectionAccessLevel,
@@ -43,8 +44,47 @@ export const PROFILE_SECTION_ORDER: SectionId[] = [
   'S16',
 ]
 
+const EMPLOYMENT_FIELD_KEYS: Array<{
+  key: keyof EmploymentSection
+  labelKey:
+    | 'employeeProfile.sections.employment.fields.grade'
+    | 'employeeProfile.sections.employment.fields.position'
+    | 'employeeProfile.sections.employment.fields.seniority'
+    | 'employeeProfile.sections.employment.fields.employmentType'
+    | 'employeeProfile.sections.employment.fields.englishLevel'
+    | 'employeeProfile.sections.employment.fields.probationStatus'
+    | 'employeeProfile.sections.employment.fields.contractType'
+}> = [
+  { key: 'grade', labelKey: 'employeeProfile.sections.employment.fields.grade' },
+  {
+    key: 'position',
+    labelKey: 'employeeProfile.sections.employment.fields.position',
+  },
+  {
+    key: 'seniority',
+    labelKey: 'employeeProfile.sections.employment.fields.seniority',
+  },
+  {
+    key: 'employmentType',
+    labelKey: 'employeeProfile.sections.employment.fields.employmentType',
+  },
+  {
+    key: 'englishLevel',
+    labelKey: 'employeeProfile.sections.employment.fields.englishLevel',
+  },
+  {
+    key: 'probationStatus',
+    labelKey: 'employeeProfile.sections.employment.fields.probationStatus',
+  },
+  {
+    key: 'contractType',
+    labelKey: 'employeeProfile.sections.employment.fields.contractType',
+  },
+]
+
 export const PROFILE_SECTION_TITLE_KEYS: Partial<Record<SectionId, string>> = {
   S1: 'employeeProfile.sections.identity',
+  S4: 'employeeProfile.sections.employment.title',
   S6: 'employeeProfile.sections.risks',
   S7: 'employeeProfile.sections.managementNotes',
   S8: 'employeeProfile.sections.feedback',
@@ -79,6 +119,35 @@ type SectionRenderer = (props: {
 export const PROFILE_SECTION_RENDERERS: Partial<Record<SectionId, SectionRenderer>> =
   {
     S1: () => null,
+    S4: ({ section, t }) => {
+      if (!isSectionData<EmploymentSection>(section)) {
+        return null
+      }
+
+      const notSetLabel = t('employeeProfile.sections.employment.notSet')
+
+      return (
+        <dl className="space-y-2 text-sm">
+          {EMPLOYMENT_FIELD_KEYS.map(({ key, labelKey }) => {
+            const value = section.data[key]
+            const displayValue =
+              value === null || value.trim() === '' ? notSetLabel : value
+
+            return (
+              <div key={key} className="grid gap-1 sm:grid-cols-[minmax(0,12rem)_1fr]">
+                <dt className="font-medium text-foreground">{t(labelKey)}</dt>
+                <dd
+                  className="text-muted-foreground"
+                  data-testid={`employment-field-${key}`}
+                >
+                  {displayValue}
+                </dd>
+              </div>
+            )
+          })}
+        </dl>
+      )
+    },
     S6: ({ employeeId, section, accessLevel }) => (
       <RisksSectionCard
         employeeId={employeeId}

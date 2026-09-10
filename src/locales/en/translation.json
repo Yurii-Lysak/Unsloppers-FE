@@ -610,6 +610,19 @@
     "emptySection": "No records yet.",
     "sections": {
       "identity": "Identity",
+      "employment": {
+        "title": "Employment details",
+        "notSet": "Not set",
+        "fields": {
+          "grade": "Grade",
+          "position": "Position",
+          "seniority": "Seniority",
+          "employmentType": "Employment type",
+          "englishLevel": "English level",
+          "probationStatus": "Probation status",
+          "contractType": "Contract type"
+        }
+      },
       "risks": "Risks",
       "managementNotes": "Management notes",
       "feedback": "Feedback",
@@ -925,7 +938,7 @@
       "viewingScope": "Shared link — sections: {{sections}}",
       "sectionLabels": {
         "S2": "Personal contacts",
-        "S4": "Employment",
+        "S4": "Employment details",
         "S5": "Documents",
         "S6": "Risks",
         "S8": "Feedbacks",

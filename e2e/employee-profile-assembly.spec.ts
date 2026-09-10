@@ -42,6 +42,36 @@ const colleagueProfile = {
   },
 }
 
+const selfProfile = {
+  employeeId,
+  displayName: 'Anton Savchenko',
+  audience: {
+    role: 'Self',
+    sections: {
+      S1: 'R',
+      S4: 'R',
+    },
+  },
+  sections: {
+    S1: {
+      accessLevel: 'R',
+      data: { displayName: 'Anton Savchenko', manager: null, peoplePartner: null },
+    },
+    S4: {
+      accessLevel: 'R',
+      data: {
+        grade: 'L4',
+        position: 'Software Engineer',
+        seniority: 'Senior',
+        employmentType: 'Full-time',
+        englishLevel: null,
+        probationStatus: null,
+        contractType: null,
+      },
+    },
+  },
+}
+
 const managerProfile = {
   employeeId,
   displayName: 'Anton Savchenko',
@@ -49,6 +79,7 @@ const managerProfile = {
     role: 'ReportingLine',
     sections: {
       S1: 'RW',
+      S4: 'RW',
       S6: 'RW',
       S9: 'RW',
       S10: 'R',
@@ -58,6 +89,18 @@ const managerProfile = {
     S1: {
       accessLevel: 'RW',
       data: { displayName: 'Anton Savchenko', manager: null, peoplePartner: null },
+    },
+    S4: {
+      accessLevel: 'RW',
+      data: {
+        grade: 'L4',
+        position: 'Software Engineer',
+        seniority: 'Senior',
+        employmentType: 'Full-time',
+        englishLevel: null,
+        probationStatus: null,
+        contractType: null,
+      },
     },
     S6: {
       accessLevel: 'RW',
@@ -76,6 +119,65 @@ const managerProfile = {
 }
 
 test.describe('Employee profile assembly', () => {
+  test('renders S4 employment details read-only for Self viewers', async ({
+    page,
+    stubNetworkCall,
+    interceptNetworkCall,
+  }) => {
+    await setupAuthApi(page, { authenticated: true })
+    await stubNetworkCall({
+      url: `${apiBaseUrl}/api/v1/permissions/me`,
+      body: { permissions: [] },
+    })
+    await stubNetworkCall({
+      url: profileUrl,
+      body: selfProfile,
+    })
+
+    const profileRequest = interceptNetworkCall({ url: profileUrl, method: 'GET' })
+    await page.goto(`/employees/${employeeId}`)
+    await profileRequest.settled
+
+    await expect(page.getByTestId('profile-section-s4')).toBeVisible()
+    await expect(page.getByTestId('profile-section-s4')).toContainText('Employment details')
+    await expect(page.getByTestId('employment-field-grade')).toHaveText('L4')
+    await expect(page.getByTestId('employment-field-position')).toHaveText('Software Engineer')
+    await expect(page.getByTestId('employment-field-seniority')).toHaveText('Senior')
+    await expect(page.getByTestId('employment-field-employmentType')).toHaveText('Full-time')
+    await expect(page.getByTestId('employment-field-englishLevel')).toHaveText('Not set')
+    await expect(page.getByTestId('employment-field-probationStatus')).toHaveText('Not set')
+    await expect(page.getByTestId('employment-field-contractType')).toHaveText('Not set')
+    await expect(page.locator('[data-testid^="employment-field-"]')).toHaveCount(7)
+    await expect(page.getByRole('button', { name: /save/i })).toHaveCount(0)
+  })
+
+  test('renders S4 employment details read-only for ReportingLine viewers with RW access', async ({
+    page,
+    stubNetworkCall,
+    interceptNetworkCall,
+  }) => {
+    await setupAuthApi(page, { authenticated: true })
+    await stubNetworkCall({
+      url: `${apiBaseUrl}/api/v1/permissions/me`,
+      body: { permissions: [] },
+    })
+    await stubNetworkCall({
+      url: profileUrl,
+      body: managerProfile,
+    })
+
+    const profileRequest = interceptNetworkCall({ url: profileUrl, method: 'GET' })
+    await page.goto(`/employees/${employeeId}`)
+    await profileRequest.settled
+
+    await expect(page.getByTestId('profile-section-s4')).toBeVisible()
+    await expect(page.getByTestId('employment-field-grade')).toHaveText('L4')
+    await expect(page.getByTestId('employment-field-englishLevel')).toHaveText('Not set')
+    await expect(page.locator('[data-testid^="employment-field-"]')).toHaveCount(7)
+    await expect(page.getByTestId('profile-section-s4').locator('input')).toHaveCount(0)
+    await expect(page.getByTestId('profile-section-s4').getByRole('button')).toHaveCount(0)
+  })
+
   test('renders only Colleague-granted section cards', async ({
     page,
     stubNetworkCall,
