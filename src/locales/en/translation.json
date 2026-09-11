@@ -445,6 +445,7 @@
     "nextPage": "Next",
     "pageIndicator": "Page {{page}} of {{totalPages}}",
     "cellEmpty": "—",
+    "cellLoading": "Loading…",
     "cellUnavailable": "Temporarily unavailable",
     "fieldsUnavailableNotice": "Some columns are temporarily unavailable: {{fields}}",
     "filterBetweenFrom": "From",
@@ -681,6 +682,7 @@
       "leaves": {
         "title": "Leaves and absences",
         "manageLink": "Manage leave in TimeTracker",
+        "loading": "Loading…",
         "unavailable": "Leave data is temporarily unavailable."
       },
       "projects": {

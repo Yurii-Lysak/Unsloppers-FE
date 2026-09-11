@@ -232,6 +232,17 @@ export const PROFILE_SECTION_RENDERERS: Partial<Record<SectionId, SectionRendere
       )
     },
     S10: ({ section, t }) => {
+      if ('status' in section && section.status === 'pending') {
+        return (
+          <p
+            className="text-sm text-muted-foreground"
+            data-testid="leaves-loading"
+          >
+            {t('employeeProfile.sections.leaves.loading')}
+          </p>
+        )
+      }
+
       if (!isSectionData<LeavesSection>(section)) {
         return null
       }

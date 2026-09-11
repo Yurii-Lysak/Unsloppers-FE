@@ -66,6 +66,13 @@ export interface EmployeeListResponse {
   fieldsUnavailable?: string[]
 }
 
+/** Response shape of `GET /employees/leaves` (Story 3.6 list-performance follow-up). */
+export interface EmployeeLeaveCell {
+  value: string
+  unavailable: boolean
+  stale?: boolean
+}
+
 export interface EmployeeListQuery {
   page?: number
   pageSize?: number
