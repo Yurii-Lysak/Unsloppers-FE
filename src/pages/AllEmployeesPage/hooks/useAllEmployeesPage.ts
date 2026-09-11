@@ -1,6 +1,12 @@
 import { useCallback, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSearchParams } from 'react-router-dom'
-import { useEmployeesListData, useUpdateEmployeeFieldData } from '@/hooks/data/useEmployeesData'
+import {
+  useEmployeeLeaveCellsData,
+  useEmployeesListData,
+  useUpdateEmployeeFieldData,
+} from '@/hooks/data/useEmployeesData'
+import { BUILTIN_FIELD_IDS } from '@/types/employees'
 import type {
   EmployeeFieldFilter,
   EmployeeListQuery,
@@ -55,7 +61,52 @@ export const buildDirectoryDisplayData = (
   })),
 })
 
+/**
+ * Overlays the leave-dates column with a fetched-separately value: the main
+ * list response always leaves it `null` (see EmployeesService.
+ * enrichIntegratedFields) so the page can render immediately without
+ * blocking on TimeTracker. Text is embedded directly into the cell here
+ * rather than threaded through EmployeeTable/EmployeeCardList as extra
+ * props — both already render whatever string a cell holds as-is.
+ */
+const overlayLeaveDatesColumn = (
+  displayData: EmployeeListResponse,
+  leaveCellsState: {
+    leaveCells: Record<string, { value: string; unavailable: boolean }> | undefined
+    isLeaveCellsLoading: boolean
+    isLeaveCellsError: boolean
+  },
+  t: (key: string) => string,
+): EmployeeListResponse => {
+  const fieldId = BUILTIN_FIELD_IDS.current_leave_dates
+  if (!displayData.fields.some(field => field.id === fieldId)) {
+    return displayData
+  }
+
+  const { leaveCells, isLeaveCellsLoading, isLeaveCellsError } = leaveCellsState
+
+  return {
+    ...displayData,
+    rows: displayData.rows.map(row => {
+      if (!(fieldId in row.cells)) {
+        return row
+      }
+      let value: string | null
+      if (isLeaveCellsLoading || !leaveCells) {
+        value = t('directory.cellLoading')
+      } else if (isLeaveCellsError) {
+        value = t('directory.cellUnavailable')
+      } else {
+        const cell = leaveCells[row.employeeId]
+        value = cell ? (cell.unavailable ? t('directory.cellUnavailable') : cell.value) : null
+      }
+      return { ...row, cells: { ...row.cells, [fieldId]: value } }
+    }),
+  }
+}
+
 export const useAllEmployeesPage = () => {
+  const { t } = useTranslation()
   const [searchParams, setSearchParams] = useSearchParams()
 
   const query = useMemo<EmployeeListQuery>(() => {
@@ -222,8 +273,26 @@ export const useAllEmployeesPage = () => {
   const sanitizedColumnIds = requestedColumnIds.filter(id => entitledFieldIds.includes(id))
   const visibleColumnIds =
     sanitizedColumnIds.length > 0 ? sanitizedColumnIds : entitledFieldIds
-  const displayData = employeesList
+  const baseDisplayData = employeesList
     ? buildDirectoryDisplayData(employeesList, visibleColumnIds)
+    : undefined
+
+  const wantsLeaveColumn =
+    baseDisplayData?.fields.some(field => field.id === BUILTIN_FIELD_IDS.current_leave_dates) ??
+    false
+  const leaveCellEmployeeIds = wantsLeaveColumn
+    ? (baseDisplayData?.rows.map(row => row.employeeId) ?? [])
+    : []
+  const { leaveCells, isLeaveCellsLoading, isLeaveCellsError } = useEmployeeLeaveCellsData(
+    leaveCellEmployeeIds,
+    wantsLeaveColumn,
+  )
+  const displayData = baseDisplayData
+    ? overlayLeaveDatesColumn(
+        baseDisplayData,
+        { leaveCells, isLeaveCellsLoading, isLeaveCellsError },
+        t,
+      )
     : undefined
 
   const shownCount = employeesList?.rows.length ?? 0

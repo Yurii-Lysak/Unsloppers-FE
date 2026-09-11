@@ -415,6 +415,12 @@ export interface ProfileSectionUnavailable {
   status: 'unavailable'
 }
 
+/** S10 (leaves) only — granted but not fetched yet; see `useEmployeeLeavesData`. */
+export interface ProfileSectionPending {
+  accessLevel: Exclude<SectionAccessLevel, 'none'>
+  status: 'pending'
+}
+
 export interface ProfileSectionData<T> {
   accessLevel: Exclude<SectionAccessLevel, 'none'>
   data: T
@@ -422,6 +428,7 @@ export interface ProfileSectionData<T> {
 
 export type ProfileSectionEnvelope<T> =
   | ProfileSectionUnavailable
+  | ProfileSectionPending
   | ProfileSectionData<T>
 
 export interface EmployeeProfile {

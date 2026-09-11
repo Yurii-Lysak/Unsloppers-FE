@@ -1,4 +1,6 @@
 import { useEmployeeList } from '@/api/hooks/useEmployeeList'
+import { useEmployeeLeaveCells } from '@/api/hooks/useEmployeeLeaveCells'
+import { useEmployeeLeaves } from '@/api/hooks/useEmployeeLeaves'
 import { useExportEmployeesList } from '@/api/hooks/useExportEmployeesList'
 import {
   useEmployeeFunctionalRoles,
@@ -34,6 +36,36 @@ export const useEmployeeProfileData = (employeeId: string) => {
     employeeProfile,
     isProfileLoading,
     isProfileError,
+  }
+}
+
+/** Fills in a profile's S10 section once it's known to be `pending` (Story 3.6 follow-up). */
+export const useEmployeeLeavesData = (employeeId: string, enabled: boolean) => {
+  const {
+    data: leavesSection,
+    isLoading: isLeavesLoading,
+    isError: isLeavesError,
+  } = useEmployeeLeaves(employeeId, enabled)
+
+  return {
+    leavesSection,
+    isLeavesLoading,
+    isLeavesError,
+  }
+}
+
+/** Batches the leave-dates column for a page of the All Employees list (Story 3.6 follow-up). */
+export const useEmployeeLeaveCellsData = (employeeIds: string[], enabled: boolean) => {
+  const {
+    data: leaveCells,
+    isLoading: isLeaveCellsLoading,
+    isError: isLeaveCellsError,
+  } = useEmployeeLeaveCells(employeeIds, enabled)
+
+  return {
+    leaveCells,
+    isLeaveCellsLoading,
+    isLeaveCellsError,
   }
 }
 

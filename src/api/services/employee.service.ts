@@ -1,6 +1,7 @@
 import { apiClient } from '@/api/client'
 import type {
   EmployeeFieldUpdate,
+  EmployeeLeaveCell,
   EmployeeListExportQuery,
   EmployeeListQuery,
   EmployeeListResponse,
@@ -64,6 +65,20 @@ class EmployeeApiService {
 
   public getEmployeeLookup(): Promise<EmployeeLookupOption[]> {
     return apiClient.get<EmployeeLookupOption[]>('/api/v1/employees/lookup')
+  }
+
+  /**
+   * Batched leave-dates column data (Story 3.6 list-performance follow-up):
+   * the list's own response never blocks on TimeTracker — the page fetches
+   * this separately, once the page's employee ids are known, and fills the
+   * column in.
+   */
+  public getEmployeeLeaveCells(
+    employeeIds: string[],
+  ): Promise<Record<string, EmployeeLeaveCell>> {
+    return apiClient.get<Record<string, EmployeeLeaveCell>>('/api/v1/employees/leaves', {
+      params: { employeeIds: employeeIds.join(',') },
+    })
   }
 
   public getEmployeeFunctionalRoles(employeeId: string): Promise<FunctionalRole[]> {
