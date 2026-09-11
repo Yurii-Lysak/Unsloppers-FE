@@ -64,3 +64,4 @@ E2E tests live in `e2e/` (flows + shared utilities).
 
 - tsconfig `paths` works without `baseUrl` (deprecated in TS 6+) — don't re-add `baseUrl`
 - There is no authentication in the starter; the API client has a TODO interceptor stub for when auth arrives
+- `vercel.json` needs the `rewrites` catch-all (`/(.*)` → `/index.html`) for client-side routing — without it, Vercel 404s on refresh, direct navigation, or opening a route in a new tab, since it never falls back to the SPA shell for paths with no matching physical file
