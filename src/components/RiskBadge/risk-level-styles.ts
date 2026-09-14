@@ -9,11 +9,11 @@ export const riskLevelClassName: Record<RiskLevel, string> = {
 }
 
 export const riskLevelTextClassName: Record<RiskLevel, string> = {
-  low: 'text-risk-low',
-  need_attention: 'text-risk-attention',
-  medium: 'text-risk-medium',
-  high: 'text-risk-high',
-  leaver: 'text-risk-leaver',
+  low: 'text-risk-low-foreground',
+  need_attention: 'text-risk-attention-foreground',
+  medium: 'text-risk-medium-foreground',
+  high: 'text-risk-high-foreground',
+  leaver: 'text-risk-leaver-foreground',
 }
 
 export const riskLevelLabelKey = (level: RiskLevel): string =>

@@ -1,14 +1,28 @@
 import type { VariantProps } from 'class-variance-authority'
 import type { ComponentProps } from 'react'
-import { Button as UiButton } from '@/components/ui/button'
+import { Slot } from 'radix-ui'
 import { cn } from '@/lib/utils'
 import { buttonRootClassName, buttonVariants } from './Button.styles'
 
-type ButtonProps = ComponentProps<'button'> &
-  VariantProps<typeof buttonVariants> & {
-    asChild?: boolean
-  }
+interface ButtonProps
+  extends ComponentProps<'button'>,
+    VariantProps<typeof buttonVariants> {
+  asChild?: boolean
+}
 
-export const Button = ({ className, ...props }: ButtonProps) => (
-  <UiButton className={cn(buttonRootClassName, className)} {...props} />
-)
+export const Button = ({
+  className,
+  variant = 'primary',
+  size = 'default',
+  asChild = false,
+  ...props
+}: ButtonProps) => {
+  const Comp = asChild ? Slot.Root : 'button'
+
+  return (
+    <Comp
+      className={cn(buttonVariants({ variant, size }), buttonRootClassName, className)}
+      {...props}
+    />
+  )
+}

@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import {
   useResourcingAssignedListData,
   useResourcingListData,
@@ -8,7 +7,6 @@ import {
 import { usePermissionsData } from '@/hooks/data/usePermissionsData'
 
 export const useResourcingPage = () => {
-  const navigate = useNavigate()
   const {
     canCreateResourcingRequests,
     canFulfilResourcingRequests,
@@ -32,10 +30,6 @@ export const useResourcingPage = () => {
     setDialogOpen(false)
   }
 
-  const openRequest = (requestId: string) => {
-    navigate(`/resourcing/${requestId}`)
-  }
-
   return {
     canCreateResourcingRequests,
     canFulfilResourcingRequests,
@@ -52,6 +46,5 @@ export const useResourcingPage = () => {
     dialogOpen,
     openCreate,
     closeDialog,
-    openRequest,
   }
 }

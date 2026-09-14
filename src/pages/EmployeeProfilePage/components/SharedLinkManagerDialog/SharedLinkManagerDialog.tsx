@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import { Button } from '@/components/Button/Button'
 import { Checkbox } from '@/components/Checkbox/Checkbox'
 import { Modal } from '@/components/Modal/Modal'
@@ -43,6 +44,9 @@ export const SharedLinkManagerDialog = ({
     activeLinks,
     isLinksLoading,
     isLinksError,
+    pendingRevokeLinkId,
+    armRevoke,
+    cancelRevoke,
     handleRevoke,
     isRevoking,
     expandedLogLinkId,
@@ -51,6 +55,25 @@ export const SharedLinkManagerDialog = ({
     isAccessLogLoading,
     isAccessLogError,
   } = useSharedLinkManagerDialog({ employeeId, open, onClose, canCreate, canManage })
+
+  const revokeButtonRefs = useRef(new Map<string, HTMLButtonElement>())
+  const managePanelRef = useRef<HTMLDivElement>(null)
+
+  const focusRevokeButton = (linkId: string) => {
+    revokeButtonRefs.current.get(linkId)?.focus()
+  }
+
+  const handleCancelRevoke = (linkId: string) => {
+    cancelRevoke()
+    window.setTimeout(() => focusRevokeButton(linkId), 0)
+  }
+
+  const handleConfirmRevoke = async (linkId: string) => {
+    const revoked = await handleRevoke(linkId)
+    if (revoked) {
+      window.setTimeout(() => managePanelRef.current?.focus(), 0)
+    }
+  }
 
   return (
     <Modal
@@ -167,7 +190,13 @@ export const SharedLinkManagerDialog = ({
               </fieldset>
             </>
           ) : canManage ? (
-            <div className="space-y-3" data-testid="shared-link-manage-panel">
+            <div
+              className="space-y-3"
+              ref={managePanelRef}
+              tabIndex={-1}
+              aria-label={t('employeeProfile.sharedLink.tabManage')}
+              data-testid="shared-link-manage-panel"
+            >
               {isLinksLoading ? (
                 <p className="text-sm text-muted-foreground">
                   {t('employeeProfile.loading')}
@@ -217,17 +246,63 @@ export const SharedLinkManagerDialog = ({
                               ? t('employeeProfile.sharedLink.hideLog')
                               : t('employeeProfile.sharedLink.viewLog')}
                           </Button>
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            disabled={isRevoking}
-                            onClick={() => void handleRevoke(link.id)}
-                          >
-                            {t('employeeProfile.sharedLink.revoke')}
-                          </Button>
+                          {pendingRevokeLinkId === link.id ? null : (
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              ref={element => {
+                                if (element) {
+                                  revokeButtonRefs.current.set(link.id, element)
+                                } else {
+                                  revokeButtonRefs.current.delete(link.id)
+                                }
+                              }}
+                              disabled={isRevoking}
+                              onClick={() => armRevoke(link.id)}
+                              data-testid={`shared-link-revoke-${link.id}`}
+                            >
+                              {t('employeeProfile.sharedLink.revoke')}
+                            </Button>
+                          )}
                         </div>
                       </div>
+                      {pendingRevokeLinkId === link.id ? (
+                        <div
+                          className="mt-3 space-y-2 border-t border-border pt-3"
+                          data-testid={`shared-link-revoke-confirm-${link.id}`}
+                        >
+                          <p className="text-sm font-medium text-foreground">
+                            {t('employeeProfile.sharedLink.revokeConfirmTitle')}
+                          </p>
+                          <p className="text-sm text-muted-foreground">
+                            {t('employeeProfile.sharedLink.revokeConfirmDescription')}
+                          </p>
+                          <div className="flex gap-2">
+                            <Button
+                              type="button"
+                              variant="destructive"
+                              size="sm"
+                              autoFocus
+                              disabled={isRevoking}
+                              onClick={() => void handleConfirmRevoke(link.id)}
+                              data-testid={`shared-link-revoke-confirm-button-${link.id}`}
+                            >
+                              {t('employeeProfile.sharedLink.revokeConfirm')}
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              disabled={isRevoking}
+                              onClick={() => handleCancelRevoke(link.id)}
+                              data-testid={`shared-link-revoke-cancel-${link.id}`}
+                            >
+                              {t('employeeProfile.sharedLink.revokeCancel')}
+                            </Button>
+                          </div>
+                        </div>
+                      ) : null}
                       {expandedLogLinkId === link.id && (
                         <div className="mt-3 border-t border-border pt-3">
                           {isAccessLogLoading ? (

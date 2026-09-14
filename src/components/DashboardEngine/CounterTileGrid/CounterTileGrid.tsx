@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/Card/Card'
 import type { DashboardCounterSpec, DashboardCounterValue } from '@/types/dashboard'
 
 interface CounterTileGridProps {

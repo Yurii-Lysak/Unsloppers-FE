@@ -79,7 +79,7 @@ test.describe('Risk dashboard', () => {
     await expect(page.getByTestId('risk-dashboard-row-emp-high-1')).toBeVisible()
     await expect(page.getByTestId('risk-dashboard-row-emp-medium-1')).toHaveCount(0)
 
-    await page.getByTestId('risk-dashboard-row-emp-high-1').click()
+    await page.getByTestId('risk-dashboard-link-emp-high-1').click()
     await expect(page).toHaveURL(/\/employees\/emp-high-1$/)
   })
 })

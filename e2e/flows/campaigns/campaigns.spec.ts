@@ -49,7 +49,7 @@ test.describe('Campaigns', () => {
     await page.getByTestId('campaign-form-due-date').fill(validCampaignFormInput.dueDate)
     await page.getByRole('button', { name: 'Save' }).click()
 
-    await page.getByTestId('campaigns-list').locator('button').first().click()
+    await page.getByTestId('campaigns-list').locator('a').first().click()
     await expect(page.getByTestId('campaign-detail-title')).toHaveText(
       validCampaignFormInput.title,
     )
@@ -95,7 +95,7 @@ test.describe('Campaigns', () => {
     await page.getByTestId('campaign-form-due-date').fill(validCampaignFormInput.dueDate)
     await page.getByRole('button', { name: 'Save' }).click()
 
-    await page.getByTestId('campaigns-list').locator('button').first().click()
+    await page.getByTestId('campaigns-list').locator('a').first().click()
     await expect(page.getByTestId('campaign-detail-title')).toHaveText(
       validCampaignFormInput.title,
     )
@@ -128,7 +128,7 @@ test.describe('Campaigns', () => {
     await page.getByTestId('campaign-form-due-date').fill(validCampaignFormInput.dueDate)
     await page.getByRole('button', { name: 'Save' }).click()
 
-    await page.getByTestId('campaigns-list').locator('button').first().click()
+    await page.getByTestId('campaigns-list').locator('a').first().click()
 
     const campaign = campaigns[0]
     if (campaign) {
@@ -207,7 +207,7 @@ test.describe('Campaigns', () => {
     })
 
     await page.goto('/campaigns')
-    await page.getByTestId(`campaign-row-${activeCampaign.id}`).click()
+    await page.getByTestId(`campaign-link-${activeCampaign.id}`).click()
 
     await expect(page.getByTestId('campaign-detail-title')).toHaveText('Active List Survey')
     await expect(page.getByTestId('campaign-detail-activate')).toHaveCount(0)
@@ -233,7 +233,7 @@ test.describe('Campaigns', () => {
     await page.getByTestId('campaign-form-due-date').fill(validCampaignFormInput.dueDate)
     await page.getByRole('button', { name: 'Save' }).click()
 
-    await page.getByTestId('campaigns-list').locator('button').first().click()
+    await page.getByTestId('campaigns-list').locator('a').first().click()
     await page.getByTestId('campaign-detail-activate').click()
     await page.getByRole('button', { name: 'Activate campaign' }).click()
 
@@ -256,7 +256,7 @@ test.describe('Campaigns', () => {
     await page.getByTestId('campaign-form-due-date').fill(validCampaignFormInput.dueDate)
     await page.getByRole('button', { name: 'Save' }).click()
 
-    await page.getByTestId('campaigns-list').locator('button').first().click()
+    await page.getByTestId('campaigns-list').locator('a').first().click()
     await page.getByTestId('campaign-detail-activate').click()
     await page.getByRole('button', { name: 'Activate campaign' }).click()
 
@@ -277,7 +277,7 @@ test.describe('Campaigns', () => {
     await page.getByTestId('campaign-form-due-date').fill(validCampaignFormInput.dueDate)
     await page.getByRole('button', { name: 'Save' }).click()
 
-    await page.getByTestId('campaigns-list').locator('button').first().click()
+    await page.getByTestId('campaigns-list').locator('a').first().click()
     await expect(page.getByTestId('campaign-detail-activate')).toBeVisible()
 
     // Simulate a concurrent activation from another tab/window that already

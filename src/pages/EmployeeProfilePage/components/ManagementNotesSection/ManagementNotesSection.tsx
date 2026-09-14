@@ -35,21 +35,12 @@ export const ManagementNotesSectionCard = ({
     return null
   }
 
-  const { notes, hasHiddenNotes } = section.data
+  const { notes } = section.data
   const canWrite = accessLevel === 'RW'
 
   return (
     <div className="space-y-4" data-testid="management-notes-section">
-      {hasHiddenNotes && (
-        <p
-          className="rounded-md border border-border bg-muted/40 px-3 py-2 text-sm text-muted-foreground"
-          data-testid="management-notes-gate"
-        >
-          {t('employeeProfile.s7.gated')}
-        </p>
-      )}
-
-      {notes.length === 0 && !hasHiddenNotes ? (
+      {notes.length === 0 ? (
         <p className="text-sm text-muted-foreground">
           {t('employeeProfile.s7.empty')}
         </p>

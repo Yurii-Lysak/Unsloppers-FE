@@ -21,8 +21,9 @@ describe('formatCellDisplay', () => {
 })
 
 describe('formatCellValue', () => {
-  it('renders null as empty cell marker', () => {
-    expect(formatCellValue(null, t)).toBe('directory.cellEmpty')
+  it('renders null as absent content, never a placeholder', () => {
+    expect(formatCellValue(null, t)).toBe('')
+    expect(formatCellValue(undefined, t)).toBe('')
   })
 
   it('renders booleans with directory labels', () => {

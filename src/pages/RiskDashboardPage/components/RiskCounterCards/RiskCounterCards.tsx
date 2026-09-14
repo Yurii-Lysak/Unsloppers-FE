@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/Card/Card'
 import { cn } from '@/lib/utils'
 import type { RiskDashboardCounts, RiskLevel } from '@/types/risk-dashboard'
 import { RISK_DASHBOARD_COUNTER_LEVELS } from '@/types/risk-dashboard'

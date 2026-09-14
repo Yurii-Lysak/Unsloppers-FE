@@ -6,7 +6,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
+} from '@/components/Card/Card'
 import { LoginForm } from './components/LoginForm/LoginForm'
 import { useLoginPage } from './hooks/useLoginPage'
 

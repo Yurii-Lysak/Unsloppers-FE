@@ -1,0 +1,6 @@
+export const tableRootClassName = ''
+export const tableHeaderClassName = ''
+export const tableBodyClassName = ''
+export const tableRowClassName = ''
+export const tableHeadClassName = ''
+export const tableCellClassName = ''

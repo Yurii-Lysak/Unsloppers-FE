@@ -38,7 +38,7 @@ export const MainHeader = ({ showMenuButton = false }: MainHeaderProps) => {
             {t('auth.logoutFailed')}
           </p>
         )}
-        <Button variant="ghost" onClick={logout} disabled={isLoggingOut}>
+        <Button variant="ghost" onClick={logout} disabled={isLoggingOut} className="text-sidebar-foreground hover:bg-sidebar-accent">
           {isLoggingOut ? t('auth.loggingOut') : t('auth.logout')}
         </Button>
       </div>

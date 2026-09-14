@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScopedPeopleTable } from '@/components/DashboardEngine/ScopedPeopleTable/ScopedPeopleTable'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/Button/Button'
 import type { DashboardTableRow } from '@/types/dashboard'
 
 type GroupByMode = 'department' | 'project'

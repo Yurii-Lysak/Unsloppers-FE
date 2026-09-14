@@ -47,7 +47,9 @@ export const formatCellValue = (
   fieldId?: string,
 ): string => {
   if (value === null || value === undefined) {
-    return t('directory.cellEmpty')
+    // Absent-not-hidden: a cell with no value renders no content at all,
+    // never a `—` placeholder that could imply gated data exists.
+    return ''
   }
   if (Array.isArray(value)) {
     return value.join(', ')

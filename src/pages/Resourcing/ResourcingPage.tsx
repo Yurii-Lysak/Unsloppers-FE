@@ -1,5 +1,6 @@
 import { ClipboardList } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
 import { Button } from '@/components/Button/Button'
 import type { ResourcingRequest } from '@/types/resourcing'
 import { ResourcingFormDialog } from './components/ResourcingFormDialog/ResourcingFormDialog'
@@ -8,13 +9,11 @@ import { useResourcingPage } from './hooks/useResourcingPage'
 interface ResourcingRequestListProps {
   requests: ResourcingRequest[]
   testIdPrefix: string
-  onOpen: (requestId: string) => void
 }
 
 const ResourcingRequestList = ({
   requests,
   testIdPrefix,
-  onOpen,
 }: ResourcingRequestListProps) => {
   const { t } = useTranslation()
 
@@ -24,24 +23,30 @@ const ResourcingRequestList = ({
       data-testid={`${testIdPrefix}-list`}
     >
       {requests.map(request => (
-        <li key={request.id}>
-          <button
-            type="button"
-            onClick={() => onOpen(request.id)}
-            className="flex w-full items-center justify-between gap-4 p-4 text-left hover:bg-accent"
-            data-testid={`${testIdPrefix}-row-${request.id}`}
-          >
-            <div>
-              <p className="font-medium text-foreground">{request.department}</p>
-              <p className="text-sm text-muted-foreground line-clamp-2">
-                {request.vacancyDetails}
-              </p>
-            </div>
-            <div className="flex flex-col items-end gap-1 text-sm text-muted-foreground">
-              <span>{t(`resourcing.status.${request.status}`)}</span>
-              <span>{t('resourcing.list.headcount', { count: request.headcount })}</span>
-            </div>
-          </button>
+        <li
+          key={request.id}
+          className="flex w-full items-center justify-between gap-4 p-4"
+          data-testid={`${testIdPrefix}-row-${request.id}`}
+        >
+          <div>
+            <Link
+              to={`/resourcing/${request.id}`}
+              aria-label={t('resourcing.list.openRequest', {
+                department: request.department,
+              })}
+              className="font-medium text-primary hover:underline"
+              data-testid={`${testIdPrefix}-link-${request.id}`}
+            >
+              {request.department}
+            </Link>
+            <p className="text-sm text-muted-foreground line-clamp-2">
+              {request.vacancyDetails}
+            </p>
+          </div>
+          <div className="flex flex-col items-end gap-1 text-sm text-muted-foreground">
+            <span>{t(`resourcing.status.${request.status}`)}</span>
+            <span>{t('resourcing.list.headcount', { count: request.headcount })}</span>
+          </div>
         </li>
       ))}
     </ul>
@@ -66,7 +71,6 @@ export const ResourcingPage = () => {
     dialogOpen,
     openCreate,
     closeDialog,
-    openRequest,
   } = useResourcingPage()
 
   const hasRequests = Boolean(requestsList && requestsList.length > 0)
@@ -110,7 +114,6 @@ export const ResourcingPage = () => {
             <ResourcingRequestList
               requests={pendingReviewList!}
               testIdPrefix="resourcing-pending-review"
-              onOpen={openRequest}
             />
           )}
         </section>
@@ -137,7 +140,6 @@ export const ResourcingPage = () => {
             <ResourcingRequestList
               requests={assignedList!}
               testIdPrefix="resourcing-assigned"
-              onOpen={openRequest}
             />
           )}
         </section>
@@ -166,7 +168,6 @@ export const ResourcingPage = () => {
             <ResourcingRequestList
               requests={requestsList!}
               testIdPrefix="resourcing"
-              onOpen={openRequest}
             />
           )}
         </section>

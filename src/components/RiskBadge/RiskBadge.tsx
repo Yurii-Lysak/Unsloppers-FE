@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { Badge } from '@/components/ui/badge'
+import { Badge } from '@/components/Badge/Badge'
 import { cn } from '@/lib/utils'
 import type { RiskLevel } from '@/types/employee-profile'
 import { riskLevelClassName, riskLevelLabelKey } from './risk-level-styles'
