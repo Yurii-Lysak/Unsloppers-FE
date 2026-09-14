@@ -1,6 +1,9 @@
+import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { toast } from 'sonner'
 import { Button } from '@/components/Button/Button'
+import { cn } from '@/lib/utils'
 import type { ResourcingProposal } from '@/types/resourcing'
 
 interface ProposalListProps {
@@ -13,6 +16,8 @@ interface ProposalListProps {
   isDeciding: boolean
 }
 
+const gatedButtonClassName = 'aria-disabled:cursor-not-allowed aria-disabled:opacity-50'
+
 export const ProposalList = ({
   proposals,
   isReviewingDm,
@@ -24,6 +29,13 @@ export const ProposalList = ({
 }: ProposalListProps) => {
   const { t } = useTranslation()
   const headcountFull = approvedCount >= headcount
+  const approveInFlightRef = useRef<string | null>(null)
+
+  useEffect(() => {
+    if (!isDeciding) {
+      approveInFlightRef.current = null
+    }
+  }, [isDeciding])
 
   if (proposals.length === 0) {
     return (
@@ -100,8 +112,23 @@ export const ProposalList = ({
                   <Button
                     type="button"
                     size="sm"
-                    onClick={() => onApprove(proposal.id)}
-                    disabled={isDeciding || headcountFull}
+                    aria-disabled={isDeciding || headcountFull}
+                    className={cn((isDeciding || headcountFull) && gatedButtonClassName)}
+                    onClick={() => {
+                      if (isDeciding) {
+                        toast.info(t('resourcing.saving'))
+                        return
+                      }
+                      if (headcountFull) {
+                        toast.info(t('resourcing.detail.decide.headcountFull'))
+                        return
+                      }
+                      if (approveInFlightRef.current === proposal.id) {
+                        return
+                      }
+                      approveInFlightRef.current = proposal.id
+                      onApprove(proposal.id)
+                    }}
                     data-testid={`resourcing-proposal-${proposal.id}-approve`}
                   >
                     {t('resourcing.detail.decide.approve')}
@@ -110,8 +137,15 @@ export const ProposalList = ({
                     type="button"
                     size="sm"
                     variant="outline"
-                    onClick={() => onOpenReasonDialog(proposal.id)}
-                    disabled={isDeciding}
+                    aria-disabled={isDeciding}
+                    className={cn(isDeciding && gatedButtonClassName)}
+                    onClick={() => {
+                      if (isDeciding) {
+                        toast.info(t('resourcing.saving'))
+                        return
+                      }
+                      onOpenReasonDialog(proposal.id)
+                    }}
                     data-testid={`resourcing-proposal-${proposal.id}-reject`}
                   >
                     {t('resourcing.detail.decide.reject.action')}
@@ -123,8 +157,15 @@ export const ProposalList = ({
                   type="button"
                   size="sm"
                   variant="outline"
-                  onClick={() => onOpenReasonDialog(proposal.id)}
-                  disabled={isDeciding}
+                  aria-disabled={isDeciding}
+                  className={cn(isDeciding && gatedButtonClassName)}
+                  onClick={() => {
+                    if (isDeciding) {
+                      toast.info(t('resourcing.saving'))
+                      return
+                    }
+                    onOpenReasonDialog(proposal.id)
+                  }}
                   data-testid={`resourcing-proposal-${proposal.id}-reverse`}
                 >
                   {t('resourcing.detail.decide.reverse.action')}

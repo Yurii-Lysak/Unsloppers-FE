@@ -2,7 +2,12 @@ import type { ReactNode } from 'react'
 import { Controller } from 'react-hook-form'
 import {
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
+  SelectScrollDownButton,
+  SelectScrollUpButton,
+  SelectSeparator,
   SelectTrigger,
   SelectValue,
   Select as UiSelect,
@@ -162,4 +167,17 @@ export const Select = (props: SelectProps) => {
     return <SelectField {...props} />
   }
   return <StandaloneSelect {...props} />
+}
+
+export const SelectRoot = UiSelect
+export {
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectScrollDownButton,
+  SelectScrollUpButton,
+  SelectSeparator,
+  SelectTrigger,
+  SelectValue,
 }

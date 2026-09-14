@@ -1,14 +1,12 @@
 import { Megaphone } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { Button } from '@/components/Button/Button'
-import { cn } from '@/lib/utils'
 import { CampaignFormDialog } from './components/CampaignFormDialog/CampaignFormDialog'
 import { useCampaignsPage } from './hooks/useCampaignsPage'
 
 export const CampaignsPage = () => {
   const { t } = useTranslation()
-  const navigate = useNavigate()
   const {
     campaignsList,
     isCampaignsLoading,
@@ -57,31 +55,32 @@ export const CampaignsPage = () => {
             const isNavigable =
               campaign.status === 'draft' || campaign.status === 'active'
             return (
-              <li key={campaign.id}>
-                <button
-                  type="button"
-                  onClick={() =>
-                    isNavigable ? navigate(`/campaigns/${campaign.id}`) : undefined
-                  }
-                  disabled={!isNavigable}
-                  aria-disabled={!isNavigable}
-                  className={cn(
-                    'flex w-full items-center justify-between gap-4 p-4 text-left',
-                    isNavigable ? 'hover:bg-accent' : 'cursor-not-allowed opacity-70',
-                  )}
-                  data-testid={`campaign-row-${campaign.id}`}
-                >
-                  <div>
+              <li
+                key={campaign.id}
+                className="flex w-full items-center justify-between gap-4 p-4"
+                data-testid={`campaign-row-${campaign.id}`}
+              >
+                <div>
+                  {isNavigable ? (
+                    <Link
+                      to={`/campaigns/${campaign.id}`}
+                      aria-label={t('campaigns.openCampaign', { title: campaign.title })}
+                      className="font-medium text-primary hover:underline"
+                      data-testid={`campaign-link-${campaign.id}`}
+                    >
+                      {campaign.title}
+                    </Link>
+                  ) : (
                     <p className="font-medium text-foreground">{campaign.title}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {campaign.description}
-                    </p>
-                  </div>
-                  <div className="flex flex-col items-end gap-1 text-sm text-muted-foreground">
-                    <span>{t(`campaigns.status.${campaign.status}`)}</span>
-                    <span>{campaign.dueDate}</span>
-                  </div>
-                </button>
+                  )}
+                  <p className="text-sm text-muted-foreground">
+                    {campaign.description}
+                  </p>
+                </div>
+                <div className="flex flex-col items-end gap-1 text-sm text-muted-foreground">
+                  <span>{t(`campaigns.status.${campaign.status}`)}</span>
+                  <span>{campaign.dueDate}</span>
+                </div>
               </li>
             )
           })}

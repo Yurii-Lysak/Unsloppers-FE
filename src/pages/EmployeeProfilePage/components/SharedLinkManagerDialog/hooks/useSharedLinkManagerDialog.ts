@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { toast } from 'sonner'
 import {
   useCreateSharedLink,
   useRevokeSharedLink,
@@ -9,6 +10,7 @@ import {
 import { useEmployeeList } from '@/api/hooks/useEmployeeList'
 import type { SectionId } from '@/types/employee-profile'
 import { SHAREABLE_CFG_SECTIONS } from '../../../shared-link-sections'
+import { armRevokeConfirm, cancelRevokeConfirm } from '../revoke-confirm'
 
 const EXPIRY_PRESETS = [
   { hours: 1, labelKey: 'employeeProfile.sharedLink.expiry.1h' },
@@ -42,6 +44,7 @@ export const useSharedLinkManagerDialog = ({
   const [createdUrl, setCreatedUrl] = useState<string | null>(null)
   const [rootError, setRootError] = useState<string | null>(null)
   const [expandedLogLinkId, setExpandedLogLinkId] = useState<string | null>(null)
+  const [pendingRevokeLinkId, setPendingRevokeLinkId] = useState<string | null>(null)
 
   const { data: employeeList, isLoading: isRecipientsLoading } = useEmployeeList({
     page: 1,
@@ -89,6 +92,7 @@ export const useSharedLinkManagerDialog = ({
     setCreatedUrl(null)
     setRootError(null)
     setExpandedLogLinkId(null)
+    setPendingRevokeLinkId(null)
     setActiveTab(canCreate ? 'create' : 'manage')
   }
 
@@ -124,16 +128,31 @@ export const useSharedLinkManagerDialog = ({
     await navigator.clipboard.writeText(absoluteUrl)
   }
 
-  const handleRevoke = async (linkId: string) => {
+  const armRevoke = (linkId: string) => {
+    setRootError(null)
+    setPendingRevokeLinkId(armRevokeConfirm(linkId))
+  }
+
+  const cancelRevoke = () => {
+    setPendingRevokeLinkId(cancelRevokeConfirm())
+  }
+
+  const handleRevoke = async (linkId: string): Promise<boolean> => {
     setRootError(null)
     try {
       await revokeMutation.mutateAsync(linkId)
+      setPendingRevokeLinkId(cancelRevokeConfirm())
       if (expandedLogLinkId === linkId) {
         setExpandedLogLinkId(null)
       }
       await refetchLinks()
+      toast.success(t('employeeProfile.sharedLink.revokeSuccess'))
+      return true
     } catch {
+      // The link is retained so the author can retry from the same row.
       setRootError(t('employeeProfile.sharedLink.revokeFailed'))
+      toast.error(t('employeeProfile.sharedLink.revokeFailed'))
+      return false
     }
   }
 
@@ -165,6 +184,9 @@ export const useSharedLinkManagerDialog = ({
     activeLinks: activeLinks?.links ?? [],
     isLinksLoading,
     isLinksError,
+    pendingRevokeLinkId,
+    armRevoke,
+    cancelRevoke,
     handleRevoke,
     isRevoking: revokeMutation.isPending,
     expandedLogLinkId,

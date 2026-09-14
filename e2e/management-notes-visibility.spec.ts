@@ -122,7 +122,7 @@ const colleagueProfile = {
 }
 
 test.describe('Management notes visibility', () => {
-  test('shows PM gate without leaking hidden note content', async ({
+  test('shows entitled notes with no existence hint for hidden notes', async ({
     page,
     stubNetworkCall,
     interceptNetworkCall,
@@ -139,10 +139,7 @@ test.describe('Management notes visibility', () => {
     await profileRequest.settled
 
     await expect(page.getByTestId('profile-section-s7')).toBeVisible()
-    await expect(page.getByTestId('management-notes-gate')).toBeVisible()
-    await expect(page.getByTestId('management-notes-gate')).toHaveText(
-      'A management note exists here. Not shared with your role.',
-    )
+    await expect(page.getByTestId('management-notes-gate')).toHaveCount(0)
     await expect(page.getByText('Shared with PM')).toBeVisible()
     await expect(page.getByTestId('management-note-add-content')).toHaveCount(0)
   })
@@ -197,7 +194,7 @@ test.describe('Management notes visibility', () => {
     expect(request.postDataJSON()).toEqual({ visibleForPm: true })
   })
 
-  test('shows PM gate with empty note list when only hidden notes exist', async ({
+  test('shows the empty state with no existence hint when only hidden notes exist', async ({
     page,
     stubNetworkCall,
     interceptNetworkCall,
@@ -213,8 +210,8 @@ test.describe('Management notes visibility', () => {
     await page.goto(`/employees/${employeeId}`)
     await profileRequest.settled
 
-    await expect(page.getByTestId('management-notes-gate')).toBeVisible()
-    await expect(page.getByText('No management notes yet.')).toHaveCount(0)
+    await expect(page.getByTestId('management-notes-gate')).toHaveCount(0)
+    await expect(page.getByText('No management notes yet.')).toBeVisible()
   })
 
   test('omits S7 for colleague viewers', async ({

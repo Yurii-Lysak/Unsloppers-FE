@@ -2,8 +2,10 @@ import { useCallback, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Checkbox } from '@/components/Checkbox/Checkbox'
 import { Select } from '@/components/Select/Select'
-import { Input as UiInput } from '@/components/ui/input'
+import { Input } from '@/components/Input/Input'
+import { SimpleTooltip } from '@/components/Tooltip/Tooltip'
 import { cn } from '@/lib/utils'
+import { BUILTIN_FIELD_IDS } from '@/types/employees'
 import type { FieldSpec, FieldValue } from '@/types/employees'
 
 interface EditableCellProps {
@@ -37,6 +39,28 @@ const fieldValuesEqual = (left: FieldValue, right: FieldValue): boolean => {
   }
   return false
 }
+
+/**
+ * Access-switch fields (EXPERIENCE.md Inline edit + writethrough): manager,
+ * People Partner, and department are never editable here. They carry an
+ * explicit reject-and-route hint instead of an editor — no full
+ * relationship screen is built, the write happens on the dedicated screen.
+ */
+const RELATIONSHIP_GUARD_FIELD_IDS = new Set(
+  [
+    BUILTIN_FIELD_IDS.department,
+    'manager',
+    'managerId',
+    'manager_id',
+    'peoplePartner',
+    'peoplePartnerId',
+    'people_partner',
+    'pp',
+  ].map(fieldId => fieldId.toLowerCase()),
+)
+
+const isRelationshipGuardField = (fieldId: string): boolean =>
+  RELATIONSHIP_GUARD_FIELD_IDS.has(fieldId.toLowerCase())
 
 export const EditableCell = ({
   field,
@@ -138,6 +162,21 @@ export const EditableCell = ({
     }
   }
 
+  if (isRelationshipGuardField(field.id)) {
+    const hint = t('directory.inlineEdit.relationshipHint')
+    return (
+      <SimpleTooltip content={hint}>
+        <span
+          title={hint}
+          data-testid={`directory-cell-guard-${field.id}`}
+        >
+          {displayValue}
+          <span className="sr-only"> ({hint})</span>
+        </span>
+      </SimpleTooltip>
+    )
+  }
+
   if (!writable || !field.editable) {
     return <span>{displayValue}</span>
   }
@@ -233,7 +272,7 @@ export const EditableCell = ({
   }
 
   return (
-    <UiInput
+    <Input
       ref={inputRef}
       value={draft}
       onChange={event => setDraft(event.target.value)}

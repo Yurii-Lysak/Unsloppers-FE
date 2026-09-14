@@ -9,7 +9,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
+} from '@/components/Table/Table'
 import { BUILTIN_FIELD_IDS, type EmployeeListResponse, type FieldValue } from '@/types/employees'
 import { ColumnFilterPopover } from '@/components/AudienceBuilder/ColumnFilterPopover/ColumnFilterPopover'
 import { formatCellDisplay } from '@/components/AudienceBuilder/filter-utils'
@@ -69,7 +69,19 @@ export const EmployeeTable = ({
       <TableHeader>
         <TableRow>
           {data.fields.map(field => (
-            <TableHead key={field.id}>
+            <TableHead
+              key={field.id}
+              scope="col"
+              aria-sort={
+                field.sortable
+                  ? sort === field.id
+                    ? order === 'desc'
+                      ? 'descending'
+                      : 'ascending'
+                    : 'none'
+                  : undefined
+              }
+            >
               <div className="flex items-center gap-1">
                 {field.sortable ? (
                   <Button
@@ -78,6 +90,7 @@ export const EmployeeTable = ({
                     size="sm"
                     className="inline-flex h-auto items-center gap-1 px-0 text-left font-normal hover:bg-transparent"
                     onClick={() => onToggleSort(field.id)}
+                    aria-label={t('directory.sortBy', { column: field.name })}
                     data-testid={`directory-sort-${field.id}`}
                   >
                     <span>{field.name}</span>

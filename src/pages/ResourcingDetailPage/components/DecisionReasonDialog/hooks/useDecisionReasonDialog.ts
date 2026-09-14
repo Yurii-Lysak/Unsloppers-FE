@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { isReasonConfirmable } from '@/lib/reason-gate'
 
 /** Mirrors backend `DecideResourcingProposalDto.reason` `@MaxLength(2000)`. */
 export const DECISION_REASON_MAX_LENGTH = 2000
@@ -16,9 +17,7 @@ interface UseDecisionReasonDialogOptions {
 export const useDecisionReasonDialog = ({ onConfirm }: UseDecisionReasonDialogOptions) => {
   const [reason, setReason] = useState('')
 
-  const trimmedLength = reason.trim().length
-  const canConfirm =
-    trimmedLength > 0 && trimmedLength <= DECISION_REASON_MAX_LENGTH
+  const canConfirm = isReasonConfirmable(reason, DECISION_REASON_MAX_LENGTH)
 
   const handleConfirm = async () => {
     if (!canConfirm) {

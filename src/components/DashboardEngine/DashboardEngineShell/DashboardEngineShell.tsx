@@ -6,7 +6,7 @@ import { OwnActionItemsWidget } from '@/components/DashboardEngine/OwnActionItem
 import { QuickNavLinks } from '@/components/DashboardEngine/QuickNavLinks/QuickNavLinks'
 import { ResourcingRequestsWidget } from '@/components/DashboardEngine/ResourcingRequestsWidget/ResourcingRequestsWidget'
 import { ScopedPeopleTable } from '@/components/DashboardEngine/ScopedPeopleTable/ScopedPeopleTable'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/Button/Button'
 import type {
   AuthoredActionItem,
   DashboardConfigResponse,

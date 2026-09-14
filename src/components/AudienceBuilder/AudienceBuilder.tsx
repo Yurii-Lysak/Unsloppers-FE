@@ -1,4 +1,5 @@
 import { useCallback, useMemo } from 'react'
+import { X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/Button/Button'
 import { ColumnFilterPopover } from '@/components/AudienceBuilder/ColumnFilterPopover/ColumnFilterPopover'
@@ -10,7 +11,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
+} from '@/components/Table/Table'
 import { BUILTIN_FIELD_IDS } from '@/types/employees'
 import type {
   CampaignAudiencePreview,
@@ -95,10 +96,20 @@ export const AudienceBuilder = ({
 
   const displayFields = fieldCatalog ?? preview?.fields ?? []
 
+  const fieldNameForFilter = useCallback(
+    (fieldId: string) =>
+      fieldCatalog?.find(field => field.id === fieldId)?.name ?? fieldId,
+    [fieldCatalog],
+  )
+
   return (
     <div className="space-y-4" data-testid="campaign-audience-builder">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="text-sm text-muted-foreground" data-testid="campaign-audience-count">
+        <p
+          className="text-sm text-muted-foreground"
+          aria-live="polite"
+          data-testid="campaign-audience-count"
+        >
           {t('campaigns.audience.count', { count: preview?.total ?? 0 })}
         </p>
         <Button
@@ -124,6 +135,37 @@ export const AudienceBuilder = ({
           </div>
         ))}
       </div>
+
+      {definition.filters.length > 0 ? (
+        <ul
+          className="flex flex-wrap items-center gap-2"
+          aria-label={t('campaigns.audience.title')}
+          data-testid="campaign-audience-active-filters"
+        >
+          {definition.filters.map(filter => {
+            const fieldName = fieldNameForFilter(filter.fieldId)
+            return (
+              <li
+                key={filter.fieldId}
+                className="flex items-center gap-1 rounded-md border border-border bg-background-selected px-2 py-1 text-sm"
+                data-testid={`campaign-audience-filter-${filter.fieldId}`}
+              >
+                <span>{fieldName}</span>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon-xs"
+                  aria-label={t('campaigns.audience.removeFilter', { field: fieldName })}
+                  onClick={() => clearFilter(filter.fieldId)}
+                  data-testid={`campaign-audience-filter-remove-${filter.fieldId}`}
+                >
+                  <X className="size-3.5" />
+                </Button>
+              </li>
+            )
+          })}
+        </ul>
+      ) : null}
 
       <div className="flex flex-wrap items-end gap-2">
         <label className="flex flex-col gap-1 text-sm">
@@ -156,9 +198,9 @@ export const AudienceBuilder = ({
           <TableHeader>
             <TableRow>
               {displayFields.map(field => (
-                <TableHead key={field.id}>{field.name}</TableHead>
+                <TableHead key={field.id} scope="col">{field.name}</TableHead>
               ))}
-              <TableHead>{t('campaigns.audience.actions')}</TableHead>
+              <TableHead scope="col">{t('campaigns.audience.actions')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

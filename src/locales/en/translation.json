@@ -10,9 +10,9 @@
     "title": "Dashboard",
     "loading": "Loading dashboard…",
     "loadFailed": "Could not load dashboard.",
-    "accessDenied": "You do not have access to a role dashboard.",
+    "accessDenied": "No access to this section.",
     "unavailable": "Temporarily unavailable",
-    "staleData": "not fresh",
+    "staleData": "Showing last-known data — sync delayed.",
     "counters": {
       "headcount": "Subordinates",
       "activeRisk": "Active risk",
@@ -57,12 +57,12 @@
       "leave": "Leave",
       "department": "Department",
       "project": "Project",
-      "emptyCell": "—",
       "empty": "No people in your dashboard scope.",
       "groupByLabel": "Group by:",
       "groupByDepartment": "Department",
       "groupByProject": "Project",
-      "unassignedGroup": "Unassigned"
+      "unassignedGroup": "Unassigned",
+      "openProfile": "Open profile for {{name}}"
     },
     "pagination": {
       "summary": "Page {{page}} of {{totalPages}} ({{totalRows}} people)",
@@ -92,6 +92,8 @@
     "footer": "If the problem persists, please contact support or try refreshing the page."
   },
   "common": {
+    "close": "Close",
+    "actionUnavailable": "This action is currently unavailable.",
     "notAvailable": "Not available"
   },
   "sidebar": {
@@ -111,6 +113,7 @@
   "campaigns": {
     "title": "Campaigns",
     "newCampaign": "New campaign",
+    "openCampaign": "Open campaign {{title}}",
     "createCampaign": "Create campaign",
     "editCampaign": "Edit campaign",
     "empty": "No campaigns yet.",
@@ -166,6 +169,7 @@
       "addEmployee": "Add employee",
       "selectEmployee": "Select an employee",
       "remove": "Remove",
+      "removeFilter": "Remove filter for {{field}}",
       "actions": "Actions",
       "loadingPreview": "Loading audience preview…",
       "emptyPreview": "No recipients yet. Add filters or employees, then save."
@@ -212,7 +216,8 @@
     },
     "list": {
       "headcount_one": "{{count}} headcount",
-      "headcount_other": "{{count}} headcounts"
+      "headcount_other": "{{count}} headcounts",
+      "openRequest": "Open resourcing request for {{department}}"
     },
     "assigned": {
       "title": "Assigned to me",
@@ -276,7 +281,8 @@
           "title": "Reverse this approval?",
           "description": "A reason is required to reverse an approved candidate — this frees the headcount slot.",
           "confirm": "Reverse approval"
-        }
+        },
+        "reasonRequired": "Add a written reason to continue."
       },
       "addCandidate": {
         "title": "Attach a candidate"
@@ -419,7 +425,7 @@
       "recordedAt": "Last recorded",
       "manager": "Manager",
       "peoplePartner": "People Partner",
-      "emptyCell": "—"
+      "openProfile": "Open profile for {{name}}"
     }
   },
   "permissions": {
@@ -444,6 +450,7 @@
     "previousPage": "Previous",
     "nextPage": "Next",
     "pageIndicator": "Page {{page}} of {{totalPages}}",
+    "sortBy": "Sort by {{column}}",
     "cellEmpty": "—",
     "cellLoading": "Loading…",
     "cellUnavailable": "Temporarily unavailable",
@@ -480,7 +487,8 @@
     "inlineEdit": {
       "save": "Save",
       "saveSuccess": "Changes saved.",
-      "saveFailed": "Couldn't save. Try again."
+      "saveFailed": "Couldn't save. Try again.",
+      "relationshipHint": "Changes to this field are made on the dedicated relationship screen."
     },
     "export": {
       "label": "Export",
@@ -516,7 +524,7 @@
       "deleteFailed": "Couldn't delete the view. Try again.",
       "shareSuccess": "View shared.",
       "shareFailed": "Couldn't share the view. Try again.",
-      "filtersHiddenNotice": "This view includes a filter on a field you can't see, so it was skipped. You're seeing your own entitled results."
+      "filtersHiddenNotice": "This view was adjusted for your access. You're seeing your own entitled results."
     }
   },
   "adminRoles": {
@@ -920,7 +928,6 @@
       "cancelledReason": "Reason: {{reason}}"
     },
     "s7": {
-      "gated": "A management note exists here. Not shared with your role.",
       "toggleVisibleToEmployee": "Visible to employee",
       "toggleVisibleToPm": "Visible to PM",
       "addNote": "Add note",
@@ -1064,6 +1071,11 @@
       "viewLog": "View log",
       "hideLog": "Hide log",
       "revoke": "Revoke",
+      "revokeConfirmTitle": "Revoke this shared link?",
+      "revokeConfirmDescription": "The recipient immediately loses access. This cannot be undone.",
+      "revokeConfirm": "Revoke link",
+      "revokeCancel": "Keep link",
+      "revokeSuccess": "Shared link revoked.",
       "emptyLog": "No access attempts recorded yet.",
       "logEntry": "{{time}} — {{outcome}} ({{reason}})",
       "manageLoadFailed": "Could not load shared links for this employee.",

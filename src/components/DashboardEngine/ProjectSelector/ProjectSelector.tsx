@@ -1,11 +1,11 @@
 import { useTranslation } from 'react-i18next'
 import {
-  Select,
+  SelectRoot as Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
+} from '@/components/Select/Select'
 import {
   DASHBOARD_ALL_PROJECTS_VALUE,
   DASHBOARD_UNASSIGNED_PROJECT_ID,

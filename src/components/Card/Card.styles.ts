@@ -1,0 +1,7 @@
+export const cardRootClassName = ''
+export const cardHeaderClassName = ''
+export const cardTitleClassName = ''
+export const cardDescriptionClassName = ''
+export const cardActionClassName = ''
+export const cardContentClassName = ''
+export const cardFooterClassName = ''
