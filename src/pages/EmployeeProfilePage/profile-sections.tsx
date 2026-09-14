@@ -19,7 +19,6 @@ import type {
   RisksSection as RisksSectionData,
   SectionAccessLevel,
   SectionId,
-  TimelineSection,
 } from '@/types/employee-profile'
 import { ActionItemsSectionCard } from './components/ActionItemsSection/ActionItemsSection'
 import { CustomFieldsSectionCard } from './components/CustomFieldsSection/CustomFieldsSection'
@@ -32,6 +31,7 @@ import { EmergencyContactsSectionCard } from './components/EmergencyContactsSect
 import { PersonalContactsSectionCard } from './components/PersonalContactsSection/PersonalContactsSection'
 import { RequestHistorySectionCard } from './components/RequestHistorySection/RequestHistorySection'
 import { RisksSectionCard } from './components/RisksSection/RisksSection'
+import { CareerTimelineSectionCard } from './components/CareerTimelineSection/CareerTimelineSection'
 
 export const PROFILE_SECTION_ORDER: SectionId[] = [
   'S1',
@@ -213,24 +213,13 @@ export const PROFILE_SECTION_RENDERERS: Partial<Record<SectionId, SectionRendere
         accessLevel={accessLevel}
       />
     ),
-    S9: ({ section, t }) => {
-      if (!isSectionData<TimelineSection>(section)) {
-        return null
-      }
-      return section.data.events.length === 0 ? (
-        <p className="text-sm text-muted-foreground">
-          {t('employeeProfile.emptySection')}
-        </p>
-      ) : (
-        <ul className="space-y-2 text-sm">
-          {section.data.events.map((event) => (
-            <li key={event.id}>
-              {event.type} — {event.effectiveDate}
-            </li>
-          ))}
-        </ul>
-      )
-    },
+    S9: ({ employeeId, section, accessLevel }) => (
+      <CareerTimelineSectionCard
+        employeeId={employeeId}
+        section={section}
+        accessLevel={accessLevel}
+      />
+    ),
     S10: ({ section, t }) => {
       if ('status' in section && section.status === 'pending') {
         return (

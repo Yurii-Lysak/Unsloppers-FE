@@ -1,5 +1,6 @@
 import { Menu } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
 import { Button } from '@/components/Button/Button'
 import { Logo } from './components/Logo/Logo'
 import { useMainHeader } from './hooks/useMainHeader'
@@ -10,7 +11,14 @@ interface MainHeaderProps {
 
 export const MainHeader = ({ showMenuButton = false }: MainHeaderProps) => {
   const { t } = useTranslation()
-  const { openMobileSidebar, logout, isLoggingOut, logoutFailed } = useMainHeader()
+  const {
+    openMobileSidebar,
+    logout,
+    isLoggingOut,
+    logoutFailed,
+    currentUserName,
+    currentUserEmployeeId,
+  } = useMainHeader()
 
   return (
     <header
@@ -37,6 +45,15 @@ export const MainHeader = ({ showMenuButton = false }: MainHeaderProps) => {
           <p className="text-sm text-destructive" role="alert">
             {t('auth.logoutFailed')}
           </p>
+        )}
+        {currentUserName && currentUserEmployeeId && (
+          <Link
+            to={`/employees/${currentUserEmployeeId}`}
+            className="text-sm text-sidebar-foreground hover:underline"
+            data-testid="current-user-link"
+          >
+            {currentUserName}
+          </Link>
         )}
         <Button variant="ghost" onClick={logout} disabled={isLoggingOut} className="text-sidebar-foreground hover:bg-sidebar-accent">
           {isLoggingOut ? t('auth.loggingOut') : t('auth.logout')}

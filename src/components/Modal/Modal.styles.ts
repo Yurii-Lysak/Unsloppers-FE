@@ -1,3 +1,3 @@
-export const modalContentClassName = 'max-h-[90vh] overflow-y-auto'
+export const modalContentClassName = ''
 export const modalFooterClassName = 'flex justify-end gap-2'
-export const modalBodyClassName = 'space-y-4'
+export const modalBodyClassName = 'min-h-0 flex-1 space-y-4 overflow-y-auto'

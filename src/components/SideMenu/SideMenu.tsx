@@ -36,7 +36,7 @@ export const SideMenu = ({ collapsible = true, expanded }: SideMenuProps) => {
 
       <aside
         className={cn(
-          'flex flex-col border-r border-sidebar-border bg-sidebar overflow-auto',
+          'flex flex-col border-r border-sidebar-border bg-sidebar overflow-auto overscroll-contain',
           'fixed inset-y-0 left-0 z-50 w-64 -translate-x-full transition-transform duration-200 ease-in-out',
           isMobileSidebarOpen && 'translate-x-0',
           'md:relative md:inset-auto md:z-auto md:translate-x-0 md:w-auto md:transition-[width] md:duration-200 md:ease-in-out',
