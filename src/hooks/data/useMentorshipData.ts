@@ -1,3 +1,4 @@
+import { useCallback } from 'react'
 import {
   useAssignableMentees,
   useMentorshipPairs,
@@ -66,26 +67,37 @@ export const useMentorshipHubMutations = () => {
   const createPairMutation = useCreateMentorshipPair()
   const endPairMutation = useEndMentorshipPair()
 
-  const createPair = async (input: CreateMentorshipPairInput) => {
-    await createPairMutation.mutateAsync(input)
-  }
+  // Depend on the mutation's own methods, not the mutation object itself —
+  // useMutation() returns a new object every render, but mutateAsync/reset
+  // are stable; depending on the object would defeat this memoization and
+  // reintroduce the effect loop these callbacks exist to prevent (consumers
+  // put resetMutationState/resetEndMutationState in a useEffect dep array).
+  const createPair = useCallback(
+    async (input: CreateMentorshipPairInput) => {
+      await createPairMutation.mutateAsync(input)
+    },
+    [createPairMutation.mutateAsync],
+  )
 
-  const endPair = async (input: {
-    pairId: string
-    mentorId: string
-    menteeId: string
-    input: EndMentorshipPairInput
-  }) => {
-    await endPairMutation.mutateAsync(input)
-  }
+  const endPair = useCallback(
+    async (input: {
+      pairId: string
+      mentorId: string
+      menteeId: string
+      input: EndMentorshipPairInput
+    }) => {
+      await endPairMutation.mutateAsync(input)
+    },
+    [endPairMutation.mutateAsync],
+  )
 
-  const resetMutationState = () => {
+  const resetMutationState = useCallback(() => {
     createPairMutation.reset()
-  }
+  }, [createPairMutation.reset])
 
-  const resetEndMutationState = () => {
+  const resetEndMutationState = useCallback(() => {
     endPairMutation.reset()
-  }
+  }, [endPairMutation.reset])
 
   return {
     createPair,

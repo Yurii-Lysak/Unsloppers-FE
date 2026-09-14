@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import type { TFunction } from 'i18next'
 
-const calendarDatePattern = /^\d{4}-\d{2}-\d{2}$/
+const calendarDatePattern = /^(\d{4})-(\d{2})-(\d{2})$/
 const httpUrlPattern = /^https?:\/\//i
 
 const isValidCalendarDate = (value: string): boolean => {

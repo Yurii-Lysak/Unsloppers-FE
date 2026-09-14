@@ -707,6 +707,49 @@
       "customFields": "Custom fields",
       "generic": "Section {{id}}"
     },
+    "s9": {
+      "eventTypes": {
+        "grade": "Grade change",
+        "position": "Position change",
+        "department": "Department change",
+        "employmentType": "Employment type change",
+        "joining": "Joined the company",
+        "extendedLeave": "Extended leave",
+        "mentorshipStart": "Mentorship started",
+        "mentorshipEnd": "Mentorship ended"
+      },
+      "changeWithValues": "{{oldValue}} → {{newValue}}",
+      "changeToValue": "→ {{newValue}}",
+      "sourceManual": "Manual entry",
+      "fields": {
+        "type": "Event type",
+        "effectiveDate": "Effective date",
+        "oldValue": "Old value (optional)",
+        "newValue": "New value (optional)"
+      },
+      "validation": {
+        "effectiveDateRequired": "Effective date is required.",
+        "effectiveDateInvalid": "Effective date must be a valid date (YYYY-MM-DD)."
+      },
+      "addHeading": "Add timeline event",
+      "addSubmit": "Add event",
+      "editHeading": "Edit timeline event",
+      "deleteButton": "Delete",
+      "confirmDelete": "Delete this timeline event? This cannot be undone.",
+      "saveFailed": "Could not save the timeline event.",
+      "create": {
+        "success": "Timeline event added.",
+        "error": "Could not add the timeline event."
+      },
+      "update": {
+        "success": "Timeline event updated.",
+        "error": "Could not update the timeline event."
+      },
+      "delete": {
+        "success": "Timeline event deleted.",
+        "error": "Could not delete the timeline event."
+      }
+    },
     "s12": {
       "matrixLinkHeading": "Skills matrix",
       "matrixLink": "Open skills matrix",

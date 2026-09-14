@@ -311,6 +311,13 @@
   * {
     @apply border-border;
   }
+  html,
+  body {
+    /* MainLayout owns scrolling via its own overflow-auto regions (main, sidebar);
+       the document itself must never scroll, or scroll-chaining past the end of
+       those regions reveals blank space and pushes the header/sidebar off-screen. */
+    @apply overflow-hidden;
+  }
   body {
     @apply bg-background text-foreground;
   }

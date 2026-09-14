@@ -1,5 +1,7 @@
 export interface Session {
   userId: string
+  name: string
+  employeeId: string | null
 }
 
 export interface LoginCredentials {

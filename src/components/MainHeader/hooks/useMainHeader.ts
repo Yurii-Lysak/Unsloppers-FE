@@ -4,7 +4,7 @@ import { useLayout } from '@/contexts/LayoutContext'
 
 export const useMainHeader = () => {
   const { openMobileSidebar } = useLayout()
-  const { logout } = useAuth()
+  const { session, logout } = useAuth()
   const [isLoggingOut, setIsLoggingOut] = useState(false)
   const [logoutFailed, setLogoutFailed] = useState(false)
 
@@ -25,5 +25,7 @@ export const useMainHeader = () => {
     logout: () => void handleLogout(),
     isLoggingOut,
     logoutFailed,
+    currentUserName: session?.name ?? null,
+    currentUserEmployeeId: session?.employeeId ?? null,
   }
 }

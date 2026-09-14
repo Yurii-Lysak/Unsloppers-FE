@@ -295,17 +295,40 @@ export interface LeavesSection {
   manageLeaveUrl?: string | null
 }
 
+export const TIMELINE_EVENT_TYPES = [
+  'grade',
+  'position',
+  'department',
+  'employmentType',
+  'joining',
+  'extendedLeave',
+  'mentorshipStart',
+  'mentorshipEnd',
+] as const
+
+export type TimelineEventType = (typeof TIMELINE_EVENT_TYPES)[number]
+
 export interface TimelineEvent {
   id: string
   type: string
   effectiveDate: string
   oldValue?: string | null
   newValue?: string | null
+  source: 'system' | 'manual'
 }
 
 export interface TimelineSection {
   events: TimelineEvent[]
 }
+
+export interface CreateTimelineEventPayload {
+  type: TimelineEventType
+  effectiveDate: string
+  oldValue?: string | null
+  newValue?: string | null
+}
+
+export type UpdateTimelineEventPayload = Partial<CreateTimelineEventPayload>
 
 export interface ProjectsSection {
   projects: Array<{

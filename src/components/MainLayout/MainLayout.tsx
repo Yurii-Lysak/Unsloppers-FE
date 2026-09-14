@@ -24,7 +24,7 @@ export const MainLayout = ({
         {showSidebar && <SideMenu collapsible={sidebarCollapsible} expanded={sidebarExpanded} />}
         <main
           className={cn(
-            'flex-1 overflow-auto p-4 md:p-8',
+            'flex-1 overflow-auto overscroll-contain p-4 md:p-8',
             'transition-all duration-200 ease-in-out'
           )}
         >
